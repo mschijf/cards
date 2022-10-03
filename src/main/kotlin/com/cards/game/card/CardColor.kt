@@ -1,4 +1,4 @@
-package com.cards.controller.model
+package com.cards.game.card
 
 enum class CardColor {
     SPADES, HEARTS, CLUBS, DIAMONDS
