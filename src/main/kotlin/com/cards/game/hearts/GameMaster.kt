@@ -2,37 +2,54 @@ package com.cards.game.hearts
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardDeck
-import com.cards.game.card.CardRank
-import java.lang.Exception
 
 class GameMaster {
-    private val cardDeck = CardDeck(lowestCardRank = CardRank.SEVEN).shuffle()
-
+    private val cardDeck = CardDeck().shuffle()
     private var leadPlayer = Player.SOUTH
+    val maxCardsInHand = cardDeck.numberOfCards() / Player.values().size
 
-    private val playerList = arrayListOf<HeartsPlayer>(
-        HeartsPlayer(player = Player.SOUTH, cardsInHand = cardDeck.getCards(0,8), firstLeadPlayer = leadPlayer),
-        HeartsPlayer(player = Player.WEST, cardsInHand = cardDeck.getCards(8,16), firstLeadPlayer = leadPlayer),
-        HeartsPlayer(player = Player.NORTH, cardsInHand = cardDeck.getCards(16,24), firstLeadPlayer = leadPlayer),
-        HeartsPlayer(player = Player.EAST, cardsInHand = cardDeck.getCards(24,32), firstLeadPlayer = leadPlayer),
-    )
+    private val playerList = Player.values().mapIndexed { i, p  ->
+        HeartsPlayer(p, cardDeck.getCards(maxCardsInHand*i, maxCardsInHand).toMutableList(), leadPlayer) }
+    var trickOnTable = Trick(leadPlayer)
 
-    var onTable = Trick(leadPlayer)
+    private var currentDeal = Deal(maxCardsInHand)
+    private val game = Game()
 
-    fun getPlayer(player: Player): HeartsPlayer {
-        for (heartsPlayer in playerList) {
-            if (heartsPlayer.player == player)
-                return heartsPlayer
-        }
-        throw Exception("Cannot Find HeartsPlayer in GameMaster for $player")
-    }
+    fun getHeartsPlayer(player: Player) = playerList.first { p -> p.player == player }
 
     fun playCard(card: Card) {
-        onTable.addCard(card)
-        if (onTable.isComplete()) {
-            leadPlayer = onTable.winner()
-            onTable = Trick(leadPlayer)
+        playCard(trickOnTable.playerToMove, card)
+    }
+
+    fun playCard(player: Player, card: Card) {
+        //todo --> send notification to all players that a card has been played
+
+        if (!legalCardToPlay(player, card)) {
+            throw Exception("trying to play an illegal card: Card($card)")
         }
-        //todo: what to do if all cards are played
+        trickOnTable.addCard(card)
+        getHeartsPlayer(player).removeCard(card)
+        if (trickOnTable.isComplete()) {
+            currentDeal.addTrick(trickOnTable)
+            leadPlayer = trickOnTable.winner()
+            trickOnTable = Trick(leadPlayer)
+
+            if (currentDeal.isComplete()) {
+                game.addDeal(currentDeal)
+                currentDeal = Deal(maxCardsInHand)
+            }
+        }
+    }
+
+    fun legalCardToPlay(player: Player, card: Card): Boolean {
+        if (trickOnTable.playerToMove != player)
+            return false
+
+        if (trickOnTable.leadColor() == null)
+            return true
+        val leadColor = trickOnTable.leadColor()
+        if (leadColor == card.color)
+            return true
+        return getHeartsPlayer(player).cardsInHand.none { c -> c.color == leadColor }
     }
 }

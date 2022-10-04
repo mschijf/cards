@@ -1,14 +1,16 @@
 package com.cards.game.hearts
 
 import com.cards.game.card.Card
+import java.lang.Exception
 
 class HeartsPlayer(
     val player: Player,
-    val cardsInHand: ArrayList<Card>,
+    val cardsInHand: MutableList<Card>,
     firstLeadPlayer: Player) {
 
-    val tricksPlayed = emptyArray<Trick>()
-    var currentTrick = Trick(firstLeadPlayer)
-
-    //
+    fun removeCard(card: Card) {
+        if (!cardsInHand.remove(card)) {
+            throw Exception("cannot remove card $card from hand of player $player ")
+        }
+    }
 }

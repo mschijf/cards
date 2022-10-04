@@ -1,40 +1,34 @@
 package com.cards.game.hearts
 
 import com.cards.game.card.Card
-import java.lang.Exception
 
 class Trick(
     private val leadPlayer: Player) {
 
-    private val cardsPlayed = arrayOfNulls<Card>(4)
-    private var playerToMove = leadPlayer
-    private var numberCardsPlayed = 0
+    private val cardsPlayed = arrayListOf<Pair<Player, Card>>()
+    var playerToMove = leadPlayer
+        private set
 
-    fun getCardPlayedByPlayer(player: Player): Card? {
-        return cardsPlayed[player.index]
+    fun getCardPlayedBy(player: Player): Card? = cardsPlayed.firstOrNull { p -> p.first == player }?.second
+
+    fun isComplete(): Boolean = cardsPlayed.size >= 4
+
+    fun winner(): Player {
+        if (cardsPlayed.size == 0)
+            return leadPlayer
+
+        val leadingColor = cardsPlayed[0].second.color
+        return cardsPlayed.filter { f -> f.second.color == leadingColor }.maxByOrNull { f -> HeartsRulesBook.toRankNumber(f.second) }!!.first
     }
 
     fun addCard(aCard: Card) {
-        if (isComplete()) {
-            throw Exception("Adding a card on a completed trick")
-        }
-        cardsPlayed[playerToMove.index] = aCard
+        if (isComplete())
+            throw Exception("Adding a card to a completed trick")
+
+        cardsPlayed.add(Pair(playerToMove, aCard))
         playerToMove = playerToMove.nextPlayer()
-        numberCardsPlayed++
     }
 
-    fun isComplete(): Boolean = numberCardsPlayed >= 4
+    fun leadColor() = getCardPlayedBy(leadPlayer)?.color
 
-    fun winner(): Player {
-        if (numberCardsPlayed == 0)
-            return leadPlayer
-        var winningPlayer =  leadPlayer
-        var otherPlayer = leadPlayer.nextPlayer()
-        while (otherPlayer != leadPlayer && cardsPlayed[otherPlayer.index] != null) {
-            if (HeartsRulesBook.firstCardBeatsSecondCard(cardsPlayed[otherPlayer.index]!!, cardsPlayed[winningPlayer.index]!!))
-                winningPlayer = otherPlayer
-            otherPlayer = otherPlayer.nextPlayer()
-        }
-        return winningPlayer
-    }
 }
