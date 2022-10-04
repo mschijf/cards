@@ -15,8 +15,10 @@ class Controller @Autowired constructor(private val gameService: GameService) {
     @GetMapping("/game-status")
     fun getGameStatus(): Model {
         val gm = GameMaster()
-        gm.playCard(gm.getHeartsPlayer(Player.SOUTH).cardsInHand[0])
-        gm.playCard(gm.getHeartsPlayer(Player.WEST).cardsInHand[1])
+        gm.playCard(gm.getHeartsPlayer(Player.SOUTH).chooseCard())
+        gm.playCard(gm.getHeartsPlayer(Player.WEST).chooseCard())
+        gm.playCard(gm.getHeartsPlayer(Player.NORTH).chooseCard())
+        //gm.playCard(gm.getHeartsPlayer(Player.EAST).chooseCard())
         return Model(gm)
     }
 

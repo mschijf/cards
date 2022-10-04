@@ -3,11 +3,13 @@ package com.cards.game.hearts
 import com.cards.game.card.Card
 
 class Trick(
-    private val leadPlayer: Player) {
-
+    val leadPlayer: Player) {
     private val cardsPlayed = arrayListOf<Pair<Player, Card>>()
-    var playerToMove = leadPlayer
-        private set
+    private var playerToMove = leadPlayer
+
+    fun leadColor() = getCardPlayedBy(leadPlayer)?.color
+
+    fun playerToMove() = playerToMove
 
     fun getCardPlayedBy(player: Player): Card? = cardsPlayed.firstOrNull { p -> p.first == player }?.second
 
@@ -28,7 +30,4 @@ class Trick(
         cardsPlayed.add(Pair(playerToMove, aCard))
         playerToMove = playerToMove.nextPlayer()
     }
-
-    fun leadColor() = getCardPlayedBy(leadPlayer)?.color
-
 }

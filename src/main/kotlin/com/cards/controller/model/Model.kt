@@ -6,10 +6,10 @@ import com.cards.game.hearts.Player
 
 class Model(gameMaster: GameMaster)  {
     val onTable = TableModel(
-        gameMaster.trickOnTable.getCardPlayedBy(Player.SOUTH),
-        gameMaster.trickOnTable.getCardPlayedBy(Player.WEST),
-        gameMaster.trickOnTable.getCardPlayedBy(Player.NORTH),
-        gameMaster.trickOnTable.getCardPlayedBy(Player.EAST)
+        gameMaster.game.trickOnTable.getCardPlayedBy(Player.SOUTH),
+        gameMaster.game.trickOnTable.getCardPlayedBy(Player.WEST),
+        gameMaster.game.trickOnTable.getCardPlayedBy(Player.NORTH),
+        gameMaster.game.trickOnTable.getCardPlayedBy(Player.EAST)
     )
 
     val playerSouth = Array(gameMaster.maxCardsInHand) { i -> gameMaster.getHeartsPlayer(Player.SOUTH).cardsInHand.elementAtOrNull(i)}
