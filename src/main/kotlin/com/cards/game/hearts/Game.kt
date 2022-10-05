@@ -1,33 +1,30 @@
 package com.cards.game.hearts
 
+import com.cards.game.Player
 import com.cards.game.card.Card
 
-class Game {
-
-    private var leadPlayer = Player.SOUTH
-    var trickOnTable = Trick(leadPlayer)
-    private var currentDeal = Deal()
-    private val completedDealList = arrayListOf<Deal>()
+class Game (
+    private var leadPlayer: Player
+) {
+    private val completedRoundList = arrayListOf<Round>()
+    private var currentRound = Round(leadPlayer)
 
     fun playCard(card: Card) {
-        trickOnTable.addCard(card)
-        if (trickOnTable.isComplete()) {
-            currentDeal.addTrick(trickOnTable)
-            leadPlayer = trickOnTable.winner()
-            trickOnTable = Trick(leadPlayer)
-
-            if (currentDeal.isComplete()) {
-                addDeal(currentDeal)
-                currentDeal = Deal()
-            }
+        currentRound.playCard(card)
+        if (currentRound.isComplete()) {
+            addRound(currentRound)
+            currentRound = Round(leadPlayer.nextPlayer())
         }
     }
 
-    private fun addDeal(deal: Deal) {
-        if (!isFinished())
-            completedDealList.add(deal)
-        throw Exception("Trying to add a deals to a finsihed game")
+    private fun addRound(round: Round) {
+        if (!isFinished()) {
+            completedRoundList.add(round)
+        } else {
+            throw Exception("Trying to add a deals to a finsihed game")
+        }
     }
 
-    private fun isFinished(): Boolean = completedDealList.size == 4 //of course, not according to hearts rules.
+    private fun isFinished(): Boolean = completedRoundList.size == 4 //todo: check on 60 and thenn go down
+    fun getCurrentRound() = currentRound
 }

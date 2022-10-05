@@ -1,9 +1,10 @@
 package com.cards.game.hearts
 
+import com.cards.game.Player
 import com.cards.game.card.Card
 import java.lang.Exception
 
-class HeartsPlayer(
+class CardPlayer(
     val player: Player,
     val cardsInHand: MutableList<Card>,
     val game: Game) {
@@ -15,7 +16,8 @@ class HeartsPlayer(
     }
 
     fun chooseCard() : Card {
-        val legalCards = HeartsRulesBook.legalPlayableCards(cardsInHand, game.trickOnTable.leadColor())
+        val leadColor = game.getCurrentRound().getTrickOnTable().leadColor()
+        val legalCards = HeartsRulesBook.legalPlayableCards(cardsInHand, leadColor)
         return legalCards.random()
     }
 }

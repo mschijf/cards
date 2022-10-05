@@ -1,5 +1,6 @@
 package com.cards.game.hearts
 
+import com.cards.game.Player
 import com.cards.game.card.Card
 import com.cards.game.card.CardDeck
 
@@ -7,31 +8,34 @@ class GameMaster {
     private val cardDeck = CardDeck().shuffle()
     val maxCardsInHand = cardDeck.numberOfCards() / Player.values().size
 
-    val game = Game()
+    val game = Game(Player.SOUTH)
 
     private val playerList = Player.values().mapIndexed { i, p  ->
-        HeartsPlayer(p, cardDeck.getCards(maxCardsInHand*i, maxCardsInHand).toMutableList(), game) }
+        CardPlayer(p, cardDeck.getCards(maxCardsInHand*i, maxCardsInHand).toMutableList(), game) }
 
-    fun getHeartsPlayer(player: Player) = playerList.first { p -> p.player == player }
+    fun getCardPlayer(player: Player) = playerList.first { p -> p.player == player }
 
     fun playCard(card: Card) {
-        playCard(game.trickOnTable.playerToMove(), card)
+        playCard(game.getCurrentRound().getTrickOnTable().playerToMove(), card)
     }
 
-    fun playCard(player: Player, card: Card) {
+    private fun playCard(player: Player, card: Card) {
         //todo --> send notification to all players that a card has been played
-        if (!legalCardToPlay(player, card)) {
+        if (legalCardToPlay(player, card)) {
+            getCardPlayer(player).removeCard(card)
+            game.playCard(card)
+        } else {
             throw Exception("trying to play an illegal card: Card($card)")
         }
-        getHeartsPlayer(player).removeCard(card)
-        game.playCard(card)
     }
 
-    fun legalCardToPlay(player: Player, card: Card): Boolean {
-        if (game.trickOnTable.playerToMove() != player)
+    private fun legalCardToPlay(player: Player, card: Card): Boolean {
+        if (game.getCurrentRound().getTrickOnTable().playerToMove() != player)
             return false
 
-        val legalCards = HeartsRulesBook.legalPlayableCards(getHeartsPlayer(player).cardsInHand, game.trickOnTable.leadColor())
+        val leadColor = game.getCurrentRound().getTrickOnTable().leadColor()
+        val cardsInHand = getCardPlayer(player).cardsInHand
+        val legalCards = HeartsRulesBook.legalPlayableCards(cardsInHand, leadColor)
         return legalCards.contains(card)
     }
 
