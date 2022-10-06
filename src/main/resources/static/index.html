@@ -16,17 +16,32 @@
                 border: 1px solid white;
             }
 
-            .player {
+            
+
+            .playerNorth {
                 flex: 1 100%;
+            }
+            
+            
+            .playerWest {
+                flex: 1;
             }
             .table {
                 flex: 3;
             }
+            .playerEast {
+                flex: 1;
+            }
             .info {
                 flex: 4;
             }
+
+            .playerSouth {
+                flex: 1 100%;
+            }
+
             .footer {
-                flex: 1;
+                flex: 1 100%;
                 background:  white;
                 text-align: right;
             }
@@ -59,8 +74,10 @@
             .card-size-normal {
                 width:100px;
                 height:150px;
-                background:grey;
-
+            }
+            .card-size-small {
+                width:30px;
+                height:45px;
             }
 
             .card-placeholder {
@@ -81,46 +98,99 @@
                 padding-right: 10px;
             }
 
-
+            #myDisappearingCard {
+                transform: scaleX(0)
+            }            
         </style>
     </head>
 
     <body>
-                
-        <div class="table">
-            <div class="flexcontainer-table">
-                <div class="table-player-west" id="tableWest"><img src="carddeck/2C.svg" class="card-size-normal"></div>
-                <div class="flexcontainer-column">
-                    <div class="table-player-north" id="tableNorth"><img src="carddeck/QD.svg" class="card-size-normal"></div>
-                    <div class="table-player-south" id="tableSouth"><img src="carddeck/8H.svg" class="card-size-normal"></div>
-                </div>
-                <div class="table-player-east" id="tableEast"><img src="carddeck/AS.svg" class="card-size-normal"></div>
+        <div class="playerNorth">
+            <div class="flexcontainer-player">
+                <div class="player-card"><img id="playerNorth0" src="carddeck/AS.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerNorth1" src="carddeck/KS.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerNorth2" src="carddeck/QS.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerNorth3" src="carddeck/JS.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerNorth4" src="carddeck/10S.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerNorth5" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerNorth6" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerNorth7" src="carddeck/7S.svg" class="card-size-small"></div>
             </div>
         </div>
         
+        <div class="playerWest">
+            <div class="flexcontainer-player-column">
+                <div class="player-card"><img id="playerWest0" src="carddeck/AS.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerWest1" src="carddeck/KS.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerWest2" src="carddeck/QS.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerWest3" src="carddeck/JS.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerWest4" src="carddeck/10S.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerWest5" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerWest6" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerWest7" src="carddeck/7S.svg" class="card-size-small"></div>
+            </div>
+        </div>
+        
+        <div class="table">
+            <div class="flexcontainer-table">
+                <div class="table-player-west"><img  id="tableWest" src="carddeck/2C.svg" class="card-size-normal"></div>
+                <div class="flexcontainer-column">
+                    <div class="table-player-north"><img id="tableNorth" src="carddeck/QD.svg" class="card-size-normal"></div>
+                    <div class="table-player-south"><img id="tableSouth" src="carddeck/NoCard.svg" class="card-size-normal"></div>
+                </div>
+                <div class="table-player-east"><img id="tableEast" src="carddeck/AS.svg" class="card-size-normal"></div>
+            </div>
+        </div>
+        
+        <div class="playerEast">
+            <div class="flexcontainer-player-column">
+                <div class="player-card"><img id="playerEast0" src="carddeck/AS.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerEast1" src="carddeck/KS.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerEast2" src="carddeck/QS.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerEast3" src="carddeck/JS.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerEast4" src="carddeck/10S.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerEast5" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerEast6" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                <div class="player-card"><img id="playerEast7" src="carddeck/7S.svg" class="card-size-small"></div>
+            </div>
+        </div>
+
         <div class="info">
             Info
         </div>
         
-        <div class="player">
+        <div class="playerSouth">
             <div class="flexcontainer-player">
-                <div class="player-card" id="playerSouth0"><img src="carddeck/AS.svg" class="card-size-normal"></div>
-                <div class="player-card" id="playerSouth1"><img src="carddeck/KS.svg" class="card-size-normal"></div>
-                <div class="player-card" id="playerSouth2"><img src="carddeck/QS.svg" class="card-size-normal"></div>
-                <div class="player-card" id="playerSouth3"><img src="carddeck/JS.svg" class="card-size-normal"></div>
-                <div class="player-card" id="playerSouth4"><img src="carddeck/10S.svg" class="card-size-normal"></div>
-                <div class="player-card" id="playerSouth5"><img src="carddeck/9S.svg" class="card-size-normal"></div>
-                <div class="player-card" id="playerSouth6"><div class="card-placeholder"></div></div>                
-                <div class="player-card" id="playerSouth7"><img src="carddeck/7S.svg" class="card-size-normal"></div>
+                <div class="player-card"><img id="playerSouth0" src="carddeck/AS.svg" class="card-size-normal"></div>
+                <div class="player-card"><img id="playerSouth1" src="carddeck/KS.svg" class="card-size-normal"></div>
+                <div class="player-card"><img id="playerSouth2" src="carddeck/QS.svg" class="card-size-normal"></div>
+                <div class="player-card"><img id="playerSouth3" src="carddeck/JS.svg" class="card-size-normal"></div>
+                <div class="player-card"><img id="playerSouth4" src="carddeck/10S.svg" class="card-size-normal"></div>
+                <div class="player-card"><img id="playerSouth5" src="carddeck/NoCard.svg" class="card-size-normal"></div>
+                <div class="player-card"><img id="playerSouth6" src="carddeck/NoCard.svg" class="card-size-normal"></div>
+                <div class="player-card"><img id="playerSouth7" src="carddeck/7S.svg" class="card-size-normal"></div>
             </div>
         </div>
-        <button id="buttonNew" onclick="getGameStatus()">TEST</button>
-        <footer class="footer">Card images by Adrian Kennard - Own work, CC0, <a href="https://commons.wikimedia.org/w/index.php?curid=70667162">https://commons.wikimedia.org/w/index.php?curid=70667162</a></footer>
+        
+        <footer class="footer">
+            <button id="buttonNew" onclick="getGameStatus()">TEST</button>
+            <button id="buttonPlay" onclick="showCardPlayed()">PLAY</button>
+            Card images by Adrian Kennard - Own work, CC0, <a href="https://commons.wikimedia.org/w/index.php?curid=70667162">https://commons.wikimedia.org/w/index.php?curid=70667162</a>
+        </footer>
+        
+        
     </body>
 
 
     <script>
+        function NoCardImage() {
+            return "carddeck/NoCard.SVG"
+        }
         function cardModelToImageURL(cardModel) {
+            if (cardModel == null) {
+                return NoCardImage()
+            }
+
             switch (cardModel.color) {
                 case "SPADES":      colorString = "S"; break;
                 case "HEARTS":      colorString = "H"; break;
@@ -145,21 +215,13 @@
             return "carddeck/" + rankString + colorString + ".SVG"
         }
 
-        function showCard(tableCardId, cardModel) {
-            var tableCard = document.getElementById(tableCardId)
-            while (tableCard.hasChildNodes()) {
-                tableCard.removeChild(tableCard.firstChild);
-            }   
-            if (cardModel == null) {
-                var image = document.createElement("div")
-                image.className = "card-placeholder"
-                tableCard.appendChild(image)
-            } else {
-                var image = document.createElement("img")
-                image.src = cardModelToImageURL(cardModel)
-                image.className = "card-size-normal"
-                tableCard.appendChild(image)
-            }            
+        function showCard(cardId, cardModel) {
+            var aCardImage = document.getElementById(cardId)
+            aCardImage.src = cardModelToImageURL(cardModel)
+            // aCardImage.className = "card-size-normal"
+            
+            aCardImage.onclick = function(){doMove(cardId)};
+            aCardImage.style.cursor = "pointer"
         }
 
         function showPlayerCards(player, playerHand) {
@@ -174,7 +236,45 @@
             showCard("tableNorth", gameStatus.onTable.north)
             showCard("tableEast", gameStatus.onTable.east)
             showPlayerCards("playerSouth", gameStatus.playerSouth)
+            showPlayerCards("playerWest", gameStatus.playerWest)
+            showPlayerCards("playerNorth", gameStatus.playerNorth)
+            showPlayerCards("playerEast", gameStatus.playerEast)
         }
+
+        function findCardImage(cardModel) {
+            src = cardModelToImageURL(cardModel)
+            
+            var allImages = document.getElementsByTagName('img');
+            for(var i = 0; i < allImages.length ; i++) {
+                if (allImages[i].src == src) {
+                    return allImages[i];
+                }
+            }        
+            return null
+        }
+
+        function showCardPlayed(player, cardModel) {
+            var tableCardImage = document.getElementById("tableSouth")            
+
+            var playerCardImage = findCardImage(cardModel)
+            if (playerCardImage != null) {
+                tableCardImage.src = playerCardImage.src
+            } else {
+                tableCardImage.src = cardModelToImageURL(cardModel)
+            }
+
+            playerCardImage.src = NoCardImage()
+        }
+
+        function doMove(playerCardId) {
+            var tableCardImage = document.getElementById("tableSouth")            
+            var playerCardImage = document.getElementById(playerCardId)
+
+            tableCardImage.src = playerCardImage.src
+            playerCardImage.src = NoCardImage()
+        }
+
+
 
     </script>
 
