@@ -9,12 +9,13 @@ class Game (
     private val completedRoundList = arrayListOf<Round>()
     private var currentRound = Round(leadPlayer)
 
-    fun playCard(card: Card) {
-        currentRound.playCard(card)
+    fun playCard(card: Card): Player? {
+        val winner = currentRound.playCard(card)
         if (currentRound.isComplete()) {
             addRound(currentRound)
             currentRound = Round(leadPlayer.nextPlayer())
         }
+        return winner
     }
 
     private fun addRound(round: Round) {

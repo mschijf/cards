@@ -20,6 +20,8 @@ class Trick(
     }
 
     fun isComplete(): Boolean = cardsPlayed.size >= 4
+    fun isNew(): Boolean = cardsPlayed.size == 0
+
 
     fun winner(): Player {
         if (cardsPlayed.size == 0)

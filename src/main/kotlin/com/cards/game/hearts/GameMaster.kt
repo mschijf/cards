@@ -15,15 +15,15 @@ class GameMaster {
 
     fun getCardPlayer(player: Player) = playerList.first { p -> p.player == player }
 
-    fun playCard(card: Card) {
-        playCard(game.getCurrentRound().getTrickOnTable().playerToMove(), card)
+    fun playCard(card: Card):Player? {
+        return playCard(game.getCurrentRound().getTrickOnTable().playerToMove(), card)
     }
 
-    private fun playCard(player: Player, card: Card) {
+    private fun playCard(player: Player, card: Card): Player? {
         //todo --> send notification to all players that a card has been played
         if (legalCardToPlay(player, card)) {
             getCardPlayer(player).removeCard(card)
-            game.playCard(card)
+            return game.playCard(card)
         } else {
             throw Exception("trying to play an illegal card: Card($card)")
         }

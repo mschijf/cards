@@ -11,14 +11,16 @@ class Round(
 
     private var trickOnTable = Trick(leadPlayer)
 
-    fun playCard(card: Card) {
+    fun playCard(card: Card): Player? {
         trickOnTable.addCard(card)
         if (trickOnTable.isComplete()) {
             addTrick(trickOnTable)
 
             leadPlayer = trickOnTable.winner()
             trickOnTable = Trick(leadPlayer)
+            return leadPlayer
         }
+        return null
     }
 
     private fun addTrick(trick: Trick) {
@@ -29,5 +31,6 @@ class Round(
     }
 
     fun isComplete(): Boolean = completedTrickList.size >= maxTricks
+    fun isNew(): Boolean = completedTrickList.size == 0
     fun getTrickOnTable() = trickOnTable
 }

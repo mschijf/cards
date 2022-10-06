@@ -4,7 +4,7 @@ import com.cards.game.card.Card
 import com.cards.game.hearts.GameMaster
 import com.cards.game.Player
 
-class Model(gameMaster: GameMaster)  {
+class GameStatusModel(gameMaster: GameMaster)  {
     val onTable = TableModel(
         gameMaster.game.getCurrentRound().getTrickOnTable().getCardPlayedBy(Player.SOUTH),
         gameMaster.game.getCurrentRound().getTrickOnTable().getCardPlayedBy(Player.WEST),
