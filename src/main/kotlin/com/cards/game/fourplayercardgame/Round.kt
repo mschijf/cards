@@ -1,21 +1,20 @@
-package com.cards.game.hearts
+package com.cards.game.fourplayercardgame
 
-import com.cards.game.Player
 import com.cards.game.card.Card
 
 class Round(
-    private var leadPlayer: Player,
+    leadPlayer: Player,
     private val maxTricks: Int) {
     private val completedTrickList = arrayListOf<Trick>()
 
-    private var trickOnTable = Trick(leadPlayer)
+    private var currentTrick = Trick(leadPlayer)
 
     fun playCard(card: Card) {
-        trickOnTable.addCard(card)
-        if (trickOnTable.isComplete()) {
-            addTrick(trickOnTable)
-            leadPlayer = trickOnTable.winner()
-            trickOnTable = Trick(leadPlayer)
+        currentTrick.addCard(card)
+        if (currentTrick.isComplete()) {
+            val winner = currentTrick.winner()
+            addTrick(currentTrick)
+            currentTrick = Trick(winner)
         }
     }
 
@@ -27,8 +26,8 @@ class Round(
     }
 
     fun isComplete(): Boolean = completedTrickList.size >= maxTricks
-    fun isNew(): Boolean = completedTrickList.size == 0 && trickOnTable.isNew()
-    fun getTrickOnTable() = trickOnTable
+    fun isNew(): Boolean = completedTrickList.size == 0 && currentTrick.isNew()
+    fun getTrickOnTable() = currentTrick
     fun getLastCompletedTrickWinner(): Player? = if (completedTrickList.size > 0) completedTrickList.last().winner() else null
 
     fun getScore(): Score {

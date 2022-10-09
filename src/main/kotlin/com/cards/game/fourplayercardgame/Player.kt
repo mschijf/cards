@@ -1,4 +1,4 @@
-package com.cards.game
+package com.cards.game.fourplayercardgame
 
 enum class Player(private val index: Int) {
     SOUTH(0), WEST(1), NORTH(2), EAST(3);

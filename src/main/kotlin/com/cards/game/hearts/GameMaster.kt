@@ -1,6 +1,6 @@
 package com.cards.game.hearts
 
-import com.cards.game.Player
+import com.cards.game.fourplayercardgame.Player
 import com.cards.game.card.Card
 import com.cards.game.card.CardDeck
 

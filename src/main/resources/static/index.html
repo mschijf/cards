@@ -39,7 +39,7 @@
             .grid-info {
                 grid-area: info;
                 text-align: center;
-                background: rgb(20, 128, 20);
+                background: #f5f5f5;
                 /* padding: 2rem; */
             }
 
@@ -119,33 +119,30 @@
                 border-collapse: collapse;
                 border-spacing: 0;
                 width: 100%;
-                border: 1px solid #ddd;
+                border: 1px solid #dedede;
+                background-color: #f5f5f5;
             }
 
             th {
                 text-align: center;
                 padding: 10px;
-                font-family: Arial, Helvetica, sans-serif;
+                font-family: courier, monospace;
+                border-bottom: 1px dotted #ccc;
             }
 
             td {
-                font-family: "Lucida Handwriting", cursive;
+                font-family: Chalkduster, fantasy;
                 text-align: center;
                 padding: 10px;
+                border-bottom: 1px dotted #ccc;
             }
 
             th:first-child, td:first-child {
                 text-align: left;
-                font-family: Arial, Helvetica, sans-serif;
+                font-family: courier, monospace;
+                border-right: 1px dotted #ffaa9f;
             }
-
-            tr:nth-child(even) {
-                background-color: #f2f2f2
-            }
-            tr:nth-child(odd) {
-                background-color: white
-            }
-
+            
         </style>
     </head>
 
@@ -285,6 +282,13 @@
                         <td id="scoreE8"></td>
                         <td id="scoreS8"></td>
                     </tr>
+                    <tr>
+                        <td id="roundNr9">9</td>
+                        <td id="scoreW9"></td>
+                        <td id="scoreN9"></td>
+                        <td id="scoreE9"></td>
+                        <td id="scoreS9"></td>
+                    </tr>
                   </table>
             </div>
 
@@ -301,8 +305,9 @@
                 </div>    
             </div>            
         </div>        
+        <button id="buttonNew" onclick="initGame()">NEW</button>
         <button id="buttonPlay" onclick="computeMove()">PLAY</button>
-        Card images by Adrian Kennard - Own work, CC0, <a href="https://commons.wikimedia.org/w/index.php?curid=70667162">https://commons.wikimedia.org/w/index.php?curid=70667162</a>    
+        <!-- Card images by Adrian Kennard - Own work, CC0, <a href="https://commons.wikimedia.org/w/index.php?curid=70667162">https://commons.wikimedia.org/w/index.php?curid=70667162</a>     -->
     </body>
 
 
@@ -370,40 +375,47 @@
         //-----------------------------------------------------------------------------------------
 
         function initGame() {
-            showCardsInHands()
-            showScoreList()
+            removeCardsFromTable()
+            requestForNewGame()
+            requestForScoreCard()
         }
 
         //-----------------------------------------------------------------------------------------
 
-        function showCard(cardId, cardModel, clickable) {
+        function showCard(cardId, cardModel, clickable, visible) {
             var aCardImage = document.getElementById(cardId)
             aCardImage.src = cardModelToImageURL(cardModel)
             
+            if (visible) {
+                aCardImage.style.visibility = "visible"
+            } else {
+                aCardImage.style.visibility = "hidden"
+            }
             if (clickable) {
                 aCardImage.onclick = function(){doMove(cardModel)};
                 aCardImage.style.cursor = "pointer"
             }
         }
 
-        function showPlayerCards(player, playerHand, clickable) {
+        function showPlayerCards(player, playerHand, clickable, visible) {
             for (let cardIndex = 0; cardIndex < playerHand.length; cardIndex++) {
-                showCard(player+cardIndex, playerHand[cardIndex], clickable)
+                showCard(player+cardIndex, playerHand[cardIndex], clickable, visible)
             }            
         }
 
-        function showCardsInAllHands(gameStatus) {
-            showPlayerCards("playerSouth", gameStatus.playerSouth, true)
-            showPlayerCards("playerWest", gameStatus.playerWest, false)
-            showPlayerCards("playerNorth", gameStatus.playerNorth, false)
-            showPlayerCards("playerEast", gameStatus.playerEast, false)
+        function showCardsInHands(gameStatus) {
+            visible = true
+            showPlayerCards("playerSouth", gameStatus.playerSouth, true, true)
+            showPlayerCards("playerWest", gameStatus.playerWest, false, visible)
+            showPlayerCards("playerNorth", gameStatus.playerNorth, false, visible)
+            showPlayerCards("playerEast", gameStatus.playerEast, false, visible)
             upDownSignal.src = upDownSignalImage(gameStatus.goingUp)
         }
 
         //-----------------------------------------------------------------------------------------
 
-        function showTheScoreList(scoreModel) {
-            var maxRows = 8
+        function showScoreCard(scoreModel) {
+            var maxRows = 9
             scoreList = scoreModel.scoreList
             var start = Math.max(0, scoreList.length - maxRows)
             for (let i=0; i < maxRows; i++) {
@@ -439,27 +451,37 @@
                 tableCardImage.src = cardModelToImageURL(movePlayed.cardPlayed)
             }
 
-            if (movePlayed.roundCompleted) {
-                clearTable(movePlayed.trickWinner, 1200)
-                setTimeout(function() { showScoreList(); }, 1200)
-                setTimeout(function() { showCardsInHands(); }, 3500)
-                if (movePlayed.nextPlayer != "SOUTH") {
-                    setTimeout(function() { computeMove(); }, 4000)
-                }
-            } else if (movePlayed.trickCompleted) {
-                showCardsInHands()
-                clearTable(movePlayed.trickWinner, 1200)
-                if (movePlayed.nextPlayer != "SOUTH") {
-                    setTimeout(function() { computeMove(); }, 1700)
+            if (movePlayed.trickCompleted != null) {
+                if (movePlayed.trickCompleted.roundCompleted) {
+                    clearTable(movePlayed.trickCompleted.trickWinner, 1200)
+                    setTimeout(function() { requestForScoreCard(); }, 1200)
+                    if (!movePlayed.trickCompleted.gameOver) {
+                        setTimeout(function() { requestGameStatus(); }, 2500)
+                        if (movePlayed.nextPlayer != "SOUTH") {
+                            setTimeout(function() { computeMove(); }, 4000)
+                        }
+                    } else {
+                        //Show Game Over somehow wn vraag of er een nieuuw spel gespeeld kan worden.
+                    }
+                } else {
+                    requestGameStatus()
+                    clearTable(movePlayed.trickCompleted.trickWinner, 1200)
+                    if (movePlayed.nextPlayer != "SOUTH") {
+                        setTimeout(function() { computeMove(); }, 1700)
+                    }
                 }
             } else if (movePlayed.nextPlayer != "SOUTH") {
-                showCardsInHands()
+                requestGameStatus()
                 setTimeout(function() { computeMove(); }, 500)
             }
         }
 
         function clearTableAndResetWinner(winnerCardId) {            
             winnerCard.id = winnerCardId; 
+            removeCardsFromTable()
+        }
+
+        function removeCardsFromTable() {
             tableWest.src = NoCardImage();
             tableNorth.src = NoCardImage();
             tableEast.src = NoCardImage();
@@ -491,27 +513,40 @@
     </script>
 
     <script>
-        function showCardsInHands() {
+        function requestForNewGame() {
+            var request = new XMLHttpRequest();
+
+            request.open("POST", "/api/v1/new-game/");
+            request.onreadystatechange = function() {
+                if(this.readyState === 4 && this.status === 200) {
+                    var gameStatus = JSON.parse(this.responseText);
+                    showCardsInHands(gameStatus)
+                }
+            };
+            request.send();
+        }
+
+        function requestGameStatus() {
             var request = new XMLHttpRequest();
 
             request.open("GET", "/api/v1/game-status/");
             request.onreadystatechange = function() {
                 if(this.readyState === 4 && this.status === 200) {
                     var gameStatus = JSON.parse(this.responseText);
-                    showCardsInAllHands(gameStatus)
+                    showCardsInHands(gameStatus)
                 }
             };
             request.send();
         }
 
-        function showScoreList() {
+        function requestForScoreCard() {
             var request = new XMLHttpRequest();
 
             request.open("GET", "/api/v1/score-list/");
             request.onreadystatechange = function() {
                 if(this.readyState === 4 && this.status === 200) {
                     var scoreModel = JSON.parse(this.responseText);
-                    showTheScoreList(scoreModel)
+                    showScoreCard(scoreModel)
                 }
             };
             request.send();
@@ -541,7 +576,7 @@
                     showMove(movePlayed)
                 } else if(this.readyState === 4 && this.status === 404) {
                     console.log("Kijk nou, een foutafvanging!!")
-                }
+                } 
             };
             request.send();
         }

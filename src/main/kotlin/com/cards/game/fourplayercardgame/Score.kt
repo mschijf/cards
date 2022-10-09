@@ -1,7 +1,7 @@
-package com.cards.game.hearts
+package com.cards.game.fourplayercardgame
 
-import com.cards.game.Player
 import com.cards.game.card.Card
+import com.cards.game.hearts.HeartsRulesBook
 
 class Score {
     private val scorePerPlayer = Player.values().associateWith { p -> 0 }.toMutableMap()

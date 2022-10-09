@@ -11,7 +11,12 @@ import org.springframework.stereotype.Service
 
 @Service
 class GameService {
-    val gm = GameMaster()
+    private var gm = GameMaster()
+
+    fun newGame(): GameStatusModel {
+        gm = GameMaster()
+        return getGameStatus()
+    }
 
     fun getGameStatus(): GameStatusModel {
         return GameStatusModel(gm)
@@ -23,8 +28,7 @@ class GameService {
         gm.playCard(suggestedCardToPlay)
         val gameStatusAfterLastMove = gm.game.getStatusAfterLastMove()
         val nextPlayer = gm.game.getPlayerToMove()
-        return CardPlayedModel(playerToMove, suggestedCardToPlay, nextPlayer,
-            gameStatusAfterLastMove.trickCompleted, gameStatusAfterLastMove.trickWinner, gameStatusAfterLastMove.roundCompleted)
+        return CardPlayedModel(playerToMove, suggestedCardToPlay, nextPlayer, gameStatusAfterLastMove)
     }
 
     fun executeMove(color: CardColor, rank: CardRank): CardPlayedModel? {
@@ -36,13 +40,10 @@ class GameService {
         gm.playCard(suggestedCardToPlay)
         val gameStatusAfterLastMove = gm.game.getStatusAfterLastMove()
         val nextPlayer = gm.game.getPlayerToMove()
-        return CardPlayedModel(playerToMove, suggestedCardToPlay, nextPlayer,
-            gameStatusAfterLastMove.trickCompleted, gameStatusAfterLastMove.trickWinner, gameStatusAfterLastMove.roundCompleted)
+        return CardPlayedModel(playerToMove, suggestedCardToPlay, nextPlayer, gameStatusAfterLastMove)
     }
 
-    fun getScorePerRound(): ScoreModel {
-        val x = gm.game.getCumulativeScorePerRound()
-        val y = ScoreModel(x)
-        return y
+    fun getScoreCard(): ScoreModel {
+        return ScoreModel(gm.game.getCumulativeScorePerRound())
     }
 }

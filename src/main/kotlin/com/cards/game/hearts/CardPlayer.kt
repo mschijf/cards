@@ -1,6 +1,6 @@
 package com.cards.game.hearts
 
-import com.cards.game.Player
+import com.cards.game.fourplayercardgame.Player
 import com.cards.game.card.Card
 
 class CardPlayer(
@@ -8,12 +8,12 @@ class CardPlayer(
     private val game: Game) {
     private var cardsInHand: MutableList<Card> = mutableListOf()
 
+    fun getCardsInHand() = cardsInHand.toList()
+
     fun setCardsInHand(cardsfromDealer: List<Card>) {
         cardsInHand = cardsfromDealer.toMutableList()
         cardsInHand.sortBy { card -> 100*card.color.ordinal + card.rank.ordinal }
     }
-
-    fun getCardsInHand() = cardsInHand.toList()
 
     fun removeCard(card: Card) {
         if (!cardsInHand.remove(card)) {

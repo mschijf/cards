@@ -1,7 +1,9 @@
 package com.cards.game.hearts
 
-import com.cards.game.Player
+import com.cards.game.fourplayercardgame.Player
 import com.cards.game.card.Card
+import com.cards.game.fourplayercardgame.Round
+import com.cards.game.fourplayercardgame.Score
 
 class Game (
     private var leadPlayer: Player,
@@ -11,11 +13,17 @@ class Game (
     private var goingUp = true
 
     fun playCard(card: Card) {
+        if (isFinished()) {
+            throw Exception("Trying to play a card, but the game is already over")
+        }
+
         currentRound.playCard(card)
         if (currentRound.isComplete()) {
             addRound(currentRound)
-            currentRound = Round(leadPlayer.nextPlayer(), maxTricksPerRound)
-            goingUp = goingUp && (getTotalScore().maxValue() < HeartsRulesBook.valueToGoDown)
+            if (!isFinished()) {
+                currentRound = Round(leadPlayer.nextPlayer(), maxTricksPerRound)
+                goingUp = goingUp && (getTotalScore().maxValue() < HeartsRulesBook.valueToGoDown)
+            }
         }
     }
 
@@ -27,7 +35,7 @@ class Game (
         }
     }
 
-    private fun isFinished() = (!goingUp) && (getTotalScore().minValue() < HeartsRulesBook.valueToFinish)
+    fun isFinished() = (!goingUp) && (getTotalScore().minValue() < HeartsRulesBook.valueToFinish)
 
     private fun getLastTrickWinner(): Player? {
         if (!currentRound.isNew()) {
@@ -41,7 +49,8 @@ class Game (
     fun getStatusAfterLastMove() = GameStatusAfterLastMove(
         currentRound.getTrickOnTable().isNew(),
         getLastTrickWinner(),
-        currentRound.isNew()
+        currentRound.isNew(),
+        isFinished()
         )
     fun getGoingUp() = goingUp
 
@@ -63,7 +72,7 @@ class Game (
         return score
     }
 
-    fun getScorePerRound(): List<Score> {
+    private fun getScorePerRound(): List<Score> {
         return completedRoundList.map { r ->  determineRoundScore(r.getScore())}
     }
 
@@ -74,4 +83,5 @@ class Game (
     }
 }
 
-data class GameStatusAfterLastMove(val trickCompleted: Boolean, val trickWinner: Player?, val roundCompleted: Boolean)
+data class GameStatusAfterLastMove(
+    val trickCompleted: Boolean, val trickWinner: Player?, val roundCompleted: Boolean, val gameFinished: Boolean)

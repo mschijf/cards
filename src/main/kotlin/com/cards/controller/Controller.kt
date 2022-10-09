@@ -16,6 +16,11 @@ const val REQUESTPATH_BASE = "/api/v1/"
 @RequestMapping(REQUESTPATH_BASE)
 class Controller @Autowired constructor(private val gameService: GameService) {
 
+    @PostMapping("/new-game")
+    fun newGame(): GameStatusModel {
+        return gameService.newGame()
+    }
+
     @GetMapping("/game-status")
     fun getGameStatus(): GameStatusModel {
         return gameService.getGameStatus()
@@ -23,7 +28,7 @@ class Controller @Autowired constructor(private val gameService: GameService) {
 
     @GetMapping("/score-list")
     fun getScoreList(): ScoreModel {
-        return gameService.getScorePerRound()
+        return gameService.getScoreCard()
     }
 
     @PostMapping("/computeMove")

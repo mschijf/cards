@@ -1,10 +1,11 @@
-package com.cards.game.hearts
+package com.cards.game.fourplayercardgame
 
-import com.cards.game.Player
 import com.cards.game.card.Card
+import com.cards.game.hearts.HeartsRulesBook
 
 class Trick(
-    private val leadPlayer: Player) {
+    private val leadPlayer: Player
+) {
     private val cardsPlayed = arrayListOf<PlayerPlayedCard>()
     private var playerToMove = leadPlayer
 
@@ -20,7 +21,6 @@ class Trick(
 
     fun isComplete(): Boolean = cardsPlayed.size >= 4
     fun isNew(): Boolean = cardsPlayed.size == 0
-
 
     fun winner(): Player {
         if (cardsPlayed.size == 0)
