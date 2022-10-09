@@ -29,7 +29,7 @@ class GameMaster {
         if (legalCardToPlay(player, card)) {
             getCardPlayer(player).removeCard(card)
             game.playCard(card)
-            playerList.forEach { cardPlayer -> cardPlayer.statusChanged(player, card) }
+            playerList.forEach { cardPlayer -> cardPlayer.onCardPlayed(player, card) }
             if (game.getStatusAfterLastMove().roundCompleted) {
                 dealCards()
             }

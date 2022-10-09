@@ -2,6 +2,7 @@ package com.cards.controller
 
 import com.cards.controller.model.CardPlayedModel
 import com.cards.controller.model.GameStatusModel
+import com.cards.controller.model.ScoreModel
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +19,11 @@ class Controller @Autowired constructor(private val gameService: GameService) {
     @GetMapping("/game-status")
     fun getGameStatus(): GameStatusModel {
         return gameService.getGameStatus()
+    }
+
+    @GetMapping("/score-list")
+    fun getScoreList(): ScoreModel {
+        return gameService.getScorePerRound()
     }
 
     @PostMapping("/computeMove")

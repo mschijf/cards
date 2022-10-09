@@ -4,8 +4,7 @@ import com.cards.game.Player
 import com.cards.game.card.Card
 
 class Trick(
-    private val leadPlayer: Player
-) {
+    private val leadPlayer: Player) {
     private val cardsPlayed = arrayListOf<PlayerPlayedCard>()
     private var playerToMove = leadPlayer
 
@@ -40,6 +39,16 @@ class Trick(
 
         cardsPlayed.add(PlayerPlayedCard(playerToMove, aCard))
         playerToMove = playerToMove.nextPlayer()
+    }
+
+    fun getScore(): Score {
+        val score = Score()
+        if (!isComplete()) {
+            return score
+        }
+        val winner = winner()
+        cardsPlayed.forEach { cardPlayed -> score.plusCardValueForPlayer(winner, cardPlayed.card) }
+        return score
     }
 }
 

@@ -2,7 +2,6 @@ package com.cards.game.hearts
 
 import com.cards.game.Player
 import com.cards.game.card.Card
-import java.lang.Exception
 
 class CardPlayer(
     val player: Player,
@@ -28,7 +27,11 @@ class CardPlayer(
         return legalCards.random()
     }
 
-    fun statusChanged(playerPlayed: Player, cardPlayed: Card) {
+    fun onCardPlayed(playerPlayed: Player, cardPlayed: Card) {
+
+    }
+
+    fun onGoingUpDownChanged(goingDown: Boolean) {
 
     }
 }

@@ -30,4 +30,13 @@ class Round(
     fun isNew(): Boolean = completedTrickList.size == 0 && trickOnTable.isNew()
     fun getTrickOnTable() = trickOnTable
     fun getLastCompletedTrickWinner(): Player? = if (completedTrickList.size > 0) completedTrickList.last().winner() else null
+
+    fun getScore(): Score {
+        val score = Score()
+        if (!isComplete()) {
+            return score
+        }
+        completedTrickList.forEach { t -> score.plus(t.getScore())}
+        return score
+    }
 }

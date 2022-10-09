@@ -2,6 +2,7 @@ package com.cards.controller
 
 import com.cards.controller.model.CardPlayedModel
 import com.cards.controller.model.GameStatusModel
+import com.cards.controller.model.ScoreModel
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
@@ -37,5 +38,11 @@ class GameService {
         val nextPlayer = gm.game.getPlayerToMove()
         return CardPlayedModel(playerToMove, suggestedCardToPlay, nextPlayer,
             gameStatusAfterLastMove.trickCompleted, gameStatusAfterLastMove.trickWinner, gameStatusAfterLastMove.roundCompleted)
+    }
+
+    fun getScorePerRound(): ScoreModel {
+        val x = gm.game.getCumulativeScorePerRound()
+        val y = ScoreModel(x)
+        return y
     }
 }

@@ -1,8 +1,8 @@
 package com.cards.controller.model
 
+import com.cards.game.Player
 import com.cards.game.card.Card
 import com.cards.game.hearts.GameMaster
-import com.cards.game.Player
 
 class GameStatusModel(gameMaster: GameMaster)  {
     val onTable = TableModel(
@@ -11,6 +11,8 @@ class GameStatusModel(gameMaster: GameMaster)  {
         gameMaster.game.getCurrentRound().getTrickOnTable().getCardPlayedBy(Player.NORTH),
         gameMaster.game.getCurrentRound().getTrickOnTable().getCardPlayedBy(Player.EAST)
     )
+
+    val goingUp = gameMaster.game.getGoingUp()
 
     val playerSouth = Array(gameMaster.maxCardsInHand) { i -> gameMaster.getCardPlayer(Player.SOUTH).getCardsInHand().elementAtOrNull(i)}
     val playerWest = Array(gameMaster.maxCardsInHand) { i -> gameMaster.getCardPlayer(Player.WEST).getCardsInHand().elementAtOrNull(i)}
