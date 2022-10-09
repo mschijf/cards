@@ -12,10 +12,10 @@ class GameStatusModel(gameMaster: GameMaster)  {
         gameMaster.game.getCurrentRound().getTrickOnTable().getCardPlayedBy(Player.EAST)
     )
 
-    val playerSouth = Array(gameMaster.maxCardsInHand) { i -> gameMaster.getCardPlayer(Player.SOUTH).cardsInHand.elementAtOrNull(i)}
-    val playerWest = Array(gameMaster.maxCardsInHand) { i -> gameMaster.getCardPlayer(Player.WEST).cardsInHand.elementAtOrNull(i)}
-    val playerNorth = Array(gameMaster.maxCardsInHand) { i -> gameMaster.getCardPlayer(Player.NORTH).cardsInHand.elementAtOrNull(i)}
-    val playerEast = Array(gameMaster.maxCardsInHand) { i -> gameMaster.getCardPlayer(Player.EAST).cardsInHand.elementAtOrNull(i)}
+    val playerSouth = Array(gameMaster.maxCardsInHand) { i -> gameMaster.getCardPlayer(Player.SOUTH).getCardsInHand().elementAtOrNull(i)}
+    val playerWest = Array(gameMaster.maxCardsInHand) { i -> gameMaster.getCardPlayer(Player.WEST).getCardsInHand().elementAtOrNull(i)}
+    val playerNorth = Array(gameMaster.maxCardsInHand) { i -> gameMaster.getCardPlayer(Player.NORTH).getCardsInHand().elementAtOrNull(i)}
+    val playerEast = Array(gameMaster.maxCardsInHand) { i -> gameMaster.getCardPlayer(Player.EAST).getCardsInHand().elementAtOrNull(i)}
 }
 
 data class TableModel(

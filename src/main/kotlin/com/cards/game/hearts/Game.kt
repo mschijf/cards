@@ -9,23 +9,38 @@ class Game (
     private val completedRoundList = arrayListOf<Round>()
     private var currentRound = Round(leadPlayer)
 
-    fun playCard(card: Card): Player? {
-        val winner = currentRound.playCard(card)
+    fun playCard(card: Card) {
+        currentRound.playCard(card)
         if (currentRound.isComplete()) {
             addRound(currentRound)
             currentRound = Round(leadPlayer.nextPlayer())
         }
-        return winner
     }
 
     private fun addRound(round: Round) {
         if (!isFinished()) {
             completedRoundList.add(round)
         } else {
-            throw Exception("Trying to add a deals to a finsihed game")
+            throw Exception("Trying to add a deals to a finished game")
         }
     }
 
-    private fun isFinished(): Boolean = completedRoundList.size == 4 //todo: check on 60 and thenn go down
+    private fun isFinished(): Boolean = completedRoundList.size == 4 //todo: check on 60 and then go down
+
+    private fun getLastTrickWinner(): Player? {
+        if (!currentRound.isNew()) {
+            return currentRound.getLastCompletedTrickWinner()
+        }
+        return completedRoundList.last().getLastCompletedTrickWinner()
+    }
+
     fun getCurrentRound() = currentRound
+    fun getPlayerToMove() = currentRound.getTrickOnTable().playerToMove()
+    fun getStatusAfterLastMove() = GameStatusAfterLastMove(
+        currentRound.getTrickOnTable().isNew(),
+        getLastTrickWinner(),
+        currentRound.isNew()
+        )
 }
+
+data class GameStatusAfterLastMove(val trickCompleted: Boolean, val trickWinner: Player?, val roundCompleted: Boolean)

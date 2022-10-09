@@ -6,8 +6,15 @@ import java.lang.Exception
 
 class CardPlayer(
     val player: Player,
-    val cardsInHand: MutableList<Card>,
-    val game: Game) {
+    private val game: Game) {
+    private var cardsInHand: MutableList<Card> = mutableListOf()
+
+    fun setCardsInHand(cardsfromDealer: List<Card>) {
+        cardsInHand = cardsfromDealer.toMutableList()
+        cardsInHand.sortBy { card -> 100*card.color.ordinal + card.rank.ordinal }
+    }
+
+    fun getCardsInHand() = cardsInHand.toList()
 
     fun removeCard(card: Card) {
         if (!cardsInHand.remove(card)) {

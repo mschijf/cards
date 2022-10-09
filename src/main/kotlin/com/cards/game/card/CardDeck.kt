@@ -3,9 +3,8 @@ package com.cards.game.card
 class CardDeck {
     private val deck = CardColor.values().flatMap{clr -> CardRank.values().map{rnk -> Card(clr, rnk)}}.toMutableList()
 
-    fun shuffle(): CardDeck {
+    fun shuffle() {
         deck.shuffle()
-        return this
     }
 
     fun numberOfCards() = deck.size

@@ -45,7 +45,7 @@
 
             .container {
                 display: grid;
-                grid-template-columns: 100px 500px 100px 300px;
+                grid-template-columns: 175px 500px 175px 300px;
                 grid-template-rows: auto;
                 grid-template-areas: 
                     "signal  north   north  north"
@@ -96,8 +96,8 @@
                 height:150px;
             }
             .card-size-small {
-                width:30px;
-                height:45px;
+                width:50px;
+                height:75px;
             }
 
             /* ----------------------------------------------------------------------- */
@@ -110,7 +110,7 @@
         </style>
     </head>
 
-    <body onload="getGameStatus()">
+    <body onload="showCardsInHands()">
         <div class="container">
             <div class="grid-signal"></div>
             <div class="grid-player-north">
@@ -128,14 +128,22 @@
             
             <div class="grid-player-west">
                 <div class="flexcontainer-player-vert">
-                    <div class="player-card"><img id="playerWest0" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerWest1" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerWest2" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerWest3" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerWest4" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerWest5" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerWest6" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerWest7" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                    <div class="flexcontainer-player">
+                        <div class="player-card"><img id="playerWest0" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                        <div class="player-card"><img id="playerWest1" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                    </div>
+                    <div class="flexcontainer-player">
+                        <div class="player-card"><img id="playerWest2" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                        <div class="player-card"><img id="playerWest3" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                    </div>
+                    <div class="flexcontainer-player">
+                        <div class="player-card"><img id="playerWest4" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                        <div class="player-card"><img id="playerWest5" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                    </div>
+                    <div class="flexcontainer-player">
+                        <div class="player-card"><img id="playerWest6" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                        <div class="player-card"><img id="playerWest7" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                    </div>
                 </div>    
             </div>
             
@@ -152,14 +160,22 @@
 
             <div class="grid-player-east">
                 <div class="flexcontainer-player-vert">
-                    <div class="player-card"><img id="playerEast0" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerEast1" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerEast2" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerEast3" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerEast4" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerEast5" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerEast6" src="carddeck/NoCard.svg" class="card-size-small"></div>
-                    <div class="player-card"><img id="playerEast7" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                    <div class="flexcontainer-player">
+                        <div class="player-card"><img id="playerEast0" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                        <div class="player-card"><img id="playerEast1" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                    </div>
+                    <div class="flexcontainer-player">
+                        <div class="player-card"><img id="playerEast2" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                        <div class="player-card"><img id="playerEast3" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                    </div>
+                    <div class="flexcontainer-player">
+                        <div class="player-card"><img id="playerEast4" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                        <div class="player-card"><img id="playerEast5" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                    </div>
+                    <div class="flexcontainer-player">
+                        <div class="player-card"><img id="playerEast6" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                        <div class="player-card"><img id="playerEast7" src="carddeck/NoCard.svg" class="card-size-small"></div>
+                    </div>
                 </div>    
             </div>
             
@@ -180,7 +196,6 @@
                 </div>    
             </div>            
         </div>        
-        <button id="buttonNew" onclick="getGameStatus()">TEST</button>
         <button id="buttonPlay" onclick="computeMove()">PLAY</button>
         Card images by Adrian Kennard - Own work, CC0, <a href="https://commons.wikimedia.org/w/index.php?curid=70667162">https://commons.wikimedia.org/w/index.php?curid=70667162</a>    
     </body>
@@ -229,30 +244,27 @@
         }
 
 
-        function showCard(cardId, cardModel) {
+        function showCard(cardId, cardModel, clickable) {
             var aCardImage = document.getElementById(cardId)
             aCardImage.src = cardModelToImageURL(cardModel)
             
-            aCardImage.onclick = function(){doMove(cardId)};
-            aCardImage.style.cursor = "pointer"
+            if (clickable) {
+                aCardImage.onclick = function(){doMove(cardModel)};
+                aCardImage.style.cursor = "pointer"
+            }
         }
 
-        function showPlayerCards(player, playerHand) {
+        function showPlayerCards(player, playerHand, clickable) {
             for (let cardIndex = 0; cardIndex < playerHand.length; cardIndex++) {
-                showCard(player+cardIndex, playerHand[cardIndex])
+                showCard(player+cardIndex, playerHand[cardIndex], clickable)
             }            
         }
 
-        function showGameStatus(gameStatus) {
-            showCard("tableSouth", gameStatus.onTable.south)
-            showCard("tableWest", gameStatus.onTable.west)
-            showCard("tableNorth", gameStatus.onTable.north)
-            showCard("tableEast", gameStatus.onTable.east)
-
-            showPlayerCards("playerSouth", gameStatus.playerSouth)
-            showPlayerCards("playerWest", gameStatus.playerWest)
-            showPlayerCards("playerNorth", gameStatus.playerNorth)
-            showPlayerCards("playerEast", gameStatus.playerEast)
+        function showCardsInAllHands(gameStatus) {
+            showPlayerCards("playerSouth", gameStatus.playerSouth, true)
+            showPlayerCards("playerWest", gameStatus.playerWest, false)
+            showPlayerCards("playerNorth", gameStatus.playerNorth, false)
+            showPlayerCards("playerEast", gameStatus.playerEast, false)
         }
 
         function findCardImage(cardModel) {
@@ -266,14 +278,6 @@
             return null
         }
 
-        function doMove(playerCardId) {
-            var tableCardImage = document.getElementById("tableSouth")            
-            var playerCardImage = document.getElementById(playerCardId)
-
-            tableCardImage.src = playerCardImage.src
-            playerCardImage.src = NoCardImage()
-        }
-
         //-----------------------------------------------------------------------------------------
 
         function showMove(movePlayed) {
@@ -285,42 +289,47 @@
             } else {
                 tableCardImage.src = cardModelToImageURL(movePlayed.cardPlayed)
             }
-            if (movePlayed.moveCompleted) {
-                clearTable(movePlayed.trickWinner)
-                getGameStatus()
+
+            if (movePlayed.roundCompleted) {
+                clearTable(movePlayed.trickWinner, 1200)
+                setTimeout(function() { showCardsInHands(); }, 3500)
+                if (movePlayed.nextPlayer != "SOUTH") {
+                    setTimeout(function() { computeMove(); }, 4000)
+                }
+            } else if (movePlayed.trickCompleted) {
+                showCardsInHands()
+                clearTable(movePlayed.trickWinner, 1200)
+                if (movePlayed.nextPlayer != "SOUTH") {
+                    setTimeout(function() { computeMove(); }, 1700)
+                }
+            } else if (movePlayed.nextPlayer != "SOUTH") {
+                showCardsInHands()
+                setTimeout(function() { computeMove(); }, 500)
             }
         }
 
+        function clearTableAndResetWinner(winnerCardId) {            
+            winnerCard.id = winnerCardId; 
+            tableWest.src = NoCardImage();
+            tableNorth.src = NoCardImage();
+            tableEast.src = NoCardImage();
+            tableSouth.src = NoCardImage();
+        }
 
-        function clearTable(trickWinner) {
+        function clearTable(trickWinner, wait) {
             var winningTableCard = playerModelToTableImage(trickWinner)
-            var wait = 100
-            var flow = 300
-            var i = 0;
             if (winningTableCard == tableSouth) {
                 tableSouth.id="winnerCard"
-                setTimeout(function() {tableWest.src = NoCardImage();}, (wait + i++ * flow));
-                setTimeout(function() {tableNorth.src = NoCardImage();}, (wait + i++ * flow));
-                setTimeout(function() {tableEast.src = NoCardImage();}, (wait + i++ * flow));
-                setTimeout(function() {winnerCard.id = "tableSouth"; tableSouth.src = NoCardImage();}, (10*wait));
+                setTimeout(function() { clearTableAndResetWinner("tableSouth"); }, wait);
             } else if (winningTableCard == tableWest) {
                 tableWest.id="winnerCard"
-                setTimeout(function() {tableNorth.src = NoCardImage();}, (wait + i++ * flow));
-                setTimeout(function() {tableEast.src = NoCardImage();}, (wait + i++ * flow));
-                setTimeout(function() {tableSouth.src = NoCardImage();}, (wait + i++ * flow));
-                setTimeout(function() {winnerCard.id = "tableWest"; tableWest.src = NoCardImage();}, (10*wait));
+                setTimeout(function() { clearTableAndResetWinner("tableWest"); }, wait);
             } else if (winningTableCard == tableNorth) {
                 tableNorth.id="winnerCard"
-                setTimeout(function() {tableEast.src = NoCardImage();}, (wait + i++ * flow));
-                setTimeout(function() {tableSouth.src = NoCardImage();}, (wait + i++ * flow));
-                setTimeout(function() {tableWest.src = NoCardImage();}, (wait + i++ * flow));
-                setTimeout(function() {winnerCard.id = "tableNorth"; tableNorth.src = NoCardImage();}, (10*wait));
+                setTimeout(function() { clearTableAndResetWinner("tableNorth"); }, wait);
             } else if (winningTableCard == tableEast) { 
                 tableEast.id="winnerCard"
-                setTimeout(function() {tableSouth.src = NoCardImage();}, (wait + i++ * flow));
-                setTimeout(function() {tableWest.src = NoCardImage();}, (wait + i++ * flow));
-                setTimeout(function() {tableNorth.src = NoCardImage();}, (wait + i++ * flow));
-                setTimeout(function() {winnerCard.id = "tableEast"; tableEast.src = NoCardImage();}, (10*wait));
+                setTimeout(function() { clearTableAndResetWinner("tableEast"); }, wait);
             } else {
                 console.log("Vreemd!!")
                 //weird.....
@@ -332,14 +341,14 @@
     </script>
 
     <script>
-        function getGameStatus() {
+        function showCardsInHands() {
             var request = new XMLHttpRequest();
 
             request.open("GET", "/api/v1/game-status/");
             request.onreadystatechange = function() {
                 if(this.readyState === 4 && this.status === 200) {
                     var gameStatus = JSON.parse(this.responseText);
-                    showGameStatus(gameStatus)
+                    showCardsInAllHands(gameStatus)
                 }
             };
             request.send();
@@ -357,6 +366,22 @@
             };
             request.send();
         }
+
+        function doMove(cardModel) {
+            var request = new XMLHttpRequest();
+
+            request.open("POST", "/api/v1/executeMove/" + cardModel.color + "/" + cardModel.rank);
+            request.onreadystatechange = function() {
+                if(this.readyState === 4 && this.status === 200) {
+                    var movePlayed = JSON.parse(this.responseText);
+                    showMove(movePlayed)
+                } else if(this.readyState === 4 && this.status === 404) {
+                    console.log("Kijk nou, een foutafvanging!!")
+                }
+            };
+            request.send();
+        }
+
 
     </script>
 
