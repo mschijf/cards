@@ -404,7 +404,7 @@
         }
 
         function showCardsInHands(gameStatus) {
-            visible = true
+            visible = false
             showPlayerCards("playerSouth", gameStatus.playerSouth, true, true)
             showPlayerCards("playerWest", gameStatus.playerWest, false, visible)
             showPlayerCards("playerNorth", gameStatus.playerNorth, false, visible)
@@ -461,7 +461,7 @@
                             setTimeout(function() { computeMove(); }, 4000)
                         }
                     } else {
-                        //Show Game Over somehow wn vraag of er een nieuuw spel gespeeld kan worden.
+                        //todo: Show Game Over somehow wn vraag of er een nieuuw spel gespeeld kan worden.
                     }
                 } else {
                     requestGameStatus()

@@ -7,9 +7,9 @@ import com.cards.game.fourplayercardgame.Player
 import com.cards.game.fourplayercardgame.Trick
 
 object HeartsRulesBook {
-    val valueToGoDown = 60
+    val valueToGoDown = 15
     val allPointsForPit = 15
-    val valueToFinish = 60
+    val valueToFinish = 0
 
     fun toRankNumber (card: Card) : Int = card.rank.rankNumber
 
@@ -33,7 +33,7 @@ object HeartsRulesBook {
     }
 
     fun trickWinner(trick: Trick): Player? {
-        if (trick.isComplete())
+        if (!trick.isComplete())
             return null
 
         val leadingColor = trick.leadColor()

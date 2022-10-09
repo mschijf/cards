@@ -9,7 +9,7 @@ class Game (
     private val maxTricksPerRound: Int) {
     private val completedRoundList = arrayListOf<Round>()
     private var currentRound = Round(leadPlayer, maxTricksPerRound)
-    private var goingUp = true
+    private var goingDownFromRoundNumber = Int.MAX_VALUE
 
     fun playCard(card: Card) {
         if (isFinished()) {
@@ -19,9 +19,9 @@ class Game (
         currentRound.playCard(card)
         if (currentRound.isComplete()) {
             addRound(currentRound)
-            if (!isFinished()) {
-                currentRound = Round(leadPlayer.nextPlayer(), maxTricksPerRound)
-                goingUp = goingUp && (getTotalScore().maxValue() < HeartsRulesBook.valueToGoDown)
+            currentRound = Round(leadPlayer.nextPlayer(), maxTricksPerRound)
+            if (getGoingUp() && getTotalScore().maxValue() >= HeartsRulesBook.valueToGoDown) {
+                goingDownFromRoundNumber = completedRoundList.size
             }
         }
     }
@@ -34,7 +34,7 @@ class Game (
         }
     }
 
-    fun isFinished() = (!goingUp) && (getTotalScore().minValue() < HeartsRulesBook.valueToFinish)
+    private fun isFinished() = !getGoingUp() && (getTotalScore().minValue() <= HeartsRulesBook.valueToFinish)
 
     private fun getLastTrickWinner(): Player? {
         if (!currentRound.isNew()) {
@@ -51,28 +51,37 @@ class Game (
         currentRound.isNew(),
         isFinished()
         )
-    fun getGoingUp() = goingUp
+    fun getGoingUp() = completedRoundList.size < goingDownFromRoundNumber
 
     private fun getTotalScore(): Score {
         val score = Score()
-        completedRoundList.forEach { r ->  score.plus(determineRoundScore(r.getScore()))}
+        completedRoundList.forEachIndexed { index, r ->  score.plus(determineRoundScore(index, r.getScore()))}
         return score
     }
 
-    private fun determineRoundScore(score: Score): Score {
-        if (score.maxValue() == HeartsRulesBook.allPointsForPit) {
+    private fun determineRoundScore(roundNumber: Int, score: Score): Score {
+        if (roundNumber < goingDownFromRoundNumber) {
+            if (score.maxValue() == HeartsRulesBook.allPointsForPit) {
+                val newScore = Score()
+                newScore.plusScorePerPlayer(Player.EAST, if (score.getEastValue() == 0) HeartsRulesBook.allPointsForPit else 0)
+                newScore.plusScorePerPlayer(Player.WEST, if (score.getWestValue() == 0) HeartsRulesBook.allPointsForPit else 0)
+                newScore.plusScorePerPlayer(Player.NORTH, if (score.getNorthValue() == 0) HeartsRulesBook.allPointsForPit else 0)
+                newScore.plusScorePerPlayer(Player.SOUTH, if (score.getSouthValue() == 0) HeartsRulesBook.allPointsForPit else 0)
+                return newScore
+            }
+            return score
+        } else {
             val newScore = Score()
-            newScore.plusScorePerPlayer(Player.EAST, if (score.getEastValue() == 0) HeartsRulesBook.allPointsForPit else 0)
-            newScore.plusScorePerPlayer(Player.WEST, if (score.getWestValue() == 0) HeartsRulesBook.allPointsForPit else 0)
-            newScore.plusScorePerPlayer(Player.NORTH, if (score.getNorthValue() == 0) HeartsRulesBook.allPointsForPit else 0)
-            newScore.plusScorePerPlayer(Player.SOUTH, if (score.getSouthValue() == 0) HeartsRulesBook.allPointsForPit else 0)
+            newScore.plusScorePerPlayer(Player.EAST, -score.getEastValue())
+            newScore.plusScorePerPlayer(Player.WEST, -score.getWestValue())
+            newScore.plusScorePerPlayer(Player.NORTH, -score.getNorthValue())
+            newScore.plusScorePerPlayer(Player.SOUTH, -score.getSouthValue())
             return newScore
         }
-        return score
     }
 
     private fun getScorePerRound(): List<Score> {
-        return completedRoundList.map { r ->  determineRoundScore(r.getScore())}
+        return completedRoundList.mapIndexed { index, r ->  determineRoundScore(index, r.getScore())}
     }
 
     fun getCumulativeScorePerRound(): List<Score> {
