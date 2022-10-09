@@ -4,8 +4,8 @@ import com.cards.game.Player
 import com.cards.game.card.Card
 
 class Round(
-    private var leadPlayer: Player) {
-    private val maxTricks = 8  //todo: get dynamic number of maxTricks
+    private var leadPlayer: Player,
+    private val maxTricks: Int) {
     private val completedTrickList = arrayListOf<Trick>()
 
     private var trickOnTable = Trick(leadPlayer)

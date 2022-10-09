@@ -27,4 +27,8 @@ class CardPlayer(
         val legalCards = HeartsRulesBook.legalPlayableCards(cardsInHand, leadColor)
         return legalCards.random()
     }
+
+    fun statusChanged(playerPlayed: Player, cardPlayed: Card) {
+
+    }
 }

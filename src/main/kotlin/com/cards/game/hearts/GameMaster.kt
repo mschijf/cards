@@ -7,7 +7,7 @@ import com.cards.game.card.CardDeck
 class GameMaster {
     private val cardDeck = CardDeck()
     val maxCardsInHand = cardDeck.numberOfCards() / Player.values().size
-    val game = Game(Player.SOUTH)
+    val game = Game(Player.SOUTH, maxCardsInHand)
     private val playerList = Player.values().map { p  -> CardPlayer(p, game) }
 
     init {
@@ -19,17 +19,17 @@ class GameMaster {
         playerList.forEachIndexed { i, player -> player.setCardsInHand(cardDeck.getCards(maxCardsInHand*i, maxCardsInHand)) }
     }
 
-    fun getCardPlayer(player: Player) = playerList.first { p -> p.player == player }
+    fun getCardPlayer(player: Player) = playerList.first { cardPlayer -> cardPlayer.player == player }
 
     fun playCard(card: Card) {
         playCard(game.getCurrentRound().getTrickOnTable().playerToMove(), card)
     }
 
     private fun playCard(player: Player, card: Card) {
-        //todo --> send notification to all players that a card has been played
         if (legalCardToPlay(player, card)) {
             getCardPlayer(player).removeCard(card)
             game.playCard(card)
+            playerList.forEach { cardPlayer -> cardPlayer.statusChanged(player, card) }
             if (game.getStatusAfterLastMove().roundCompleted) {
                 dealCards()
             }

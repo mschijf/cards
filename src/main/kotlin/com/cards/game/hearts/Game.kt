@@ -4,16 +4,16 @@ import com.cards.game.Player
 import com.cards.game.card.Card
 
 class Game (
-    private var leadPlayer: Player
-) {
+    private var leadPlayer: Player,
+    private val maxTricksPerRound: Int) {
     private val completedRoundList = arrayListOf<Round>()
-    private var currentRound = Round(leadPlayer)
+    private var currentRound = Round(leadPlayer, maxTricksPerRound)
 
     fun playCard(card: Card) {
         currentRound.playCard(card)
         if (currentRound.isComplete()) {
             addRound(currentRound)
-            currentRound = Round(leadPlayer.nextPlayer())
+            currentRound = Round(leadPlayer.nextPlayer(), maxTricksPerRound)
         }
     }
 
