@@ -2,10 +2,10 @@ package com.cards.game.fourplayercardgame
 
 import com.cards.game.card.Card
 import com.cards.game.hearts.HeartsRulesBook
+import com.cards.game.hearts.Score
 
 class Trick(
-    private val leadPlayer: Player
-) {
+    private val leadPlayer: Player) {
     private val cardsPlayed = arrayListOf<PlayerPlayedCard>()
     private var playerToMove = leadPlayer
 
@@ -13,24 +13,20 @@ class Trick(
 
     fun playerToMove() = playerToMove
 
+    fun getCardsPlayed() = cardsPlayed
+
+    fun isComplete(): Boolean = cardsPlayed.size >= Player.values().size
+
+    fun isNew(): Boolean = cardsPlayed.isEmpty()
+
+    fun winner() = HeartsRulesBook.trickWinner(this)
+
+    fun getScore() = Score(this)
+
     fun getCardPlayedBy(player: Player): Card? {
         return cardsPlayed
             .firstOrNull { p -> p.player == player }
             ?.card
-    }
-
-    fun isComplete(): Boolean = cardsPlayed.size >= 4
-    fun isNew(): Boolean = cardsPlayed.size == 0
-
-    fun winner(): Player {
-        if (cardsPlayed.size == 0)
-            return leadPlayer
-
-        val leadingColor = cardsPlayed[0].card.color
-        return cardsPlayed
-            .filter { f -> f.card.color == leadingColor }
-            .maxByOrNull { f -> HeartsRulesBook.toRankNumber(f.card) }!!
-            .player
     }
 
     fun addCard(aCard: Card) {
@@ -39,16 +35,6 @@ class Trick(
 
         cardsPlayed.add(PlayerPlayedCard(playerToMove, aCard))
         playerToMove = playerToMove.nextPlayer()
-    }
-
-    fun getScore(): Score {
-        val score = Score()
-        if (!isComplete()) {
-            return score
-        }
-        val winner = winner()
-        cardsPlayed.forEach { cardPlayed -> score.plusCardValueForPlayer(winner, cardPlayed.card) }
-        return score
     }
 }
 

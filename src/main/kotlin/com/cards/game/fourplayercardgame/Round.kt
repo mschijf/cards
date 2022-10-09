@@ -1,6 +1,7 @@
 package com.cards.game.fourplayercardgame
 
 import com.cards.game.card.Card
+import com.cards.game.hearts.Score
 
 class Round(
     leadPlayer: Player,
@@ -12,7 +13,7 @@ class Round(
     fun playCard(card: Card) {
         currentTrick.addCard(card)
         if (currentTrick.isComplete()) {
-            val winner = currentTrick.winner()
+            val winner = currentTrick.winner()!!
             addTrick(currentTrick)
             currentTrick = Trick(winner)
         }
