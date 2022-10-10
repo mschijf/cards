@@ -99,6 +99,7 @@
             .card-size-small {
                 width:50px;
                 height:75px;
+                visibility: visible;
             }
 
             .up-down-arrow {
@@ -141,6 +142,13 @@
                 text-align: left;
                 font-family: courier, monospace;
                 border-right: 1px dotted #ffaa9f;
+            }
+
+            .info-line {
+                font-family: Chalkduster, fantasy;
+                color: red;
+                text-align: center;
+                padding: 10px;
             }
             
         </style>
@@ -289,6 +297,7 @@
                         <td id="scoreE9"></td>
                         <td id="scoreS9"></td>
                     </tr>
+                    <tr><td colspan="5" class="info-line" id="scoreInfo"></td></tr>
                   </table>
             </div>
 
@@ -378,37 +387,31 @@
             removeCardsFromTable()
             requestForNewGame()
             requestForScoreCard()
+            showInfo("")
         }
 
         //-----------------------------------------------------------------------------------------
 
-        function showCard(cardId, cardModel, clickable, visible) {
+        function showCard(cardId, cardModel, clickable) {
             var aCardImage = document.getElementById(cardId)
-            aCardImage.src = cardModelToImageURL(cardModel)
-            
-            if (visible) {
-                aCardImage.style.visibility = "visible"
-            } else {
-                aCardImage.style.visibility = "hidden"
-            }
+            aCardImage.src = cardModelToImageURL(cardModel)            
             if (clickable) {
                 aCardImage.onclick = function(){doMove(cardModel)};
                 aCardImage.style.cursor = "pointer"
             }
         }
 
-        function showPlayerCards(player, playerHand, clickable, visible) {
+        function showPlayerCards(player, playerHand, clickable) {
             for (let cardIndex = 0; cardIndex < playerHand.length; cardIndex++) {
-                showCard(player+cardIndex, playerHand[cardIndex], clickable, visible)
+                showCard(player+cardIndex, playerHand[cardIndex], clickable)
             }            
         }
 
         function showCardsInHands(gameStatus) {
-            visible = false
-            showPlayerCards("playerSouth", gameStatus.playerSouth, true, true)
-            showPlayerCards("playerWest", gameStatus.playerWest, false, visible)
-            showPlayerCards("playerNorth", gameStatus.playerNorth, false, visible)
-            showPlayerCards("playerEast", gameStatus.playerEast, false, visible)
+            showPlayerCards("playerSouth", gameStatus.playerSouth, true)
+            showPlayerCards("playerWest", gameStatus.playerWest, false)
+            showPlayerCards("playerNorth", gameStatus.playerNorth, false)
+            showPlayerCards("playerEast", gameStatus.playerEast, false)
             upDownSignal.src = upDownSignalImage(gameStatus.goingUp)
         }
 
@@ -439,6 +442,10 @@
             }
         }
 
+        function showInfo(info) {
+            document.getElementById("scoreInfo").innerHTML = info
+        }
+
         //-----------------------------------------------------------------------------------------
 
         function showMove(movePlayed) {
@@ -450,7 +457,7 @@
             } else {
                 tableCardImage.src = cardModelToImageURL(movePlayed.cardPlayed)
             }
-
+            showInfo("")
             if (movePlayed.trickCompleted != null) {
                 if (movePlayed.trickCompleted.roundCompleted) {
                     clearTable(movePlayed.trickCompleted.trickWinner, 1200)
@@ -461,7 +468,7 @@
                             setTimeout(function() { computeMove(); }, 4000)
                         }
                     } else {
-                        //todo: Show Game Over somehow wn vraag of er een nieuuw spel gespeeld kan worden.
+                        showInfo("---- GAME OVER ----")
                     }
                 } else {
                     requestGameStatus()
