@@ -1,11 +1,11 @@
-package com.cards.game.fourplayercardgame
+package com.cards.game.hearts
 
 import com.cards.game.card.Card
-import com.cards.game.hearts.HeartsRulesBook
-import com.cards.game.hearts.Score
+import com.cards.game.fourplayercardgame.Player
 
 class Trick(
-    private val leadPlayer: Player) {
+    private val leadPlayer: Player
+) {
     private val cardsPlayed = arrayListOf<PlayerPlayedCard>()
     private var playerToMove = leadPlayer
 
@@ -19,7 +19,16 @@ class Trick(
 
     fun isNew(): Boolean = cardsPlayed.isEmpty()
 
-    fun winner() = HeartsRulesBook.trickWinner(this)
+    fun winner() : Player? {
+        return if (!isComplete()) {
+            return null
+        } else {
+            getCardsPlayed()
+                .filter { f -> f.card.color == leadColor() }
+                .maxByOrNull { f -> HeartsRulesBook.toRankNumber(f.card) }!!
+                .player
+        }
+    }
 
     fun getScore() = Score(this)
 

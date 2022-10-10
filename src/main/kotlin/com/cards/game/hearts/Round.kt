@@ -1,7 +1,7 @@
-package com.cards.game.fourplayercardgame
+package com.cards.game.hearts
 
 import com.cards.game.card.Card
-import com.cards.game.hearts.Score
+import com.cards.game.fourplayercardgame.Player
 
 class Round(
     leadPlayer: Player,

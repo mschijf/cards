@@ -1,7 +1,6 @@
 package com.cards.game.hearts
 
 import com.cards.game.fourplayercardgame.Player
-import com.cards.game.fourplayercardgame.Trick
 
 class Score() {
     private val scorePerPlayer = Player.values().associateWith { p -> 0 }.toMutableMap()

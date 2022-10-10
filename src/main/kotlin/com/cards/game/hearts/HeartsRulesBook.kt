@@ -3,8 +3,6 @@ package com.cards.game.hearts
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.Player
-import com.cards.game.fourplayercardgame.Trick
 
 object HeartsRulesBook {
     val valueToGoDown = 15
@@ -30,16 +28,5 @@ object HeartsRulesBook {
         } else {
             0
         }
-    }
-
-    fun trickWinner(trick: Trick): Player? {
-        if (!trick.isComplete())
-            return null
-
-        val leadingColor = trick.leadColor()
-        return trick.getCardsPlayed()
-            .filter { f -> f.card.color == leadingColor }
-            .maxByOrNull { f -> toRankNumber(f.card) }!!
-            .player
     }
 }
