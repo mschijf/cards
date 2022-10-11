@@ -5,8 +5,6 @@ import com.cards.game.fourplayercardgame.Player
 class Score() {
     private val scorePerPlayer = Player.values().associateWith { p -> 0 }.toMutableMap()
 
-    //todo: find a way construct an agnostic Score class in Trick, Round, ...
-    //todo: find a way to get a score form HeartRulesBook, so that Score Class can become agnostic
     constructor(trick: Trick) : this() {
         if (trick.isComplete()) {
             val winner = trick.winner()

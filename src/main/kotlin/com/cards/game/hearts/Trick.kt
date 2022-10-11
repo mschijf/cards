@@ -30,6 +30,12 @@ class Trick(
         }
     }
 
+    fun winningCard() : Card? {
+        return getCardsPlayed()
+            .filter { f -> f.card.color == leadColor() }
+            .maxByOrNull { f -> HeartsRulesBook.toRankNumber(f.card) }?.card
+    }
+
     fun getScore() = Score(this)
 
     fun getCardPlayedBy(player: Player): Card? {
