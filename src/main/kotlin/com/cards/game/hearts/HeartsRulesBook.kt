@@ -6,8 +6,8 @@ import com.cards.game.card.CardDeck
 import com.cards.game.card.CardRank
 
 object HeartsRulesBook {
-    val valueToGoDown = 15
-    val allPointsForPit = 60
+    val valueToGoDown = 60
+    val allPointsForPit = 15
     val valueToFinish = 0
     val cardDeck = CardDeck()
 
