@@ -8,7 +8,7 @@ class GameMaster {
     private val cardDeck = CardDeck()
     val maxCardsInHand = cardDeck.numberOfCards() / Player.values().size
     val game = Game(Player.SOUTH, maxCardsInHand)
-    private val playerList = Player.values().map { p  -> CardPlayer(p, game) }
+    private val playerList = Player.values().map { p  -> Genius(p, game) }
 
     init {
         dealCards()
