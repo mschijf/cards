@@ -303,14 +303,14 @@
 
             <div class="grid-player-south">
                 <div class="flexcontainer-player">
-                    <div class="player-card"><img id="playerSouth0" src="carddeck/NoCard.svg" class="card-size-normal"></div>
-                    <div class="player-card"><img id="playerSouth1" src="carddeck/NoCard.svg" class="card-size-normal"></div>
-                    <div class="player-card"><img id="playerSouth2" src="carddeck/NoCard.svg" class="card-size-normal"></div>
-                    <div class="player-card"><img id="playerSouth3" src="carddeck/NoCard.svg" class="card-size-normal"></div>
-                    <div class="player-card"><img id="playerSouth4" src="carddeck/NoCard.svg" class="card-size-normal"></div>
-                    <div class="player-card"><img id="playerSouth5" src="carddeck/NoCard.svg" class="card-size-normal"></div>
-                    <div class="player-card"><img id="playerSouth6" src="carddeck/NoCard.svg" class="card-size-normal"></div>
-                    <div class="player-card"><img id="playerSouth7" src="carddeck/NoCard.svg" class="card-size-normal"></div>
+                    <div class="flex-container-vert"><div class="player-card"><img id="playerSouth0" src="carddeck/NoCard.svg" class="card-size-normal"></div><label id="meta0"></label></div>
+                    <div class="flex-container-vert"><div class="player-card"><img id="playerSouth1" src="carddeck/NoCard.svg" class="card-size-normal"></div><label id="meta1"></label></div>
+                    <div class="flex-container-vert"><div class="player-card"><img id="playerSouth2" src="carddeck/NoCard.svg" class="card-size-normal"></div><label id="meta2"></label></div>
+                    <div class="flex-container-vert"><div class="player-card"><img id="playerSouth3" src="carddeck/NoCard.svg" class="card-size-normal"></div><label id="meta3"></label></div>
+                    <div class="flex-container-vert"><div class="player-card"><img id="playerSouth4" src="carddeck/NoCard.svg" class="card-size-normal"></div><label id="meta4"></label></div>
+                    <div class="flex-container-vert"><div class="player-card"><img id="playerSouth5" src="carddeck/NoCard.svg" class="card-size-normal"></div><label id="meta5"></label></div>
+                    <div class="flex-container-vert"><div class="player-card"><img id="playerSouth6" src="carddeck/NoCard.svg" class="card-size-normal"></div><label id="meta6"></label></div>
+                    <div class="flex-container-vert"><div class="player-card"><img id="playerSouth7" src="carddeck/NoCard.svg" class="card-size-normal"></div><label id="meta7"></label></div>
                 </div>    
             </div>            
         </div>        
@@ -407,12 +407,19 @@
             }            
         }
 
+        function showPlayerSouthValues(values) {
+            for (let i = 0; i < values.length; i++) {
+                document.getElementById("meta"+i).innerHTML=values[i]
+            }            
+        }
+
         function showCardsInHands(gameStatus) {
             showPlayerCards("playerSouth", gameStatus.playerSouth, true)
             showPlayerCards("playerWest", gameStatus.playerWest, false)
             showPlayerCards("playerNorth", gameStatus.playerNorth, false)
             showPlayerCards("playerEast", gameStatus.playerEast, false)
-            upDownSignal.src = upDownSignalImage(gameStatus.goingUp)
+            showPlayerSouthValues(gameStatus.valueSouth)
+            upDownSignal.src = upDownSignalImage(gameStatus.goingUp)            
         }
 
         //-----------------------------------------------------------------------------------------
@@ -477,9 +484,11 @@
                         setTimeout(function() { computeMove(); }, 1700)
                     }
                 }
-            } else if (movePlayed.nextPlayer != "SOUTH") {
+            } else {
                 requestGameStatus()
-                setTimeout(function() { computeMove(); }, 500)
+                if (movePlayed.nextPlayer != "SOUTH") {
+                    setTimeout(function() { computeMove(); }, 500)
+                }
             }
         }
 
@@ -528,6 +537,11 @@
                 if(this.readyState === 4 && this.status === 200) {
                     var gameStatus = JSON.parse(this.responseText);
                     showCardsInHands(gameStatus)
+
+                    if (gameStatus.playerToMove != "SOUTH") {
+                        computeMove();
+                    }
+
                 }
             };
             request.send();
@@ -567,7 +581,9 @@
             request.onreadystatechange = function() {
                 if(this.readyState === 4 && this.status === 200) {
                     var movePlayed = JSON.parse(this.responseText);
-                    showMove(movePlayed)
+                    if (movePlayed.success == true) {
+                        showMove(movePlayed.cardPlayedModel)
+                    }
                 }
             };
             request.send();
@@ -580,9 +596,11 @@
             request.onreadystatechange = function() {
                 if(this.readyState === 4 && this.status === 200) {
                     var movePlayed = JSON.parse(this.responseText);
-                    showMove(movePlayed)
-                } else if(this.readyState === 4 && this.status === 404) {
-                    console.log("Kijk nou, een foutafvanging!!")
+                    if (movePlayed.success == true) {
+                        showMove(movePlayed.cardPlayedModel)
+                    } else {
+                        console.log("FOUTE KAART!!")
+                    }
                 } 
             };
             request.send();

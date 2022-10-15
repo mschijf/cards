@@ -2,13 +2,17 @@ package com.cards.game.hearts
 
 import com.cards.game.fourplayercardgame.Player
 import com.cards.game.card.Card
+import com.cards.game.card.CardDeck
 
 class Game (
-    private var leadPlayer: Player,
-    private val maxTricksPerRound: Int) {
+    private var leadPlayer: Player) {
+    val cardDeck = CardDeck()
+    private val maxTricksPerRound = cardDeck.numberOfCards() / Player.values().size
+    private var goingDownFromRoundNumber = Int.MAX_VALUE
+
     private val completedRoundList = arrayListOf<Round>()
     private var currentRound = Round(leadPlayer, maxTricksPerRound)
-    private var goingDownFromRoundNumber = Int.MAX_VALUE
+
 
     fun playCard(card: Card) {
         if (isFinished()) {

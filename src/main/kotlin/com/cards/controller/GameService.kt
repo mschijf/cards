@@ -46,4 +46,5 @@ class GameService {
     fun getScoreCard(): ScoreModel {
         return ScoreModel(gm.game.getCumulativeScorePerRound())
     }
+
 }

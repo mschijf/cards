@@ -9,6 +9,7 @@ class Trick(
     private val cardsPlayed = arrayListOf<PlayerPlayedCard>()
     private var playerToMove = leadPlayer
 
+    fun isLeadPLayer(player: Player) = player == leadPlayer
     fun leadColor() = getCardPlayedBy(leadPlayer)?.color
 
     fun playerToMove() = playerToMove
@@ -16,6 +17,7 @@ class Trick(
     fun getCardsPlayed() = cardsPlayed
 
     fun isComplete(): Boolean = cardsPlayed.size >= Player.values().size
+    fun isLastPlayerToMove() = (getCardsPlayed().size == Player.values().size-1)
 
     fun isNew(): Boolean = cardsPlayed.isEmpty()
 
@@ -37,6 +39,7 @@ class Trick(
     }
 
     fun getScore() = Score(this)
+    fun getValue()  = getCardsPlayed().sumOf { c -> HeartsRulesBook.cardValue(c.card) }
 
     fun getCardPlayedBy(player: Player): Card? {
         return cardsPlayed

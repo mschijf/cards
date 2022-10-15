@@ -8,6 +8,7 @@ class CardDeck {
     }
 
     fun numberOfCards() = deck.size
+    fun getCards() = deck.toList()
     fun getCards(from: Int, numberOfCards: Int) = deck.subList(from, from + numberOfCards)
     fun getCards(color: CardColor)= deck.filter { card -> card.color == color}
 }

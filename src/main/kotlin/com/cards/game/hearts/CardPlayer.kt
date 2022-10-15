@@ -1,6 +1,7 @@
 package com.cards.game.hearts
 
 import com.cards.game.card.Card
+import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.Player
 
 open class CardPlayer(
@@ -10,8 +11,10 @@ open class CardPlayer(
 
     fun getCardsInHand() = cardsInHand.toList()
 
-    fun setCardsInHand(cardsfromDealer: List<Card>) {
-        cardsInHand = cardsfromDealer.toMutableList()
+    fun hasColorInHand(color: CardColor) = cardsInHand.any { card -> card.color == color }
+
+    fun setCardsInHand(cardsFromDealer: List<Card>) {
+        cardsInHand = cardsFromDealer.toMutableList()
         cardsInHand.sortBy { card -> 100 * card.color.ordinal + card.rank.ordinal }
     }
 

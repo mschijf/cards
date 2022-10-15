@@ -9,9 +9,10 @@ object HeartsRulesBook {
     val valueToGoDown = 60
     val allPointsForPit = 15
     val valueToFinish = 0
+
     val cardDeck = CardDeck()
 
-    fun toRankNumber (card: Card) : Int = card.rank.rankNumber
+    fun toRankNumber (card: Card) : Int = card.rank.rankNumber - 7
 
     fun higherCardsThen(card: Card): List<Card> {
         return cardDeck

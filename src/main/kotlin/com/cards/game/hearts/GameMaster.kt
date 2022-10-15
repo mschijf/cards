@@ -1,22 +1,20 @@
 package com.cards.game.hearts
 
-import com.cards.game.fourplayercardgame.Player
 import com.cards.game.card.Card
-import com.cards.game.card.CardDeck
+import com.cards.game.fourplayercardgame.Player
 
 class GameMaster {
-    private val cardDeck = CardDeck()
-    val maxCardsInHand = cardDeck.numberOfCards() / Player.values().size
-    val game = Game(Player.SOUTH, maxCardsInHand)
+    val game = Game(Player.WEST)
     private val playerList = Player.values().map { p  -> Genius(p, game) }
+    val maxCardsInHand = game.cardDeck.numberOfCards() / Player.values().size
 
     init {
         dealCards()
     }
 
     private fun dealCards() {
-        cardDeck.shuffle()
-        playerList.forEachIndexed { i, player -> player.setCardsInHand(cardDeck.getCards(maxCardsInHand*i, maxCardsInHand)) }
+        game.cardDeck.shuffle()
+        playerList.forEachIndexed { i, player -> player.setCardsInHand(game.cardDeck.getCards(maxCardsInHand*i, maxCardsInHand)) }
     }
 
     fun getCardPlayer(player: Player) = playerList.first { cardPlayer -> cardPlayer.player == player }
