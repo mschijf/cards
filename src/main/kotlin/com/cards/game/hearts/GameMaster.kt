@@ -4,17 +4,21 @@ import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.Player
 
 class GameMaster {
-    val game = Game(Player.WEST)
+    val game = Game()
     private val playerList = Player.values().map { p  -> Genius(p, game) }
-    val maxCardsInHand = game.cardDeck.numberOfCards() / Player.values().size
 
     init {
         dealCards()
     }
 
+    fun resetGameForPlayers() {
+        playerList.forEach { pl -> pl.insertGame(game) }
+    }
+
     private fun dealCards() {
-        game.cardDeck.shuffle()
-        playerList.forEachIndexed { i, player -> player.setCardsInHand(game.cardDeck.getCards(maxCardsInHand*i, maxCardsInHand)) }
+        HeartsRules.cardDeck.shuffle()
+        val cardsInHand = HeartsRules.nCardsInHand
+        playerList.forEachIndexed { i, player -> player.setCardsInHand(HeartsRules.cardDeck.getCards(cardsInHand*i, cardsInHand)) }
     }
 
     fun getCardPlayer(player: Player) = playerList.first { cardPlayer -> cardPlayer.player == player }
@@ -41,7 +45,8 @@ class GameMaster {
 
         val leadColor = game.getCurrentRound().getTrickOnTable().leadColor()
         val cardsInHand = getCardPlayer(player).getCardsInHand()
-        val legalCards = HeartsRulesBook.legalPlayableCards(cardsInHand, leadColor)
+        val legalCards = HeartsRules.legalPlayableCards(cardsInHand, leadColor)
         return legalCards.contains(card)
     }
+
 }

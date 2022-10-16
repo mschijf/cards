@@ -4,13 +4,16 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardDeck
 import com.cards.game.card.CardRank
+import com.cards.game.fourplayercardgame.Player
 
-object HeartsRulesBook {
+object HeartsRules {
     val valueToGoDown = 60
     val allPointsForPit = 15
     val valueToFinish = 0
 
     val cardDeck = CardDeck()
+    val nCardsInHand = cardDeck.numberOfCards() / Player.values().size
+    val nTricksPerRound = nCardsInHand
 
     fun toRankNumber (card: Card) : Int = card.rank.rankNumber - 7
 

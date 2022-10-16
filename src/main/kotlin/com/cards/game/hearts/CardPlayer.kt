@@ -6,10 +6,14 @@ import com.cards.game.fourplayercardgame.Player
 
 open class CardPlayer(
     val player: Player,
-    protected val game: Game) {
+    @Transient protected var game: Game) {
     private var cardsInHand: MutableList<Card> = mutableListOf()
 
     fun getCardsInHand() = cardsInHand.toList()
+
+    fun insertGame(newGame: Game) {
+        game = newGame
+    }
 
     fun hasColorInHand(color: CardColor) = cardsInHand.any { card -> card.color == color }
 
@@ -26,7 +30,7 @@ open class CardPlayer(
 
     open fun chooseCard(): Card {
         val leadColor = game.getCurrentRound().getTrickOnTable().leadColor()
-        val legalCards = HeartsRulesBook.legalPlayableCards(getCardsInHand(), leadColor)
+        val legalCards = HeartsRules.legalPlayableCards(getCardsInHand(), leadColor)
         return legalCards.random()
     }
 }

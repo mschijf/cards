@@ -27,13 +27,13 @@ class Genius(
     }
 
     private fun getCardsStillInPlay(): List<Card> {
-        return game.cardDeck.getCards().minus(getCardsPlayed().toSet()).minus(getCardsInHand())
+        return HeartsRules.cardDeck.getCards().minus(getCardsPlayed().toSet()).minus(getCardsInHand().toSet())
     }
 
     fun getMetaCardList(): MetaCardList {
         val trick = game.getCurrentRound().getTrickOnTable()
         val leadColor = trick.leadColor()
-        val legalCards = HeartsRulesBook.legalPlayableCards(getCardsInHand(), leadColor)
+        val legalCards = HeartsRules.legalPlayableCards(getCardsInHand(), leadColor)
         val trickLeadCard = game.getCurrentRound().getTrickOnTable().winningCard()
         val metaCardList = MetaCardList(legalCards, getCardsPlayed(), getCardsStillInPlay())
 
@@ -47,17 +47,20 @@ class Genius(
             if (hasColorInHand(leadColor!!)) {
                 metaCardList
                     .evaluateGivenCardLowerThanOtherCard(Card(CardColor.SPADES, CardRank.QUEEN), trickLeadCard!!, 200)
+                    .evaluateGivenCardHigherThanOtherCard(Card(CardColor.SPADES, CardRank.QUEEN), trickLeadCard, -200)
                     .evaluateGivenCardLowerThanOtherCard(Card(CardColor.CLUBS, CardRank.JACK), trickLeadCard, 100)
+                    .evaluateGivenCardHigherThanOtherCard(Card(CardColor.CLUBS, CardRank.JACK), trickLeadCard, -100)
                     .evaluateByRankLowerThanOtherCard(trickLeadCard, baseValue = 30, rankStepValue = 1)
                     .evaluateByRankHigherThanOtherCard(trickLeadCard, baseValue = 10, rankStepValue = -1)
                     .evaluateByRankHigherThanOtherCardLastTrickPlayer(trick, trickLeadCard, baseValue = 50, rankStepValue = 1)
-                //hasLowCard of een-na-laageste kaart, en ruiten en nog voldoende ruiten in omloop en nog niet eerder gespeeld
-                // dan hoge kaart opgooien
+                    .evaluateOnlyHigherRanksThanOtherCardLastTrickPlayer(trick, trickLeadCard, baseValue = 0, rankStepValue = 10)
+
+                    //analyseer: trick Schoppen 8,9,10, in hand (achterhand) 7, b,v,h ==> b en h allebei 60. Waarom heer niet hoger?
+
+                //laagste of een-na-laagste kaart, en ruiten en nog voldoende ruiten in omloop en nog niet eerder gespeeld dan hoge kaart opgooien
+
                 // note: evaluateByRankHigherThanOtherCardLastTrickPlayer en bonvestaande regel moeten er ook voorzorgen
                 // dat de lage kaart een hoge waarde krijgt in de 'als leadplayer' fase
-
-                //als ik m moet pakken, dan maar met de hoogste (achterhand)
-                // als schoppen vrouw en er is nog geen hogere in de trick, dan vrouw afwaarderen
             } else {
                 //'vrije' kaarten waarderen (hoeven niet noodzakelijk) als vuil te worden gezien
                 // kale hoge kaart, eerder weg, dan gedekte schoppen aas (of hartenkaart) ==> bepaal hoe je kan duiken met een kleur

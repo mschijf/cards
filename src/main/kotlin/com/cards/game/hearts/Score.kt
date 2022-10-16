@@ -8,7 +8,7 @@ class Score() {
     constructor(trick: Trick) : this() {
         if (trick.isComplete()) {
             val winner = trick.winner()
-            Player.values().forEach { p ->  plusScorePerPlayer(winner!!, HeartsRulesBook.cardValue(trick.getCardPlayedBy(p)!!)) }
+            Player.values().forEach { p ->  plusScorePerPlayer(winner!!, HeartsRules.cardValue(trick.getCardPlayedBy(p)!!)) }
         }
     }
 

@@ -35,7 +35,7 @@ class MetaCardList(
 
     fun evaluateByRank(rankStepValue: Int): MetaCardList {
         metaCardList
-            .forEach { metaCardInfo -> metaCardInfo.value += rankStepValue * HeartsRulesBook.toRankNumber(metaCardInfo.card) }
+            .forEach { metaCardInfo -> metaCardInfo.value += rankStepValue * HeartsRules.toRankNumber(metaCardInfo.card) }
         return this
     }
 
@@ -44,24 +44,35 @@ class MetaCardList(
             metaCardList
                 .filter { metaCardInfo -> metaCardInfo.card == givenCard }
                 .filter { metaCardInfo ->
-                    HeartsRulesBook.toRankNumber(metaCardInfo.card) < HeartsRulesBook.toRankNumber(
-                        otherCard
-                    )
+                    HeartsRules.toRankNumber(metaCardInfo.card) < HeartsRules.toRankNumber(otherCard)
                 }
                 .forEach { metaCardInfo -> metaCardInfo.value += value }
         }
         return this
     }
 
+    fun evaluateGivenCardHigherThanOtherCard(givenCard: Card, otherCard: Card, value: Int): MetaCardList {
+        if (otherCard.color == givenCard.color) {
+            metaCardList
+                .filter { metaCardInfo -> metaCardInfo.card == givenCard }
+                .filter { metaCardInfo ->
+                    HeartsRules.toRankNumber(metaCardInfo.card) > HeartsRules.toRankNumber(otherCard)
+                }
+                .forEach { metaCardInfo -> metaCardInfo.value += value }
+        }
+        return this
+    }
+
+
     fun evaluateByRankLowerThanOtherCard(otherCard: Card, baseValue: Int, rankStepValue: Int): MetaCardList {
         metaCardList
             .filter { metaCardInfo -> metaCardInfo.card.color == otherCard.color }
             .filter { metaCardInfo ->
-                HeartsRulesBook.toRankNumber(metaCardInfo.card) < HeartsRulesBook.toRankNumber(
+                HeartsRules.toRankNumber(metaCardInfo.card) < HeartsRules.toRankNumber(
                     otherCard
                 )
             }
-            .sortedBy { mc -> HeartsRulesBook.toRankNumber(mc.card) }
+            .sortedBy { mc -> HeartsRules.toRankNumber(mc.card) }
             .forEachIndexed { index, metaCardInfo -> metaCardInfo.value += baseValue + index * rankStepValue }
         return this
     }
@@ -70,11 +81,11 @@ class MetaCardList(
         metaCardList
             .filter { metaCardInfo -> metaCardInfo.card.color == otherCard.color }
             .filter { metaCardInfo ->
-                HeartsRulesBook.toRankNumber(metaCardInfo.card) > HeartsRulesBook.toRankNumber(
+                HeartsRules.toRankNumber(metaCardInfo.card) > HeartsRules.toRankNumber(
                     otherCard
                 )
             }
-            .sortedBy { mc -> HeartsRulesBook.toRankNumber(mc.card) }
+            .sortedBy { mc -> HeartsRules.toRankNumber(mc.card) }
             .forEachIndexed { index, metaCardInfo -> metaCardInfo.value += baseValue + index * rankStepValue }
         return this
     }
@@ -94,12 +105,28 @@ class MetaCardList(
 
         metaCardList
             .filter { metaCardInfo -> metaCardInfo.card.color == otherCard.color }
-            .filter { metaCardInfo -> HeartsRulesBook.toRankNumber(metaCardInfo.card) > HeartsRulesBook.toRankNumber(otherCard) }
-            .sortedBy { mc -> HeartsRulesBook.toRankNumber(mc.card) }
+            .filter { metaCardInfo -> HeartsRules.toRankNumber(metaCardInfo.card) > HeartsRules.toRankNumber(otherCard) }
+            .sortedBy { mc -> HeartsRules.toRankNumber(mc.card) }
             .forEachIndexed { index, metaCardInfo -> metaCardInfo.value += baseValue + index * rankStepValue }
 
         return this
     }
+
+    fun evaluateOnlyHigherRanksThanOtherCardLastTrickPlayer(trick: Trick, otherCard: Card, baseValue: Int, rankStepValue: Int): MetaCardList {
+        if (!trick.isLastPlayerToMove())
+            return this
+
+        if (hasLowerCardsOfColorInHandThanOtherCard(otherCard))
+            return this
+
+        metaCardList
+            .filter { metaCardInfo -> metaCardInfo.card.color == otherCard.color }
+            .sortedBy { mc -> HeartsRules.toRankNumber(mc.card) }
+            .forEachIndexed { index, metaCardInfo -> metaCardInfo.value += baseValue + index * rankStepValue }
+
+        return this
+    }
+
 
     //------------------------------------------------------------------------------------------------------------------
 
@@ -108,27 +135,31 @@ class MetaCardList(
     private fun lowestCardOfColorInCardList(cardList: List<Card>, color: CardColor): Card? {
         return cardList
             .filter { c -> c.color == color}
-            .minByOrNull { c -> HeartsRulesBook.toRankNumber(c) }
+            .minByOrNull { c -> HeartsRules.toRankNumber(c) }
     }
 
     private fun hasLowestCardOfColorInHand(color: CardColor): Boolean {
         val lowestCardInHand = lowestCardOfColorInCardList(cardsInHand, color)
         val lowestCardStillInPlay = lowestCardOfColorInCardList(cardsStillInPlay, color)
-        val handValue = if (lowestCardInHand == null) 9999 else HeartsRulesBook.toRankNumber(lowestCardInHand )
-        val stillInPlayValue = if (lowestCardStillInPlay == null) 9999 else HeartsRulesBook.toRankNumber(lowestCardStillInPlay )
+        val handValue = if (lowestCardInHand == null) 9999 else HeartsRules.toRankNumber(lowestCardInHand )
+        val stillInPlayValue = if (lowestCardStillInPlay == null) 9999 else HeartsRules.toRankNumber(lowestCardStillInPlay )
         return handValue < stillInPlayValue
     }
+
+    private fun hasLowerCardsOfColorInHandThanOtherCard(otherCard: Card): Boolean {
+        return cardsInHand.any { crd -> crd.color == otherCard.color && HeartsRules.toRankNumber(crd) < HeartsRules.toRankNumber(otherCard)}
+    }
+
 
 
     private fun isHighestCardOfColor(card: Card): Boolean {
         val nCardsHigherPlayed = (cardsInHand union cardsPlayed)
             .filter { cardPlayed -> cardPlayed.color == card.color }
-            .count { cardPlayed -> HeartsRulesBook.toRankNumber(cardPlayed) > HeartsRulesBook.toRankNumber(card) }
-        val nCardsHigher = HeartsRulesBook.higherCardsThen(card).count()
+            .count { cardPlayed -> HeartsRules.toRankNumber(cardPlayed) > HeartsRules.toRankNumber(card) }
+        val nCardsHigher = HeartsRules.higherCardsThen(card).count()
 
         return nCardsHigher == nCardsHigherPlayed
     }
-
 }
 
 

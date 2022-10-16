@@ -2,17 +2,13 @@ package com.cards.game.hearts
 
 import com.cards.game.fourplayercardgame.Player
 import com.cards.game.card.Card
-import com.cards.game.card.CardDeck
 
-class Game (
-    private var leadPlayer: Player) {
-    val cardDeck = CardDeck()
-    private val maxTricksPerRound = cardDeck.numberOfCards() / Player.values().size
+class Game () {
+    private var leadPlayer = Player.WEST
     private var goingDownFromRoundNumber = Int.MAX_VALUE
 
     private val completedRoundList = arrayListOf<Round>()
-    private var currentRound = Round(leadPlayer, maxTricksPerRound)
-
+    private var currentRound = Round(leadPlayer)
 
     fun playCard(card: Card) {
         if (isFinished()) {
@@ -22,8 +18,9 @@ class Game (
         currentRound.playCard(card)
         if (currentRound.isComplete()) {
             addRound(currentRound)
-            currentRound = Round(leadPlayer.nextPlayer(), maxTricksPerRound)
-            if (getGoingUp() && getTotalScore().maxValue() >= HeartsRulesBook.valueToGoDown) {
+            leadPlayer = leadPlayer.nextPlayer()
+            currentRound = Round(leadPlayer)
+            if (getGoingUp() && getTotalScore().maxValue() >= HeartsRules.valueToGoDown) {
                 goingDownFromRoundNumber = completedRoundList.size
             }
         }
@@ -37,7 +34,7 @@ class Game (
         }
     }
 
-    private fun isFinished() = !getGoingUp() && (getTotalScore().minValue() <= HeartsRulesBook.valueToFinish)
+    private fun isFinished() = !getGoingUp() && (getTotalScore().minValue() <= HeartsRules.valueToFinish)
 
     private fun getLastTrickWinner(): Player? {
         if (!currentRound.isNew()) {
@@ -64,12 +61,12 @@ class Game (
 
     private fun determineRoundScore(roundNumber: Int, score: Score): Score {
         if (roundNumber < goingDownFromRoundNumber) {
-            if (score.maxValue() == HeartsRulesBook.allPointsForPit) {
+            if (score.maxValue() == HeartsRules.allPointsForPit) {
                 val newScore = Score()
-                newScore.plusScorePerPlayer(Player.EAST, if (score.getEastValue() == 0) HeartsRulesBook.allPointsForPit else 0)
-                newScore.plusScorePerPlayer(Player.WEST, if (score.getWestValue() == 0) HeartsRulesBook.allPointsForPit else 0)
-                newScore.plusScorePerPlayer(Player.NORTH, if (score.getNorthValue() == 0) HeartsRulesBook.allPointsForPit else 0)
-                newScore.plusScorePerPlayer(Player.SOUTH, if (score.getSouthValue() == 0) HeartsRulesBook.allPointsForPit else 0)
+                newScore.plusScorePerPlayer(Player.EAST, if (score.getEastValue() == 0) HeartsRules.allPointsForPit else 0)
+                newScore.plusScorePerPlayer(Player.WEST, if (score.getWestValue() == 0) HeartsRules.allPointsForPit else 0)
+                newScore.plusScorePerPlayer(Player.NORTH, if (score.getNorthValue() == 0) HeartsRules.allPointsForPit else 0)
+                newScore.plusScorePerPlayer(Player.SOUTH, if (score.getSouthValue() == 0) HeartsRules.allPointsForPit else 0)
                 return newScore
             }
             return score

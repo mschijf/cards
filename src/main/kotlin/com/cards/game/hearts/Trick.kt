@@ -4,12 +4,12 @@ import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.Player
 
 class Trick(
-    private val leadPlayer: Player
-) {
-    private val cardsPlayed = arrayListOf<PlayerPlayedCard>()
+    private val leadPlayer: Player) {
     private var playerToMove = leadPlayer
+    private val cardsPlayed = arrayListOf<PlayerPlayedCard>()
 
     fun isLeadPLayer(player: Player) = player == leadPlayer
+
     fun leadColor() = getCardPlayedBy(leadPlayer)?.color
 
     fun playerToMove() = playerToMove
@@ -17,6 +17,7 @@ class Trick(
     fun getCardsPlayed() = cardsPlayed
 
     fun isComplete(): Boolean = cardsPlayed.size >= Player.values().size
+
     fun isLastPlayerToMove() = (getCardsPlayed().size == Player.values().size-1)
 
     fun isNew(): Boolean = cardsPlayed.isEmpty()
@@ -27,7 +28,7 @@ class Trick(
         } else {
             getCardsPlayed()
                 .filter { f -> f.card.color == leadColor() }
-                .maxByOrNull { f -> HeartsRulesBook.toRankNumber(f.card) }!!
+                .maxByOrNull { f -> HeartsRules.toRankNumber(f.card) }!!
                 .player
         }
     }
@@ -35,11 +36,12 @@ class Trick(
     fun winningCard() : Card? {
         return getCardsPlayed()
             .filter { f -> f.card.color == leadColor() }
-            .maxByOrNull { f -> HeartsRulesBook.toRankNumber(f.card) }?.card
+            .maxByOrNull { f -> HeartsRules.toRankNumber(f.card) }?.card
     }
 
     fun getScore() = Score(this)
-    fun getValue()  = getCardsPlayed().sumOf { c -> HeartsRulesBook.cardValue(c.card) }
+
+    fun getValue()  = getCardsPlayed().sumOf { c -> HeartsRules.cardValue(c.card) }
 
     fun getCardPlayedBy(player: Player): Card? {
         return cardsPlayed

@@ -316,6 +316,8 @@
         </div>        
         <button id="buttonNew" onclick="initGame()">NEW</button>
         <button id="buttonPlay" onclick="computeMove()">PLAY</button>
+        <button id="buttonJson" onclick="showJson()">JSON</button>
+        <div id="jsonText"></div>
         <!-- Card images by Adrian Kennard - Own work, CC0, <a href="https://commons.wikimedia.org/w/index.php?curid=70667162">https://commons.wikimedia.org/w/index.php?curid=70667162</a>     -->
     </body>
 
@@ -388,6 +390,11 @@
             requestForNewGame()
             requestForScoreCard()
             showInfo("")
+            showJson("")
+        }
+
+        function showJson(msg) {
+            jsonText.innerHTML = msg
         }
 
         //-----------------------------------------------------------------------------------------
@@ -413,13 +420,19 @@
             }            
         }
 
+        function showExtras(gameStatus) {
+            showPlayerSouthValues(gameStatus.valueSouth)
+            upDownSignal.src = upDownSignalImage(gameStatus.goingUp)              
+            buttonJson.onclick = function(){showJson(gameStatus.gameJsonString)};
+            showJson("")                      
+        }
+
         function showCardsInHands(gameStatus) {
             showPlayerCards("playerSouth", gameStatus.playerSouth, true)
             showPlayerCards("playerWest", gameStatus.playerWest, false)
             showPlayerCards("playerNorth", gameStatus.playerNorth, false)
             showPlayerCards("playerEast", gameStatus.playerEast, false)
-            showPlayerSouthValues(gameStatus.valueSouth)
-            upDownSignal.src = upDownSignalImage(gameStatus.goingUp)            
+            showExtras(gameStatus)
         }
 
         //-----------------------------------------------------------------------------------------
