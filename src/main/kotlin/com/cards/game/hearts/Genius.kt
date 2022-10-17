@@ -35,25 +35,34 @@ class Genius(
         val leadColor = trick.leadColor()
 
         if ( trick.playerToMove() != this.player )
-            return MetaCardList(getCardsInHand())
+            return zeroValued()
 
         if (trick.isLeadPLayer(this.player))
-            return MetaCardList(getCardsInHand())
+            return evaluateLeadPLayer()
 
-        if (hasColorInHand(leadColor!!)) {
-            return followerAndCanFollowLeadColor(leadColor)
-        } else {
-            return followerButCannotFollowLeadColor(leadColor)
-        }
+        if (hasColorInHand(leadColor!!))
+            return evaluateFollowerAndCanFollowLeadColor(leadColor)
+
+        return evaluateFollowerButCannotFollowLeadColor(leadColor)
     }
 
-    private fun followerAndCanFollowLeadColor(leadColor: CardColor): MetaCardList {
+    //==================================================================================================================
+
+    private fun zeroValued(): MetaCardList {
+        return MetaCardList(getCardsInHand())
+    }
+
+    private fun evaluateLeadPLayer(): MetaCardList {
+        return MetaCardList(getCardsInHand())
+    }
+
+    private fun evaluateFollowerAndCanFollowLeadColor(leadColor: CardColor): MetaCardList {
         val trick = game.getCurrentRound().getTrickOnTable()
         val winningCard = trick.winningCard()!!
         val legalCards = HeartsRules.legalPlayableCards(getCardsInHand(), leadColor)
         val metaCardList = MetaCardList(legalCards, getCardsPlayed(), getCardsStillInPlay())
         if (hasOnlyLowerCardsThanLeader(winningCard)) {
-            //throw highest card, but not QS or JC
+            //throw highest card, especially QS or JC
             metaCardList
                 .evaluateByRank(1)
                 .evaluateSpecificCard(Card(CardColor.SPADES, CardRank.QUEEN), 200)
@@ -66,7 +75,7 @@ class Genius(
                 //throw lowest
                 metaCardList.evaluateByRank(-1)
             }
-            //do not throw QS or JC, unless you;re sure that player after you must have only higher
+            //do not throw QS or JC, unless you're sure that player after you must have only higher
             metaCardList
                 .evaluateSpecificCard(Card(CardColor.SPADES, CardRank.QUEEN), -200)
                 .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), -200)
@@ -82,50 +91,63 @@ class Genius(
                     //throw the highest card that is lower
                     metaCardList
                         .evaluateByRankLowerThanOtherCard(winningCard, 0, 1)
-                        .evaluateSpecificCard(Card(CardColor.SPADES, CardRank.QUEEN), 200)
-                        .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), 200)
+                        .evaluateSpecificCardLowerThanOtherCard(Card(CardColor.SPADES, CardRank.QUEEN), 200, winningCard)
+                        .evaluateSpecificCardLowerThanOtherCard(Card(CardColor.CLUBS, CardRank.JACK), 200, winningCard)
                 }
             } else {
                 //throw the highest card that is lower
                 metaCardList
                     .evaluateByRankLowerThanOtherCard(winningCard, 0, 1)
-                    .evaluateSpecificCard(Card(CardColor.SPADES, CardRank.QUEEN), 200)
-                    .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), 200)
+                    .evaluateSpecificCardLowerThanOtherCard(Card(CardColor.SPADES, CardRank.QUEEN), 200, winningCard)
+                    .evaluateSpecificCardLowerThanOtherCard(Card(CardColor.CLUBS, CardRank.JACK), 200, winningCard)
             }
-            //laagste of een-na-laagste kaart, en ruiten en nog voldoende ruiten in omloop en nog niet eerder gespeeld dan hoge kaart opgooien
+            //todo: laagste of een-na-laagste kaart, en ruiten en nog voldoende ruiten in omloop en nog niet eerder gespeeld dan hoge kaart opgooien
+            //todo: kaarten die nooit een slag kunnen halen lager waarderen - bijv. 7,8,9 in hand, dan zijn die weinig waard (vooal bij harten)
         }
         return metaCardList
     }
 
-    private fun followerButCannotFollowLeadColor(leadColor: CardColor): MetaCardList {
+    private fun evaluateFollowerButCannotFollowLeadColor(leadColor: CardColor): MetaCardList {
         val legalCards = HeartsRules.legalPlayableCards(getCardsInHand(), leadColor)
         val metaCardList = MetaCardList(legalCards, getCardsPlayed(), getCardsStillInPlay())
-        //'vrije' kaarten waarderen (hoeven niet noodzakelijk) als vuil te worden gezien
-        // kale hoge kaart, eerder weg, dan gedekte schoppen aas (of hartenkaart) ==> bepaal hoe je kan duiken met een kleur
         metaCardList
             .evaluateByRank(rankStepValue = 1)
+            .evaluateHighestCardsInColor(50)
+            .evaluateSingleCardOfColor(100, CardColor.DIAMONDS)
+            .evaluateSingleCardOfColor(200, CardColor.HEARTS)
+            .evaluateSingleCardOfColor(200, Card(CardColor.SPADES, CardRank.QUEEN))
+            .evaluateSingleCardOfColor(100, CardColor.SPADES)
+            .evaluateSingleCardOfColor(200, Card(CardColor.CLUBS, CardRank.JACK))
+            .evaluateSingleCardOfColor(100, CardColor.CLUBS)
+            .evaluateFreeCards(-300)
+            .evaluateSpecificColor(CardColor.HEARTS, 30)
             .evaluateSpecificCard(Card(CardColor.SPADES, CardRank.QUEEN), 200)
             .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), 100)
-            .evaluateSpecificColor(CardColor.HEARTS, 30)
-            .evaluateHighestCardsInColor(50)
-        // bovenstaande wordt overgewaardeerd als kaarten vrij zijn (geen kaarten meer van deze kleur)
         return metaCardList
     }
 
+    //------------------------------------------------------------------------------------------------------------------
+
     private fun hasOnlyLowerCardsThanLeader(winningCard: Card): Boolean {
-        return getCardsInHand().none { crd -> HeartsRules.toRankNumber(crd) > HeartsRules.toRankNumber(winningCard) }
+        return getCardsInHand()
+            .filter{crd -> crd.color == winningCard.color}
+            .all { crd -> HeartsRules.toRankNumber(crd) < HeartsRules.toRankNumber(winningCard) }
     }
     private fun hasOnlyHigherCardsThanLeader(winningCard: Card): Boolean {
-        return getCardsInHand().none { crd -> HeartsRules.toRankNumber(crd) < HeartsRules.toRankNumber(winningCard) }
+        return getCardsInHand()
+            .filter{crd -> crd.color == winningCard.color}
+            .all { crd -> HeartsRules.toRankNumber(crd) > HeartsRules.toRankNumber(winningCard) }
     }
     private fun hasAllCardsOfColor(color: CardColor): Boolean {
         return (getCardsInHand().count { cp -> cp.color == color } + getCardsPlayed().count { cp -> cp.color == color } == 8)
     }
     private fun canGetRidOfLeadPosition(leadColor: CardColor): Boolean {
-        return hasLowestCardOfColorInHand(leadColor)
+        return hasLowestCardOfColorInHandAndHigherInPLayExists(leadColor)
+        //todo: mag ook een een-na-laagste kaart zijn, mits er nog steeds een hoogste is
+        // en kleuren verdeeld over verschillende spelers
     }
 
-    private fun hasLowestCardOfColorInHand(color: CardColor): Boolean {
+    private fun hasLowestCardOfColorInHandAndHigherInPLayExists(color: CardColor): Boolean {
         val lowestCardInHand = lowestCardOfColorInCardList(getCardsInHand(), color)
         val lowestCardStillInPlay = lowestCardOfColorInCardList(getCardsStillInPlay(), color)
         if (lowestCardStillInPlay == null || lowestCardInHand == null)
