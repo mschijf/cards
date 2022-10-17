@@ -9,6 +9,8 @@ class MetaCardList(
     private val cardsStillInPlay: List<Card>) {
     val metaCardList = cardsInHand.map { card -> MetaCardInfo(card, 0) }
     fun getCardValue(card: Card): Int? = metaCardList.firstOrNull { metacard -> metacard.card == card }?.value
+    
+    constructor(cardsInHand: List<Card>):this(cardsInHand, emptyList<Card>(), emptyList<Card>())
 
     class MetaCardInfo(val card: Card, var value: Int)
 
@@ -38,31 +40,7 @@ class MetaCardList(
             .forEach { metaCardInfo -> metaCardInfo.value += rankStepValue * HeartsRules.toRankNumber(metaCardInfo.card) }
         return this
     }
-
-    fun evaluateGivenCardLowerThanOtherCard(givenCard: Card, otherCard: Card, value: Int): MetaCardList {
-        if (otherCard.color == givenCard.color) {
-            metaCardList
-                .filter { metaCardInfo -> metaCardInfo.card == givenCard }
-                .filter { metaCardInfo ->
-                    HeartsRules.toRankNumber(metaCardInfo.card) < HeartsRules.toRankNumber(otherCard)
-                }
-                .forEach { metaCardInfo -> metaCardInfo.value += value }
-        }
-        return this
-    }
-
-    fun evaluateGivenCardHigherThanOtherCard(givenCard: Card, otherCard: Card, value: Int): MetaCardList {
-        if (otherCard.color == givenCard.color) {
-            metaCardList
-                .filter { metaCardInfo -> metaCardInfo.card == givenCard }
-                .filter { metaCardInfo ->
-                    HeartsRules.toRankNumber(metaCardInfo.card) > HeartsRules.toRankNumber(otherCard)
-                }
-                .forEach { metaCardInfo -> metaCardInfo.value += value }
-        }
-        return this
-    }
-
+    
 
     fun evaluateByRankLowerThanOtherCard(otherCard: Card, baseValue: Int, rankStepValue: Int): MetaCardList {
         metaCardList
@@ -90,67 +68,8 @@ class MetaCardList(
         return this
     }
 
-    fun evaluateByRankHigherThanOtherCardLastTrickPlayer(trick: Trick, otherCard: Card, baseValue: Int, rankStepValue: Int): MetaCardList {
-        if (!trick.isLastPlayerToMove())
-            return this
-
-        if (numberOfCardsInHandOfColor(otherCard.color) + numberOfCardsPlayedOfColor(otherCard.color) == 8)
-            return this
-
-        if (!hasLowestCardOfColorInHand(otherCard.color)) // has a card to get rid of aanzet zijn
-            return this
-
-        if (trick.getValue() > 0)
-            return this
-
-        metaCardList
-            .filter { metaCardInfo -> metaCardInfo.card.color == otherCard.color }
-            .filter { metaCardInfo -> HeartsRules.toRankNumber(metaCardInfo.card) > HeartsRules.toRankNumber(otherCard) }
-            .sortedBy { mc -> HeartsRules.toRankNumber(mc.card) }
-            .forEachIndexed { index, metaCardInfo -> metaCardInfo.value += baseValue + index * rankStepValue }
-
-        return this
-    }
-
-    fun evaluateOnlyHigherRanksThanOtherCardLastTrickPlayer(trick: Trick, otherCard: Card, baseValue: Int, rankStepValue: Int): MetaCardList {
-        if (!trick.isLastPlayerToMove())
-            return this
-
-        if (hasLowerCardsOfColorInHandThanOtherCard(otherCard))
-            return this
-
-        metaCardList
-            .filter { metaCardInfo -> metaCardInfo.card.color == otherCard.color }
-            .sortedBy { mc -> HeartsRules.toRankNumber(mc.card) }
-            .forEachIndexed { index, metaCardInfo -> metaCardInfo.value += baseValue + index * rankStepValue }
-
-        return this
-    }
-
 
     //------------------------------------------------------------------------------------------------------------------
-
-    private fun numberOfCardsPlayedOfColor(color: CardColor) = cardsPlayed.count { cp -> cp.color == color }
-    private fun numberOfCardsInHandOfColor(color: CardColor) = cardsInHand.count { cp -> cp.color == color }
-    private fun lowestCardOfColorInCardList(cardList: List<Card>, color: CardColor): Card? {
-        return cardList
-            .filter { c -> c.color == color}
-            .minByOrNull { c -> HeartsRules.toRankNumber(c) }
-    }
-
-    private fun hasLowestCardOfColorInHand(color: CardColor): Boolean {
-        val lowestCardInHand = lowestCardOfColorInCardList(cardsInHand, color)
-        val lowestCardStillInPlay = lowestCardOfColorInCardList(cardsStillInPlay, color)
-        val handValue = if (lowestCardInHand == null) 9999 else HeartsRules.toRankNumber(lowestCardInHand )
-        val stillInPlayValue = if (lowestCardStillInPlay == null) 9999 else HeartsRules.toRankNumber(lowestCardStillInPlay )
-        return handValue < stillInPlayValue
-    }
-
-    private fun hasLowerCardsOfColorInHandThanOtherCard(otherCard: Card): Boolean {
-        return cardsInHand.any { crd -> crd.color == otherCard.color && HeartsRules.toRankNumber(crd) < HeartsRules.toRankNumber(otherCard)}
-    }
-
-
 
     private fun isHighestCardOfColor(card: Card): Boolean {
         val nCardsHigherPlayed = (cardsInHand union cardsPlayed)
