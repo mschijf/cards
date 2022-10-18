@@ -16,6 +16,8 @@ object HeartsRules {
     val nTricksPerRound = nCardsInHand
 
     fun toRankNumber (card: Card) : Int = card.rank.rankNumber - 7
+    fun higher (card1: Card, card2: Card) = toRankNumber(card1) > toRankNumber(card2)
+    fun lower (card1: Card, card2: Card) = toRankNumber(card1) < toRankNumber(card2)
 
     fun higherCardsThen(card: Card): List<Card> {
         return cardDeck
