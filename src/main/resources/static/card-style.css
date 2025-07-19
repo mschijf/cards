@@ -1,0 +1,221 @@
+.grid-signal {
+    grid-area: signal;
+    background:  rgb(20, 128, 20);
+    padding: 2rem;
+}
+.grid-player-north {
+    grid-area: north;
+    background:  rgb(20, 128, 20);
+    padding: 2rem;
+}
+.grid-player-west {
+    grid-area: west;
+    background:  rgb(20, 128, 20);
+    padding: 2rem;
+}
+.grid-player-east {
+    grid-area: east;
+    background:  rgb(20, 128, 20);
+    padding: 2rem;
+}
+.grid-player-south {
+    grid-area: south;
+    background:  rgb(20, 128, 20);
+    padding: 2rem;
+}
+
+.grid-table {
+    grid-area: table;
+    border: 1px solid white;
+    background:  darkgreen;
+    /* background:  rgb(20, 128, 20);  */
+    padding: 2rem;
+}
+.grid-info {
+    grid-area: info;
+    text-align: center;
+    background: #f5f5f5;
+    /* padding: 2rem; */
+}
+
+.container {
+    background:  rgb(20, 128, 20);
+    display: grid;
+    grid-template-columns: 175px 500px 175px 400px;
+    grid-template-rows: auto;
+    grid-template-areas:
+                    "signal  north   north  north"
+                    "west    table   east   info"
+                    "south   south   south  south"
+                    "button  button  footer footer";
+}
+
+/* ----------------------------------------------------------------------- */
+
+.flexcontainer-table {
+    display: flex;
+    flex-direction: row;
+}
+
+.flexcontainer-vert {
+    display: flex;
+    flex-direction: column;
+}
+
+.table-player-north {
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+.table-arrow-middle {
+    padding-left: 25px;
+}
+.table-player-south {
+    padding-top: 10px;
+    padding-right: 10px;
+}
+
+.table-player-west {
+    padding-top: 115px;
+    padding-right: 10px;
+    padding-left: 50px;
+}
+.table-player-east {
+    padding-top: 115px;
+}
+
+.flexcontainer-player {
+    display: flex;
+    flex-flow: nowrap;
+}
+.player-card {
+    padding-right: 10px;
+}
+
+/* ----------------------------------------------------------------------- */
+
+.card-size-normal {
+    width:100px;
+    height:150px;
+}
+.card-size-small {
+    width:50px;
+    height:75px;
+    visibility: visible;
+}
+
+.up-down-arrow {
+    width:50px;
+    height:50px;
+}
+
+/* ----------------------------------------------------------------------- */
+
+:root{
+    --wait: 0.5s;
+}
+
+#winnerCardNorthToSouth {
+    transition-duration: var(--wait);
+    transform: translate(0, 185px);
+}
+#winnerCardWestToSouth {
+    transition-duration: var(--wait);
+    transform: translate(0, 70px);
+}
+#winnerCardEastToSouth {
+    transition-duration: var(--wait);
+    transform: translate(0, 70px);
+}
+#winnerCardSouthToSouth {
+    transition-duration: var(--wait);
+    transform: translate(0, 70px) rotate(180deg) ;
+}
+
+#winnerCardNorthToNorth {
+    transition-duration: var(--wait);
+    transform: translate(0, -70px) rotate(180deg) ;
+}
+#winnerCardWestToNorth {
+    transition-duration: var(--wait);
+    transform: translate(0, -70px);
+}
+#winnerCardEastToNorth {
+    transition-duration: var(--wait);
+    transform: translate(0, -70px);
+}
+#winnerCardSouthToNorth {
+    transition-duration: var(--wait);
+    transform: translate(0, -185px);
+}
+
+#winnerCardNorthToEast {
+    transition-duration: var(--wait);
+    transform: translate(70px, -40px);
+}
+#winnerCardWestToEast {
+    transition-duration: var(--wait);
+    transform: translate(180px, 0);
+}
+#winnerCardEastToEast {
+    transition-duration: var(--wait);
+    transform: translate(70px, 0) rotate(180deg) ;
+}
+#winnerCardSouthToEast {
+    transition-duration: var(--wait);
+    transform: translate(70px, 40px);
+}
+
+#winnerCardNorthToWest {
+    transition-duration: var(--wait);
+    transform: translate(-70px, -40px);
+}
+#winnerCardWestToWest {
+    transition-duration: var(--wait);
+    transform: translate(-70px, 0) rotate(180deg) ;
+}
+#winnerCardEastToWest {
+    transition-duration: var(--wait);
+    transform: translate(-180px, 0);
+}
+#winnerCardSouthToWest {
+    transition-duration: var(--wait);
+    transform: translate(-70px, 40px);
+}
+
+
+/* ----------------------------------------------------------------------- */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid #dedede;
+    background-color: #f5f5f5;
+}
+
+th {
+    text-align: center;
+    padding: 10px;
+    font-family: courier, monospace;
+    border-bottom: 1px dotted #ccc;
+}
+
+td {
+    font-family: Chalkduster, fantasy;
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px dotted #ccc;
+}
+
+th:first-child, td:first-child {
+    text-align: left;
+    font-family: courier, monospace;
+    border-right: 1px dotted #ffaa9f;
+}
+
+.info-line {
+    font-family: Chalkduster, fantasy;
+    color: red;
+    text-align: center;
+    padding: 10px;
+}
