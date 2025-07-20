@@ -2,13 +2,18 @@ package com.cards.game.hearts
 
 import com.cards.game.fourplayercardgame.Player
 import com.cards.game.card.Card
+import kotlin.random.Random
 
-class Game () {
+class Game (
+    private val seed: Int = Random.nextInt()) {
+
     private var leadPlayer = Player.WEST
     private var goingDownFromRoundNumber = Int.MAX_VALUE
 
     private val completedRoundList = arrayListOf<Round>()
     private var currentRound = Round(leadPlayer)
+
+    fun getSeed() = seed
 
     fun playCard(card: Card) {
         if (isFinished()) {

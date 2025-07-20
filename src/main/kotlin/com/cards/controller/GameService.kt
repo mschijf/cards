@@ -6,15 +6,17 @@ import com.cards.controller.model.ScoreModel
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
+import com.cards.game.hearts.Game
 import com.cards.game.hearts.GameMaster
 import org.springframework.stereotype.Service
+import kotlin.random.Random
 
 @Service
 class GameService {
-    private var gm = GameMaster()
+    private var gm = GameMaster(Game(0))
 
-    fun newGame(): GameStatusModel {
-        gm = GameMaster()
+    fun newGame(seed: Int = Random.nextInt() ): GameStatusModel {
+        gm = GameMaster( Game(seed) )
         return getGameStatus()
     }
 

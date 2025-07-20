@@ -4,6 +4,7 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.Player
+import kotlin.random.Random
 
 class Genius(
     player: Player,
@@ -12,7 +13,7 @@ class Genius(
     override fun chooseCard(): Card {
         return getMetaCardList()
             .metaCardList
-            .shuffled()
+            .shuffled(Random(game.getSeed()))
             .maxByOrNull { metaCard -> metaCard.value }!!
             .card
     }

@@ -3,6 +3,7 @@ package com.cards.game.hearts
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.Player
+import kotlin.random.Random
 
 open class CardPlayer(
     val player: Player,
@@ -31,6 +32,6 @@ open class CardPlayer(
     open fun chooseCard(): Card {
         val leadColor = game.getCurrentRound().getTrickOnTable().leadColor()
         val legalCards = HeartsRules.legalPlayableCards(getCardsInHand(), leadColor)
-        return legalCards.random()
+        return legalCards.random(Random(game.getSeed()))
     }
 }

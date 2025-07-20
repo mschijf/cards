@@ -34,8 +34,8 @@ class GameStatusModel(gameMaster: GameMaster)  {
         return genius.getMetaCardList().getCardValue(card)?.toString() ?: "x"
     }
 
+    val seed = gameMaster.game.getSeed()
     val gameJsonString = "" //Gson().toJson(gameMaster)
-
 }
 
 data class TableModel(

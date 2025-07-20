@@ -3,8 +3,9 @@ package com.cards.game.hearts
 import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.Player
 
-class GameMaster {
-    val game = Game()
+class GameMaster(
+    val game : Game) {
+
     private val playerList = Player.values().map { p  -> Genius(p, game) }
 
     init {
@@ -16,7 +17,7 @@ class GameMaster {
     }
 
     private fun dealCards() {
-        HeartsRules.cardDeck.shuffle()
+        HeartsRules.cardDeck.shuffle(game.getSeed())
         val cardsInHand = HeartsRules.nCardsInHand
         playerList.forEachIndexed { i, player -> player.setCardsInHand(HeartsRules.cardDeck.getCards(cardsInHand*i, cardsInHand)) }
     }

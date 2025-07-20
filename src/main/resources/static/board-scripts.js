@@ -159,7 +159,7 @@ function showExtras(gameStatus) {
     document.getElementById("buttonJson").onclick = function () {
         showJson(gameStatus.gameJsonString)
     };
-    showJson("")
+    showJson(gameStatus.seed)
 }
 
 let __lastWinnerId = "pointToWinnerNorth"
@@ -183,6 +183,7 @@ function handleGameStatus(gameStatus) {
     showExtras(gameStatus)
     showLeader(gameStatus.leadPlayer)
 
+    showJson(gameStatus.seed)
     let waitForNextMove = isHumanPlayer(gameStatus.playerToMove) ? 0 : 500
     setTimeout(function () {
         doNextMove(gameStatus.playerToMove)

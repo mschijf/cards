@@ -238,3 +238,31 @@ th:first-child, td:first-child {
     text-align: center;
     padding: 10px;
 }
+
+/*--------------------------------------------------------*/
+
+#modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal__window {
+    position: relative;
+    background-color: white;
+    padding: 4em 2em;
+}
+
+.modal__close {
+}
+
+#modal:not(:target) {
+    visibility: hidden;
+    opacity: 0;
+}

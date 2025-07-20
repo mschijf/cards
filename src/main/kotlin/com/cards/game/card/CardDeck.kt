@@ -1,10 +1,14 @@
 package com.cards.game.card
 
-class CardDeck {
-    private val deck = CardColor.values().flatMap{clr -> CardRank.values().map{rnk -> Card(clr, rnk)}}.toMutableList()
+import kotlin.random.Random
 
-    fun shuffle() {
-        deck.shuffle()
+class CardDeck {
+    private val baseDeck = CardColor.values().flatMap{clr -> CardRank.values().map{rnk -> Card(clr, rnk)}}
+
+    private var deck = baseDeck
+
+    fun shuffle(seed: Int) {
+        deck = baseDeck.shuffled(Random(seed))
     }
 
     fun numberOfCards() = deck.size
