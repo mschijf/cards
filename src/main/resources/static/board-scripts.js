@@ -1,4 +1,4 @@
-var __globalGameStatus = null
+let __globalGameStatus = null
 
 function upDownSignalImage(goingUp) {
     if (goingUp)
@@ -20,6 +20,8 @@ function cardModelToImageURL(cardModel) {
         return NoCardImage()
     }
 
+    let colorString = ""
+    let rankString = ""
     switch (cardModel.color) {
         case "SPADES":
             colorString = "S";
@@ -87,9 +89,9 @@ function playerModelToElementPostFix(player) {
 }
 
 function cardModelToImage(cardModel) {
-    src = cardModelToImageURL(cardModel)
-    var allImages = document.getElementsByTagName('img');
-    for (var i = 0; i < allImages.length; i++) {
+    let src = cardModelToImageURL(cardModel)
+    let allImages = document.getElementsByTagName('img');
+    for (let i = 0; i < allImages.length; i++) {
         if (allImages[i].src.indexOf(src) >= 0) {
             return allImages[i];
         }
@@ -112,7 +114,7 @@ function initGame() {
 }
 
 function showJson(msg) {
-    jsonText.innerHTML = msg
+    document.getElementById("jsonText").innerHTML = msg
 }
 
 function showInfo(info) {
@@ -122,7 +124,7 @@ function showInfo(info) {
 //-----------------------------------------------------------------------------------------
 
 function showCard(cardId, cardModel) {
-    var aCardImage = document.getElementById(cardId)
+    let aCardImage = document.getElementById(cardId)
     aCardImage.src = cardModelToImageURL(cardModel)
 }
 
@@ -141,14 +143,26 @@ function showPlayerSouthValues(values) {
 
 function showExtras(gameStatus) {
     showPlayerSouthValues(gameStatus.valueSouth)
-    upDownSignal.src = upDownSignalImage(gameStatus.goingUp)
-    buttonJson.onclick = function () {
+    document.getElementById("upDownSignal").src = upDownSignalImage(gameStatus.goingUp)
+    document.getElementById("buttonJson").onclick = function () {
         showJson(gameStatus.gameJsonString)
     };
     showJson("")
 }
 
-function showBoard(gameStatus) {
+let __lastWinnerId = "pointToWinnerNorth"
+function showLeader(leader) {
+    let lastWinner = document.getElementById(__lastWinnerId)
+    __lastWinnerId = "pointToWinner" + playerModelToElementPostFix(leader)
+    lastWinner.id = lastWinnerId
+}
+
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+
+function handleGameStatus(gameStatus) {
     __globalGameStatus = gameStatus
     showPlayerCards("playerSouth", gameStatus.playerSouth)
     showPlayerCards("playerWest", gameStatus.playerWest)
@@ -156,31 +170,30 @@ function showBoard(gameStatus) {
     showPlayerCards("playerEast", gameStatus.playerEast)
     showExtras(gameStatus)
     showLeader(gameStatus.leadPlayer)
+
+    let waitForNextMove = isHumanPlayer(gameStatus.playerToMove) ? 0 : 500
+    setTimeout(function () {
+        doNextMove(gameStatus.playerToMove)
+    }, waitForNextMove)
 }
 
-var lastWinnerId = "pointToWinnerNorth"
-function showLeader(leader) {
-    var lastWinner = document.getElementById(lastWinnerId)
-    lastWinnerId = "pointToWinner" + playerModelToElementPostFix(leader)
-    lastWinner.id = lastWinnerId
-}
 
 //-----------------------------------------------------------------------------------------
 
 function waitForPlayerMove() {
-    setClickableCards(true)
+    setClickableCards()
 }
 
 function doMove(cardModel) {
-    setClickableCards(false)
+    disableClickableCards()
     requestDoMove(cardModel)
 }
 
-function setClickableCards(clickable) {
+function setClickableCards() {
     for (let cardIndex = 0; cardIndex < __globalGameStatus.playerSouth.length; cardIndex++) {
         let aCardImage = document.getElementById("playerSouth" + cardIndex)
         let cardModel = __globalGameStatus.playerSouth[cardIndex]
-        if (clickable && cardModel != null) {
+        if (cardModel != null) {
             aCardImage.onclick = function () {
                 doMove(cardModel)
             };
@@ -192,14 +205,26 @@ function setClickableCards(clickable) {
     }
 }
 
+function disableClickableCards() {
+    for (let cardIndex = 0; cardIndex < __globalGameStatus.playerSouth.length; cardIndex++) {
+        let aCardImage = document.getElementById("playerSouth" + cardIndex)
+        aCardImage.onclick = null
+        aCardImage.style.cursor = "default"
+    }
+}
+
+
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------
 
-function showWrongMoveDone() {
-    console.log("FOUTE KAART!!")
+function handleIllegalMoveDone() {
+    console.log("ILLEGAL CARD CHOSEN!!")
     waitForPlayerMove()
 }
 
-function showMove(movePlayed) {
+function handleMove(movePlayed) {
     cardFromHandToTable(movePlayed)
 
     let trickCompleteTime = 0
@@ -227,23 +252,17 @@ function showMove(movePlayed) {
     setTimeout(function () {
         requestGameStatus();
     }, trickCompleteTime + roundCompleteTime)
-
-    let waitForNextMove = isHumanPlayer(movePlayed.nextPlayer) ? 0 : 500
-    setTimeout(function () {
-        handleNextMove(movePlayed.nextPlayer)
-    }, trickCompleteTime + roundCompleteTime + waitForNextMove)
-
 }
 
 function cardFromHandToTable(movePlayed) {
-    var tableCardImage = playerModelToTableImage(movePlayed.player)
-    var playerCardImage = cardModelToImage(movePlayed.cardPlayed)
+    let tableCardImage = playerModelToTableImage(movePlayed.player)
+    let playerCardImage = cardModelToImage(movePlayed.cardPlayed)
     tableCardImage.src = cardModelToImageURL(movePlayed.cardPlayed)
     playerCardImage.src = NoCardImage()
     showInfo("")
 }
 
-function handleNextMove(nextPlayer) {
+function doNextMove(nextPlayer) {
     if (isHumanPlayer(nextPlayer)) {
         waitForPlayerMove()
     } else {
@@ -295,17 +314,17 @@ function resetTableCardAnimation(to, from) {
 //-----------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------
 
-function showScoreCard(scoreModel) {
-    var maxRows = 9
-    scoreList = scoreModel.scoreList
-    var start = Math.max(0, scoreList.length - maxRows)
+function handleScoreCard(scoreModel) {
+    let maxRows = 9
+    let scoreList = scoreModel.scoreList
+    let start = Math.max(0, scoreList.length - maxRows)
     for (let i = 0; i < maxRows; i++) {
-        var scoreSouth = document.getElementById("scoreS" + (i + 1))
-        var scoreWest = document.getElementById("scoreW" + (i + 1))
-        var scoreNorth = document.getElementById("scoreN" + (i + 1))
-        var scoreEast = document.getElementById("scoreE" + (i + 1))
-        var roundNr = document.getElementById("roundNr" + (i + 1))
-        roundNr.innerHTML = (start + i + 1)
+        let scoreSouth = document.getElementById("scoreS" + (i + 1))
+        let scoreWest = document.getElementById("scoreW" + (i + 1))
+        let scoreNorth = document.getElementById("scoreN" + (i + 1))
+        let scoreEast = document.getElementById("scoreE" + (i + 1))
+        let roundNr = document.getElementById("roundNr" + (i + 1))
+        roundNr.innerHTML = "" + (start + i + 1)
         if (scoreList.length > i) {
             scoreSouth.innerHTML = scoreList[start + i].south
             scoreWest.innerHTML = scoreList[start + i].west
