@@ -8,7 +8,8 @@ data class CardPlayedModel(
     val player: Player,
     val cardPlayed: Card,
     val nextPlayer: Player,
-    private val gameStatusAfterLastMove: GameStatusAfterLastMove) {
+    val gameStatusAfterLastMove: GameStatusAfterLastMove,
+    val cardsInHand: Int) {
     val trickCompleted =
         if (gameStatusAfterLastMove.trickCompleted)
             TrickCompletedModel(gameStatusAfterLastMove.trickWinner!!, gameStatusAfterLastMove.roundCompleted, gameStatusAfterLastMove.gameFinished)

@@ -25,10 +25,14 @@ class GameService {
     fun computeMove(): CardPlayedModel {
         val playerToMove = gm.game.getPlayerToMove()
         val suggestedCardToPlay = gm.getCardPlayer(playerToMove).chooseCard()
+        val cardsStillInHand = gm.getCardPlayer(playerToMove).getCardsInHand().size
+
         gm.playCard(suggestedCardToPlay)
+
         val gameStatusAfterLastMove = gm.game.getStatusAfterLastMove()
         val nextPlayer = gm.game.getPlayerToMove()
-        return CardPlayedModel(playerToMove, suggestedCardToPlay, nextPlayer, gameStatusAfterLastMove)
+
+        return CardPlayedModel(playerToMove, suggestedCardToPlay, nextPlayer, gameStatusAfterLastMove, cardsStillInHand)
     }
 
     fun executeMove(color: CardColor, rank: CardRank): CardPlayedModel? {
@@ -37,10 +41,14 @@ class GameService {
         if (!gm.legalCardToPlay(playerToMove, suggestedCardToPlay))
             return null
 
+        val cardsStillInHand = gm.getCardPlayer(playerToMove).getCardsInHand().size
+
         gm.playCard(suggestedCardToPlay)
+
         val gameStatusAfterLastMove = gm.game.getStatusAfterLastMove()
         val nextPlayer = gm.game.getPlayerToMove()
-        return CardPlayedModel(playerToMove, suggestedCardToPlay, nextPlayer, gameStatusAfterLastMove)
+
+        return CardPlayedModel(playerToMove, suggestedCardToPlay, nextPlayer, gameStatusAfterLastMove, cardsStillInHand)
     }
 
     fun getScoreCard(): ScoreModel {

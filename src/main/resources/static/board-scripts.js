@@ -99,6 +99,12 @@ function cardModelToImage(cardModel) {
     return null
 }
 
+function lastPlayerHandCardImage(player, cardsInHand) {
+    let postFix = playerModelToElementPostFix(player)
+    return document.getElementById("player" + postFix + (cardsInHand-1))
+}
+
+
 function isHumanPlayer(player) {
     return player === "SOUTH"
 }
@@ -123,15 +129,21 @@ function showInfo(info) {
 
 //-----------------------------------------------------------------------------------------
 
-function showCard(cardId, cardModel) {
+function showCard(cardId, cardModel, show) {
     let aCardImage = document.getElementById(cardId)
-    aCardImage.src = cardModelToImageURL(cardModel)
+    if (cardModel != null) {
+        if (show)
+            aCardImage.src = cardModelToImageURL(cardModel)
+        else
+            aCardImage.src = CardBackImage()
+    } else {
+        aCardImage.src = NoCardImage()
+    }
 }
 
-
-function showPlayerCards(player, playerHand) {
+function showPlayerCards(player, playerHand, show) {
     for (let cardIndex = 0; cardIndex < playerHand.length; cardIndex++) {
-        showCard(player + cardIndex, playerHand[cardIndex])
+        showCard(player + cardIndex, playerHand[cardIndex], show)
     }
 }
 
@@ -154,7 +166,7 @@ let __lastWinnerId = "pointToWinnerNorth"
 function showLeader(leader) {
     let lastWinner = document.getElementById(__lastWinnerId)
     __lastWinnerId = "pointToWinner" + playerModelToElementPostFix(leader)
-    lastWinner.id = lastWinnerId
+    lastWinner.id = __lastWinnerId
 }
 
 //-----------------------------------------------------------------------------------------
@@ -164,10 +176,10 @@ function showLeader(leader) {
 
 function handleGameStatus(gameStatus) {
     __globalGameStatus = gameStatus
-    showPlayerCards("playerSouth", gameStatus.playerSouth)
-    showPlayerCards("playerWest", gameStatus.playerWest)
-    showPlayerCards("playerNorth", gameStatus.playerNorth)
-    showPlayerCards("playerEast", gameStatus.playerEast)
+    showPlayerCards("playerSouth", gameStatus.playerSouth, true)
+    showPlayerCards("playerWest", gameStatus.playerWest, false)
+    showPlayerCards("playerNorth", gameStatus.playerNorth, false)
+    showPlayerCards("playerEast", gameStatus.playerEast, false)
     showExtras(gameStatus)
     showLeader(gameStatus.leadPlayer)
 
@@ -256,9 +268,14 @@ function handleMove(movePlayed) {
 
 function cardFromHandToTable(movePlayed) {
     let tableCardImage = playerModelToTableImage(movePlayed.player)
-    let playerCardImage = cardModelToImage(movePlayed.cardPlayed)
+    let playerHandCardImage = cardModelToImage(movePlayed.cardPlayed)
+
     tableCardImage.src = cardModelToImageURL(movePlayed.cardPlayed)
-    playerCardImage.src = NoCardImage()
+    if (playerHandCardImage == null) {
+        playerHandCardImage = lastPlayerHandCardImage(movePlayed.player, movePlayed.cardsInHand)
+    }
+    playerHandCardImage.src = NoCardImage()
+
     showInfo("")
 }
 
