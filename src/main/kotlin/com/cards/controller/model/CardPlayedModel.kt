@@ -4,11 +4,11 @@ import com.cards.game.fourplayercardgame.Player
 import com.cards.game.card.Card
 import com.cards.game.hearts.GameStatusAfterLastMove
 
-class CardPlayedModel(
+data class CardPlayedModel(
     val player: Player,
     val cardPlayed: Card,
     val nextPlayer: Player,
-    gameStatusAfterLastMove: GameStatusAfterLastMove) {
+    private val gameStatusAfterLastMove: GameStatusAfterLastMove) {
     val trickCompleted =
         if (gameStatusAfterLastMove.trickCompleted)
             TrickCompletedModel(gameStatusAfterLastMove.trickWinner!!, gameStatusAfterLastMove.roundCompleted, gameStatusAfterLastMove.gameFinished)

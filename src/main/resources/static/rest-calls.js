@@ -68,7 +68,7 @@ function requestDoMove(cardModel) {
             if (movePlayed.success) {
                 showMove(movePlayed.cardPlayedModel)
             } else {
-                console.log("FOUTE KAART!!")
+                showWrongMoveDone()
             }
         }
     };
