@@ -41,13 +41,13 @@
 .container {
     background:  rgb(20, 128, 20);
     display: grid;
-    grid-template-columns: 175px 500px 175px 400px;
+    grid-template-columns: 50px 175px 500px 175px 400px;
     grid-template-rows: auto;
     grid-template-areas:
-                    "signal  north   north  north"
-                    "west    table   east   info"
-                    "south   south   south  south"
-                    "button  button  footer footer";
+                    ".       signal  north   north  info"
+                    ".       west    table   east   info"
+                    "south   south   south   south  south"
+                    ".       button  button  footer footer";
 }
 
 /* ----------------------------------------------------------------------- */
