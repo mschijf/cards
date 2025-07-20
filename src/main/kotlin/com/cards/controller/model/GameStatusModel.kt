@@ -14,6 +14,7 @@ class GameStatusModel(gameMaster: GameMaster)  {
         gameMaster.game.getCurrentRound().getTrickOnTable().getCardPlayedBy(Player.EAST)
     )
     val playerToMove = gameMaster.game.getPlayerToMove()
+    val leadPlayer = gameMaster.game.getCurrentRound().getTrickOnTable().getLeadPlayer()
 
     val goingUp = gameMaster.game.getGoingUp()
 

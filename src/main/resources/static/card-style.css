@@ -114,72 +114,91 @@
     --wait: 0.5s;
 }
 
+#pointToWinnerEast {
+    transition-duration: var(--wait);
+    transform: rotate(90deg)
+}
+#pointToWinnerSouth {
+    transition-duration: var(--wait);
+    transform: rotate(180deg)
+}
+#pointToWinnerWest {
+    transition-duration: var(--wait);
+    transform: rotate(270deg)
+}
+#pointToWinnerNorth {
+    transition-duration: var(--wait);
+    transform: rotate(360deg)
+}
+
+
+
 #winnerCardNorthToSouth {
     transition-duration: var(--wait);
-    transform: translate(0, 185px);
+    transform: translate(0, 285px);
 }
 #winnerCardWestToSouth {
     transition-duration: var(--wait);
-    transform: translate(0, 70px);
+    transform: translate(0, 170px);
 }
 #winnerCardEastToSouth {
     transition-duration: var(--wait);
-    transform: translate(0, 70px);
+    transform: translate(0, 170px);
 }
 #winnerCardSouthToSouth {
     transition-duration: var(--wait);
-    transform: translate(0, 70px) rotate(180deg) ;
+    transform: rotate(180deg) ;
 }
 
 #winnerCardNorthToNorth {
     transition-duration: var(--wait);
-    transform: translate(0, -70px) rotate(180deg) ;
+    transform: rotate(180deg) ;
 }
 #winnerCardWestToNorth {
     transition-duration: var(--wait);
-    transform: translate(0, -70px);
+    transform: translate(0, -170px);
 }
 #winnerCardEastToNorth {
     transition-duration: var(--wait);
-    transform: translate(0, -70px);
+    transform: translate(0, -170px);
 }
 #winnerCardSouthToNorth {
     transition-duration: var(--wait);
-    transform: translate(0, -185px);
+    transform: translate(0, -285px);
 }
 
 #winnerCardNorthToEast {
     transition-duration: var(--wait);
-    transform: translate(70px, -40px);
+    transform: translate(170px, -40px);
 }
 #winnerCardWestToEast {
     transition-duration: var(--wait);
-    transform: translate(180px, 0);
+    transform: translate(280px, 0);
 }
 #winnerCardEastToEast {
     transition-duration: var(--wait);
-    transform: translate(70px, 0) rotate(180deg) ;
+    transform: rotate(180deg) ;
 }
 #winnerCardSouthToEast {
     transition-duration: var(--wait);
-    transform: translate(70px, 40px);
+    transform: translate(170px, 40px);
 }
 
 #winnerCardNorthToWest {
     transition-duration: var(--wait);
-    transform: translate(-70px, -40px);
+    transform: translate(-170px, -40px);
 }
 #winnerCardWestToWest {
     transition-duration: var(--wait);
-    transform: translate(-70px, 0) rotate(180deg) ;
+    transform: rotate(180deg) ;
 }
 #winnerCardEastToWest {
     transition-duration: var(--wait);
-    transform: translate(-180px, 0);
+    transform: translate(-280px, 0);
 }
 #winnerCardSouthToWest {
     transition-duration: var(--wait);
-    transform: translate(-70px, 40px);
+    transform: translate(-170px, 40px);
 }
 
 

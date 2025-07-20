@@ -151,6 +151,22 @@ function showCardsInHands(gameStatus) {
     showPlayerCards("playerNorth", gameStatus.playerNorth, false)
     showPlayerCards("playerEast", gameStatus.playerEast, false)
     showExtras(gameStatus)
+    showLeader(gameStatus.leadPlayer)
+}
+
+var lastWinnerId = "pointToWinnerNorth"
+function showLeader(leader) {
+    var lastWinner = document.getElementById(lastWinnerId)
+    if (leader === "NORTH") {
+        lastWinnerId = "pointToWinnerNorth"
+    } else if (leader === "EAST") {
+        lastWinnerId = "pointToWinnerEast"
+    } else if (leader === "SOUTH") {
+        lastWinnerId = "pointToWinnerSouth"
+    } else if (leader === "WEST") {
+        lastWinnerId = "pointToWinnerWest"
+    }
+    lastWinner.id = lastWinnerId
 }
 
 //-----------------------------------------------------------------------------------------
@@ -208,7 +224,7 @@ function showMove(movePlayed) {
                 setTimeout(function () {
                     requestGameStatus();
                 }, waitAfterTrick+300)
-                if (movePlayed.nextPlayer != "SOUTH") {
+                if (movePlayed.nextPlayer !== "SOUTH") {
                     setTimeout(function () {
                         computeMove();
                     }, waitAfterTrick+1800)
@@ -219,7 +235,7 @@ function showMove(movePlayed) {
         } else {
             requestGameStatus()
             clearTable(movePlayed.trickCompleted.trickWinner, waitAfterTrick)
-            if (movePlayed.nextPlayer != "SOUTH") {
+            if (movePlayed.nextPlayer !== "SOUTH") {
                 setTimeout(function () {
                     computeMove();
                 }, waitAfterTrick+waitAfterMove)
@@ -227,7 +243,7 @@ function showMove(movePlayed) {
         }
     } else {
         requestGameStatus()
-        if (movePlayed.nextPlayer != "SOUTH") {
+        if (movePlayed.nextPlayer !== "SOUTH") {
             setTimeout(function () {
                 computeMove();
             }, waitAfterMove)
@@ -237,7 +253,6 @@ function showMove(movePlayed) {
 
 function clearTableAndResetWinner(winnerCardId) {
     if (winnerCardId === "tableSouth") {
-        winnerCardNorthToSouth.id = "tableNorth"
         winnerCardNorthToSouth.id = "tableNorth"
         winnerCardWestToSouth.id = "tableWest"
         winnerCardEastToSouth.id = "tableEast"
@@ -269,7 +284,9 @@ function removeCardsFromTable() {
 }
 
 function clearTable(trickWinner, wait) {
+    showLeader(trickWinner)
     var winningTableCard = playerModelToTableImage(trickWinner)
+    var lastWinner = document.getElementById(lastWinnerId)
     if (winningTableCard === tableSouth) {
         tableNorth.id = "winnerCardNorthToSouth"
         tableWest.id = "winnerCardWestToSouth"

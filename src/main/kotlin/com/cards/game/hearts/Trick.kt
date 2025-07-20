@@ -8,6 +8,8 @@ class Trick(
     private var playerToMove = leadPlayer
     private val cardsPlayed = arrayListOf<PlayerPlayedCard>()
 
+    fun getLeadPlayer() = leadPlayer
+
     fun isLeadPLayer(player: Player) = player == leadPlayer
 
     fun leadColor() = getCardPlayedBy(leadPlayer)?.color
