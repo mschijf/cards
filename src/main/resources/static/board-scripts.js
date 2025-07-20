@@ -1,3 +1,5 @@
+var __globalGameStatus = null
+
 function upDownSignalImage(goingUp) {
     if (goingUp)
         return "assets/Green_Arrow_Up.svg"
@@ -116,13 +118,8 @@ function showJson(msg) {
 function showCard(cardId, cardModel, clickable) {
     var aCardImage = document.getElementById(cardId)
     aCardImage.src = cardModelToImageURL(cardModel)
-    if (clickable) {
-        aCardImage.onclick = function () {
-            doMove(cardModel)
-        };
-        aCardImage.style.cursor = "pointer"
-    }
 }
+
 
 function showPlayerCards(player, playerHand, clickable) {
     for (let cardIndex = 0; cardIndex < playerHand.length; cardIndex++) {
@@ -145,13 +142,15 @@ function showExtras(gameStatus) {
     showJson("")
 }
 
-function showCardsInHands(gameStatus) {
-    showPlayerCards("playerSouth", gameStatus.playerSouth, true)
+function showBoard(gameStatus) {
+    __globalGameStatus = gameStatus
+    showPlayerCards("playerSouth", gameStatus.playerSouth, gameStatus.playerToMove === "SOUTH")
     showPlayerCards("playerWest", gameStatus.playerWest, false)
     showPlayerCards("playerNorth", gameStatus.playerNorth, false)
     showPlayerCards("playerEast", gameStatus.playerEast, false)
     showExtras(gameStatus)
     showLeader(gameStatus.leadPlayer)
+    console.log("IN SHOWBOARD")
 }
 
 var lastWinnerId = "pointToWinnerNorth"
@@ -167,6 +166,33 @@ function showLeader(leader) {
         lastWinnerId = "pointToWinnerWest"
     }
     lastWinner.id = lastWinnerId
+}
+
+//-----------------------------------------------------------------------------------------
+
+function waitForPlayerMove() {
+    setClickableCards(true)
+}
+
+function doMove(cardModel) {
+    setClickableCards(false)
+    requestDoMove(cardModel)
+}
+
+function setClickableCards(clickable) {
+    for (let cardIndex = 0; cardIndex < __globalGameStatus.playerSouth.length; cardIndex++) {
+        let aCardImage = document.getElementById("playerSouth" + cardIndex)
+        let cardModel = __globalGameStatus.playerSouth[cardIndex]
+        if (clickable && cardModel != null) {
+            aCardImage.onclick = function () {
+                doMove(cardModel)
+            };
+            aCardImage.style.cursor = "pointer"
+        } else {
+            aCardImage.onclick = null
+            aCardImage.style.cursor = "default"
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------------------
@@ -212,11 +238,13 @@ function showMove(movePlayed) {
         tableCardImage.src = cardModelToImageURL(movePlayed.cardPlayed)
     }
     showInfo("")
-    let waitAfterTrick = 2200
+    let showWinnerWait = 2000
+    let clearMoveWait = 700
+    let waitAfterTrick = showWinnerWait+clearMoveWait
     let waitAfterMove = 500
     if (movePlayed.trickCompleted != null) {
         if (movePlayed.trickCompleted.roundCompleted) {
-            clearTable(movePlayed.trickCompleted.trickWinner, waitAfterTrick)
+            clearTable(movePlayed.trickCompleted.trickWinner, showWinnerWait, clearMoveWait)
             setTimeout(function () {
                 requestForScoreCard();
             }, waitAfterTrick)
@@ -224,30 +252,36 @@ function showMove(movePlayed) {
                 setTimeout(function () {
                     requestGameStatus();
                 }, waitAfterTrick+300)
-                if (movePlayed.nextPlayer !== "SOUTH") {
-                    setTimeout(function () {
-                        computeMove();
-                    }, waitAfterTrick+1800)
-                }
+                setTimeout(function () {
+                    if (movePlayed.nextPlayer !== "SOUTH") {
+                        requestComputeMove();
+                    } else {
+                        waitForPlayerMove()
+                    }
+                }, waitAfterTrick+1800)
             } else {
                 showInfo("---- GAME OVER ----")
             }
         } else {
             requestGameStatus()
-            clearTable(movePlayed.trickCompleted.trickWinner, waitAfterTrick)
-            if (movePlayed.nextPlayer !== "SOUTH") {
-                setTimeout(function () {
-                    computeMove();
-                }, waitAfterTrick+waitAfterMove)
-            }
+            clearTable(movePlayed.trickCompleted.trickWinner, showWinnerWait, clearMoveWait)
+            setTimeout(function () {
+                if (movePlayed.nextPlayer !== "SOUTH") {
+                    requestComputeMove();
+                } else {
+                    waitForPlayerMove()
+                }
+            }, waitAfterTrick + 500)
         }
     } else {
         requestGameStatus()
-        if (movePlayed.nextPlayer !== "SOUTH") {
-            setTimeout(function () {
-                computeMove();
-            }, waitAfterMove)
-        }
+        setTimeout(function () {
+            if (movePlayed.nextPlayer !== "SOUTH") {
+                requestComputeMove();
+            } else {
+                waitForPlayerMove()
+            }
+        }, waitAfterMove)
     }
 }
 
@@ -283,10 +317,10 @@ function removeCardsFromTable() {
     tableSouth.src = NoCardImage();
 }
 
-function clearTable(trickWinner, wait) {
-    showLeader(trickWinner)
+function clearMove(trickWinner, wait) {
     var winningTableCard = playerModelToTableImage(trickWinner)
     var lastWinner = document.getElementById(lastWinnerId)
+    tableEast.src = "carddeck/CardBack.svg"
     if (winningTableCard === tableSouth) {
         tableNorth.id = "winnerCardNorthToSouth"
         tableWest.id = "winnerCardWestToSouth"
@@ -323,4 +357,11 @@ function clearTable(trickWinner, wait) {
         console.log("Vreemd!!")
         //weird.....
     }
+}
+
+function clearTable(trickWinner, showWinnerWait, clearMoveWait) {
+    showLeader(trickWinner)
+    setTimeout(function () {
+        clearMove(trickWinner, clearMoveWait)
+    }, showWinnerWait);
 }

@@ -135,70 +135,70 @@
 
 #winnerCardNorthToSouth {
     transition-duration: var(--wait);
-    transform: translate(0, 285px);
+    transform: translate(0px, 228px);
 }
 #winnerCardWestToSouth {
     transition-duration: var(--wait);
-    transform: translate(0, 170px);
+    transform: translate(110px, 113px);
 }
 #winnerCardEastToSouth {
     transition-duration: var(--wait);
-    transform: translate(0, 170px);
+    transform: translate(-110px, 113px);
 }
 #winnerCardSouthToSouth {
     transition-duration: var(--wait);
-    transform: rotate(180deg) ;
+    transform: translate(0px, 0px);
 }
 
 #winnerCardNorthToNorth {
     transition-duration: var(--wait);
-    transform: rotate(180deg) ;
+    transform: translate(0px, 0px);
 }
 #winnerCardWestToNorth {
     transition-duration: var(--wait);
-    transform: translate(0, -170px);
+    transform: translate(110px, -115px);
 }
 #winnerCardEastToNorth {
     transition-duration: var(--wait);
-    transform: translate(0, -170px);
+    transform: translate(-110px, -115px);
 }
 #winnerCardSouthToNorth {
     transition-duration: var(--wait);
-    transform: translate(0, -285px);
+    transform: translate(0px, -228px);
 }
 
 #winnerCardNorthToEast {
     transition-duration: var(--wait);
-    transform: translate(170px, -40px);
+    transform: translate(110px, 115px);
 }
 #winnerCardWestToEast {
     transition-duration: var(--wait);
-    transform: translate(280px, 0);
+    transform: translate(220px, 0px);
 }
 #winnerCardEastToEast {
     transition-duration: var(--wait);
-    transform: rotate(180deg) ;
+    transform: translate(0px, 0px);
 }
 #winnerCardSouthToEast {
     transition-duration: var(--wait);
-    transform: translate(170px, 40px);
+    transform: translate(110px, -113px);
 }
 
 #winnerCardNorthToWest {
     transition-duration: var(--wait);
-    transform: translate(-170px, -40px);
+    transform: translate(-110px, 115px);
 }
 #winnerCardWestToWest {
     transition-duration: var(--wait);
-    transform: rotate(180deg) ;
+    transform: translate(0px, 0px);
 }
 #winnerCardEastToWest {
     transition-duration: var(--wait);
-    transform: translate(-280px, 0);
+    transform: translate(-220px, 0);
 }
 #winnerCardSouthToWest {
     transition-duration: var(--wait);
-    transform: translate(-170px, 40px);
+    transform: translate(-110px, -113px);
 }
 
 

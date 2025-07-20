@@ -5,10 +5,10 @@ function requestForNewGame() {
     request.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
             var gameStatus = JSON.parse(this.responseText);
-            showCardsInHands(gameStatus)
+            showBoard(gameStatus)
 
-            if (gameStatus.playerToMove != "SOUTH") {
-                computeMove();
+            if (gameStatus.playerToMove !== "SOUTH") {
+                requestComputeMove();
             }
 
         }
@@ -23,7 +23,7 @@ function requestGameStatus() {
     request.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
             var gameStatus = JSON.parse(this.responseText);
-            showCardsInHands(gameStatus)
+            showBoard(gameStatus)
         }
     };
     request.send();
@@ -43,14 +43,14 @@ function requestForScoreCard() {
 }
 
 
-function computeMove() {
+function requestComputeMove() {
     var request = new XMLHttpRequest();
 
     request.open("POST", "/api/v1/computeMove/");
     request.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
             var movePlayed = JSON.parse(this.responseText);
-            if (movePlayed.success == true) {
+            if (movePlayed.success) {
                 showMove(movePlayed.cardPlayedModel)
             }
         }
@@ -58,14 +58,14 @@ function computeMove() {
     request.send();
 }
 
-function doMove(cardModel) {
+function requestDoMove(cardModel) {
     var request = new XMLHttpRequest();
 
     request.open("POST", "/api/v1/executeMove/" + cardModel.color + "/" + cardModel.rank);
     request.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
             var movePlayed = JSON.parse(this.responseText);
-            if (movePlayed.success == true) {
+            if (movePlayed.success) {
                 showMove(movePlayed.cardPlayedModel)
             } else {
                 console.log("FOUTE KAART!!")
