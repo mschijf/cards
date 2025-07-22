@@ -6,6 +6,7 @@ import com.cards.controller.model.GameStatusModel
 import com.cards.controller.model.ScoreModel
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
+import com.cards.tools.Log
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -44,6 +45,12 @@ class Controller @Autowired constructor(private val gameService: GameService) {
     private fun createCardPlayResponse(response: CardPlayedModel?): CardPlayedResponse {
         return if (response != null) CardPlayedResponse(true, response) else CardPlayedResponse(false)
     }
+
+    @GetMapping("/log")
+    fun getLog(): String {
+        return Log.get()
+    }
+
 }
 
 

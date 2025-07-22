@@ -264,6 +264,7 @@ function handleMove(movePlayed) {
 
     setTimeout(function () {
         requestGameStatus();
+        requestLog();
     }, trickCompleteTime + roundCompleteTime)
 }
 
@@ -358,3 +359,13 @@ function handleScoreCard(scoreModel) {
 }
 
 //-----------------------------------------------------------------------------------------
+
+function handleLog(logLines) {
+    document.getElementById("log").value = logLines
+    scrollLogToBottom()
+}
+
+function scrollLogToBottom() {
+    let textarea = document.getElementById("log")
+    textarea.scrollTop = textarea.scrollHeight
+}

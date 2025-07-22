@@ -70,4 +70,18 @@ function requestDoMove(cardModel) {
     request.send();
 }
 
+function requestLog() {
+    let request = new XMLHttpRequest();
+
+    request.open("GET", "/api/v1/log/");
+    request.onreadystatechange = function() {
+        if(this.readyState === 4 && this.status === 200) {
+            let logLines = this.responseText;
+            handleLog(logLines)
+        }
+    };
+    request.send();
+}
+
+
 

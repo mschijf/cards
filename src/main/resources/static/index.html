@@ -161,7 +161,7 @@
                     </div>
                 </div>    
             </div>
-            
+
             <div class="grid-player-south">
                 <div class="flexcontainer-player">
                     <div class="flex-container-vert"><div class="player-card"><img id="playerSouth0" src="carddeck/NoCard.svg" class="card-size-normal"></div><label id="meta0"></label></div>
@@ -173,8 +173,15 @@
                     <div class="flex-container-vert"><div class="player-card"><img id="playerSouth6" src="carddeck/NoCard.svg" class="card-size-normal"></div><label id="meta6"></label></div>
                     <div class="flex-container-vert"><div class="player-card"><img id="playerSouth7" src="carddeck/NoCard.svg" class="card-size-normal"></div><label id="meta7"></label></div>
                 </div>    
-            </div>            
-        </div>        
+            </div>
+
+            <div class="grid-info">
+                <textarea id="log" class="info-lines" rows="46" cols="80">
+
+                </textarea>
+            </div>
+
+        </div>
         <button id="buttonNew" onclick="initGame()">NEW</button>
         <button id="buttonPlay" onclick="requestComputeMove()">PLAY</button>
         <button id="buttonJson" onclick="showJson()">JSON</button>

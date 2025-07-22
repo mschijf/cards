@@ -8,6 +8,7 @@ import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.hearts.Game
 import com.cards.game.hearts.GameMaster
+import com.cards.tools.Log
 import org.springframework.stereotype.Service
 import kotlin.random.Random
 
@@ -54,7 +55,7 @@ class GameService {
     }
 
     fun getScoreCard(): ScoreModel {
-        return ScoreModel(gm.game.getCumulativeScorePerRound())
+        return ScoreModel.of(gm.game.getCumulativeScorePerRound())
     }
 
 }

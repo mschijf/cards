@@ -7,14 +7,11 @@ import kotlin.random.Random
 
 open class CardPlayer(
     val player: Player,
-    @Transient protected var game: Game) {
+    val game: Game) {
+
     private var cardsInHand: MutableList<Card> = mutableListOf()
 
     fun getCardsInHand() = cardsInHand.toList()
-
-    fun insertGame(newGame: Game) {
-        game = newGame
-    }
 
     fun hasColorInHand(color: CardColor) = cardsInHand.any { card -> card.color == color }
 

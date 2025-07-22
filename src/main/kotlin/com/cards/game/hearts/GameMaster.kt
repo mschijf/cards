@@ -12,10 +12,6 @@ class GameMaster(
         dealCards()
     }
 
-    fun resetGameForPlayers() {
-        playerList.forEach { pl -> pl.insertGame(game) }
-    }
-
     private fun dealCards() {
         HeartsRules.cardDeck.shuffle(game.getSeed())
         val cardsInHand = HeartsRules.nCardsInHand
