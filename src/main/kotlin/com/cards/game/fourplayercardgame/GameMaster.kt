@@ -1,21 +1,24 @@
-package com.cards.game.hearts
+package com.cards.game.fourplayercardgame
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.Player
+import com.cards.game.card.CardDeck
 
 class GameMaster(
-    val game : Game) {
+    val game : Game,
+    private val playerList: List<CardPlayer>) {
 
-    private val playerList = Player.values().map { p  -> Genius(p, game) }
+    private val cardDeck = CardDeck()
 
     init {
         dealCards()
     }
 
     private fun dealCards() {
-        HeartsRules.cardDeck.shuffle(game.getSeed())
-        val cardsInHand = HeartsRules.nCardsInHand
-        playerList.forEachIndexed { i, player -> player.setCardsInHand(HeartsRules.cardDeck.getCards(cardsInHand*i, cardsInHand)) }
+        cardDeck.shuffle(game.getSeed())
+        val cardsInHand = cardDeck.numberOfCards() / Player.values().size
+        playerList.forEachIndexed { i, player ->
+            player.setCardsInHand(cardDeck.getCards(cardsInHand*i, cardsInHand))
+        }
     }
 
     fun getCardPlayer(player: Player) = playerList.first { cardPlayer -> cardPlayer.player == player }
@@ -37,12 +40,12 @@ class GameMaster(
     }
 
     fun legalCardToPlay(player: Player, card: Card): Boolean {
-        if (game.getCurrentRound().getTrickOnTable().playerToMove() != player)
+        val trickOnTable = game.getCurrentRound().getTrickOnTable()
+        if (trickOnTable.playerToMove() != player)
             return false
 
-        val leadColor = game.getCurrentRound().getTrickOnTable().leadColor()
         val cardsInHand = getCardPlayer(player).getCardsInHand()
-        val legalCards = HeartsRules.legalPlayableCards(cardsInHand, leadColor)
+        val legalCards = game.rules.legalPlayableCardsForTrickOnTable(trickOnTable, cardsInHand)
         return legalCards.contains(card)
     }
 

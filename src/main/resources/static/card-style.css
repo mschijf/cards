@@ -40,13 +40,13 @@
 .container {
     background:  rgb(20, 128, 20);
     display: grid;
-    grid-template-columns: 50px 175px 500px 175px 400px;
+    grid-template-columns: 50px 175px 500px 175px 10px 400px;
     grid-template-rows: auto;
     grid-template-areas:
-                    ".       signal  north   north  info"
-                    ".       west    table   east   info"
-                    "south   south   south   south  info"
-                    ".       button  button  footer footer";
+                    ".       signal  north   north  .      info"
+                    ".       west    table   east   .      info"
+                    "south   south   south   south  .      info"
+                    ".       button  button  footer footer footer";
 }
 
 /* ----------------------------------------------------------------------- */

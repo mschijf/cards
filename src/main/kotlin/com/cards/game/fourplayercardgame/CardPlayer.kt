@@ -1,8 +1,7 @@
-package com.cards.game.hearts
+package com.cards.game.fourplayercardgame
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
-import com.cards.game.fourplayercardgame.Player
 import kotlin.random.Random
 
 open class CardPlayer(
@@ -27,8 +26,10 @@ open class CardPlayer(
     }
 
     open fun chooseCard(): Card {
-        val leadColor = game.getCurrentRound().getTrickOnTable().leadColor()
-        val legalCards = HeartsRules.legalPlayableCards(getCardsInHand(), leadColor)
+        val legalCards = game.rules.legalPlayableCardsForTrickOnTable(
+            game.getCurrentRound().getTrickOnTable(),
+            getCardsInHand()
+        )
         return legalCards.random(Random(game.getSeed()))
     }
 }

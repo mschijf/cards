@@ -1,20 +1,21 @@
-package com.cards.game.hearts
+package com.cards.game.fourplayercardgame
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.Player
 
 class Round(
-    leadPlayer: Player) {
+    private val rules: GameRules,
+    leadPlayer: Player
+) {
     private val completedTrickList = arrayListOf<Trick>()
 
-    private var currentTrick = Trick(leadPlayer)
+    private var currentTrick = Trick(rules, leadPlayer)
 
     fun playCard(card: Card) {
         currentTrick.addCard(card)
         if (currentTrick.isComplete()) {
             val winner = currentTrick.winner()!!
             addTrick(currentTrick)
-            currentTrick = Trick(winner)
+            currentTrick = Trick(rules, winner)
         }
     }
 
@@ -22,13 +23,14 @@ class Round(
         if (!isComplete())
             completedTrickList.add(trick)
         else
-            throw Exception("Trying to add more tricks to a Deal than the maximum (${HeartsRules.nTricksPerRound})")
+            throw Exception("Trying to add more tricks to a Deal than the maximum allowed")
     }
 
-    fun isComplete(): Boolean = completedTrickList.size >= HeartsRules.nTricksPerRound
+    fun completedTricksPlayed() = completedTrickList.size
+    fun isComplete(): Boolean = rules.roundIsComplete(this)
     fun isNew(): Boolean = completedTrickList.size == 0 && currentTrick.isNew()
     fun getTrickOnTable() = currentTrick
-    fun getLastCompletedTrickWinner(): Player? = if (completedTrickList.size > 0) completedTrickList.last().winner() else null
+    fun getLastCompletedTrickWinner(): Player? = if (completedTrickList.isNotEmpty()) completedTrickList.last().winner() else null
     fun getCompletedTrickList() = completedTrickList
 
     fun getScore(): Score {

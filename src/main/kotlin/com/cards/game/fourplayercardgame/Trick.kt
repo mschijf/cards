@@ -1,10 +1,11 @@
-package com.cards.game.hearts
+package com.cards.game.fourplayercardgame
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.Player
 
 class Trick(
-    private val leadPlayer: Player) {
+    private val rules: GameRules,
+    private val leadPlayer: Player
+) {
     private var playerToMove = leadPlayer
     private val cardsPlayed = arrayListOf<PlayerPlayedCard>()
 
@@ -24,27 +25,6 @@ class Trick(
 
     fun isNew(): Boolean = cardsPlayed.isEmpty()
 
-    fun winner() : Player? {
-        return if (!isComplete()) {
-            return null
-        } else {
-            getCardsPlayed()
-                .filter { f -> f.card.color == leadColor() }
-                .maxByOrNull { f -> HeartsRules.toRankNumber(f.card) }!!
-                .player
-        }
-    }
-
-    fun winningCard() : Card? {
-        return getCardsPlayed()
-            .filter { f -> f.card.color == leadColor() }
-            .maxByOrNull { f -> HeartsRules.toRankNumber(f.card) }?.card
-    }
-
-    fun getScore() = Score(this)
-
-    fun getValue()  = getCardsPlayed().sumOf { c -> HeartsRules.cardValue(c.card) }
-
     fun getCardPlayedBy(player: Player): Card? {
         return cardsPlayed
             .firstOrNull { p -> p.player == player }
@@ -58,6 +38,14 @@ class Trick(
         cardsPlayed.add(PlayerPlayedCard(playerToMove, aCard))
         playerToMove = playerToMove.nextPlayer()
     }
-}
 
-data class PlayerPlayedCard(val player: Player, val card: Card)
+
+    fun winner(): Player? = rules.winnerForTrick(this)
+
+    fun winningCard(): Card? = rules.winningCardForTrick(this)
+
+    fun getScore(): Score = rules.getScoreForTrick(this)
+
+    fun getValue(): Int = rules.getValueForTrick(this)
+
+}

@@ -1,16 +1,7 @@
-package com.cards.game.hearts
-
-import com.cards.game.fourplayercardgame.Player
+package com.cards.game.fourplayercardgame
 
 class Score() {
     private val scorePerPlayer = Player.values().associateWith { p -> 0 }.toMutableMap()
-
-    constructor(trick: Trick) : this() {
-        if (trick.isComplete()) {
-            val winner = trick.winner()
-            Player.values().forEach { p ->  plusScorePerPlayer(winner!!, HeartsRules.cardValue(trick.getCardPlayedBy(p)!!)) }
-        }
-    }
 
     fun plus(score: Score) {
         score.scorePerPlayer.forEach { spp -> this.plusScorePerPlayer(spp.key, spp.value) }

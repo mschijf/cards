@@ -1,6 +1,6 @@
 package com.cards.controller.model
 
-import com.cards.game.hearts.Score
+import com.cards.game.fourplayercardgame.Score
 
 data class ScoreModel(val scoreList: List<PlayerScore>) {
 
