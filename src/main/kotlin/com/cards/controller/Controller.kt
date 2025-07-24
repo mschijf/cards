@@ -43,7 +43,7 @@ class Controller @Autowired constructor(private val gameService: GameService) {
     }
 
     private fun createCardPlayResponse(response: CardPlayedModel?): CardPlayedResponse {
-        return if (response != null) CardPlayedResponse(true, response) else CardPlayedResponse(false)
+        return CardPlayedResponse(response!= null, response)
     }
 
     @GetMapping("/log")
