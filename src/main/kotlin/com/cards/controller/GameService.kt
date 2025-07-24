@@ -83,26 +83,10 @@ class GameService {
         return geniusHeartsPlayer.getMetaCardList().getCardValue(card)?.toString() ?: "x"
     }
 
-    fun computeMove(): CardPlayedModel {
+    fun computeMove(): CardPlayedModel? {
         val playerToMove = gm.game.getPlayerToMove()
         val suggestedCardToPlay = gm.getCardPlayer(playerToMove).chooseCard()
-
-        val cardsStillInHand = gm.getCardPlayer(playerToMove).getCardsInHand().size
-
-        gm.playCard(suggestedCardToPlay)
-
-        val gameStatusAfterLastMove = gm.game.getStatusAfterLastMove()
-        val trickCompleted = if (gameStatusAfterLastMove.trickCompleted)
-            TrickCompletedModel(
-                gameStatusAfterLastMove.trickWinner!!,
-                gameStatusAfterLastMove.roundCompleted,
-                gameStatusAfterLastMove.gameFinished
-            )
-        else
-            null
-        val nextPlayer = gm.game.getPlayerToMove()
-
-        return CardPlayedModel(playerToMove, suggestedCardToPlay, nextPlayer, cardsStillInHand, trickCompleted)
+        return executeMove(suggestedCardToPlay.color, suggestedCardToPlay.rank)
     }
 
     fun executeMove(color: CardColor, rank: CardRank): CardPlayedModel? {
