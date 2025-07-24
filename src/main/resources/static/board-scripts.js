@@ -147,14 +147,14 @@ function showPlayerCards(player, playerHand, show) {
     }
 }
 
-function showPlayerSouthValues(values) {
+function showGeniusSouthValues(values) {
     for (let i = 0; i < values.length; i++) {
         document.getElementById("meta" + i).innerHTML = values[i]
     }
 }
 
 function showExtras(gameStatus) {
-    showPlayerSouthValues(gameStatus.valueSouth)
+    showGeniusSouthValues(gameStatus.geniusValueSouth)
     document.getElementById("upDownSignal").src = upDownSignalImage(gameStatus.goingUp)
     document.getElementById("buttonJson").onclick = function () {
         showJson(gameStatus.gameJsonString)
