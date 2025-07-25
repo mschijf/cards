@@ -1,35 +1,35 @@
 package com.cards.game.fourplayercardgame
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.basic.CardDeck32
-import com.cards.game.fourplayercardgame.basic.CardPlayer
-import com.cards.game.fourplayercardgame.basic.Game
-import com.cards.game.fourplayercardgame.basic.Player
+import com.cards.game.card.CardDeck
 
 class GameMaster(
     val game : Game,
     private val playerList: List<CardPlayer>) {
 
-    private val cardDeck32 = CardDeck32()
+    private val cardDeck = CardDeck()
 
     init {
         dealCards()
     }
 
     private fun dealCards() {
-        cardDeck32.shuffle(game.getSeed())
-        val cardsInHand = game.rules.getInitialNumberOfCardsPerPlayer()
+        cardDeck.shuffle(game.getSeed())
+        val cardsInHand = cardDeck.numberOfCards() / Player.values().size
         playerList.forEachIndexed { i, player ->
-            player.setCardsInHand(cardDeck32.getCards(cardsInHand*i, cardsInHand))
+            player.setCardsInHand(cardDeck.getCards(cardsInHand*i, cardsInHand))
         }
     }
 
     fun getCardPlayer(player: Player) = playerList.first { cardPlayer -> cardPlayer.player == player }
 
     fun playCard(card: Card) {
-        val playerToMove = game.getCurrentRound().getTrickOnTable().playerToMove()
-        if (legalCardToPlay(playerToMove, card)) {
-            getCardPlayer(playerToMove).removeCard(card)
+        playCard(game.getCurrentRound().getTrickOnTable().playerToMove(), card)
+    }
+
+    private fun playCard(player: Player, card: Card) {
+        if (legalCardToPlay(player, card)) {
+            getCardPlayer(player).removeCard(card)
             game.playCard(card)
             if (game.getStatusAfterLastMove().roundCompleted) {
                 dealCards()

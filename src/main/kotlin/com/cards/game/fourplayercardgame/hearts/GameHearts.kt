@@ -1,8 +1,8 @@
 package com.cards.game.fourplayercardgame.hearts
 
-import com.cards.game.fourplayercardgame.basic.Game
-import com.cards.game.fourplayercardgame.basic.GameRules
-import com.cards.game.fourplayercardgame.basic.Player
+import com.cards.game.fourplayercardgame.Game
+import com.cards.game.fourplayercardgame.GameRules
+import com.cards.game.fourplayercardgame.Player
 import com.cards.game.fourplayercardgame.Score
 
 private const val VALUE_TO_GO_DOWN = 60

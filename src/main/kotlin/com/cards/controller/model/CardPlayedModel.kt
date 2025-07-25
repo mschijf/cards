@@ -1,7 +1,7 @@
 package com.cards.controller.model
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.basic.Player
+import com.cards.game.fourplayercardgame.Player
 
 data class CardPlayedModel(
     val player: Player,
