@@ -1,5 +1,7 @@
 package com.cards.game.fourplayercardgame
 
+import com.cards.game.fourplayercardgame.basic.Player
+
 class Score() {
     private val scorePerPlayer = Player.values().associateWith { p -> 0 }.toMutableMap()
 

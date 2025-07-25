@@ -2,7 +2,7 @@ package com.cards.game.fourplayercardgame.hearts
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
-import com.cards.game.fourplayercardgame.Table
+import com.cards.game.fourplayercardgame.basic.CardDeck32
 
 class Analyzer(
     private val cardsInHand : List<Card>,
@@ -240,7 +240,7 @@ class Analyzer(
     //------------------------------------------------------------------------------------------------------------------
 
     private fun higherCardsThen(card: Card): List<Card> {
-        return Table.cardDeck
+        return CardDeck32.getCardDeck()
             .getCards(card.color)
             .filter { crd -> toRankNumber(crd) > toRankNumber(card) }
     }

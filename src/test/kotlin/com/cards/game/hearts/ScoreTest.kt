@@ -1,6 +1,6 @@
 package com.cards.game.hearts
 
-import com.cards.game.fourplayercardgame.Player
+import com.cards.game.fourplayercardgame.basic.Player
 import org.junit.jupiter.api.Test
 
 internal class ScoreTest {

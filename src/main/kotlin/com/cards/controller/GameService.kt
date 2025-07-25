@@ -11,24 +11,23 @@ import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.hearts.GameHearts
 import com.cards.game.fourplayercardgame.GameMaster
-import com.cards.game.fourplayercardgame.Player
-import com.cards.game.fourplayercardgame.Table
+import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.hearts.GeniusHeartsPlayer
 import org.springframework.stereotype.Service
 import kotlin.random.Random
 
 @Service
 class GameService {
-    private lateinit var gm: GameMaster
+    private var gm = createGameMaster()
 
-    init {
-        newGame(0)
+    private fun createGameMaster(seed: Int = 0): GameMaster {
+        val game = GameHearts(seed)
+        val playerList = Player.values().map { p -> GeniusHeartsPlayer(p, game) }
+        return GameMaster(GameHearts(seed), playerList)
     }
 
     fun newGame(seed: Int = Random.nextInt()): GameStatusModel {
-        val game = GameHearts(seed)
-        val playerList = Player.values().map { p -> GeniusHeartsPlayer(p, game) }
-        gm = GameMaster(game, playerList)
+        gm = createGameMaster(seed)
         return getGameStatus()
     }
 
@@ -42,20 +41,17 @@ class GameService {
         val playerToMove = gm.game.getPlayerToMove()
         val leadPlayer = gm.game.getCurrentRound().getTrickOnTable().getLeadPlayer()
 
-        val playerSouth =
-            List(Table.nCardsInHand) { i -> gm.getCardPlayer(Player.SOUTH).getCardsInHand().elementAtOrNull(i) }
-        val playerWest =
-            List(Table.nCardsInHand) { i -> gm.getCardPlayer(Player.WEST).getCardsInHand().elementAtOrNull(i) }
-        val playerNorth =
-            List(Table.nCardsInHand) { i -> gm.getCardPlayer(Player.NORTH).getCardsInHand().elementAtOrNull(i) }
-        val playerEast =
-            List(Table.nCardsInHand) { i -> gm.getCardPlayer(Player.EAST).getCardsInHand().elementAtOrNull(i) }
+        val size = gm.game.rules.getInitialNumberOfCardsPerPlayer()
+        val playerSouth = List(size) { i -> gm.getCardPlayer(Player.SOUTH).getCardsInHand().elementAtOrNull(i) }
+        val playerWest = List(size) { i -> gm.getCardPlayer(Player.WEST).getCardsInHand().elementAtOrNull(i) }
+        val playerNorth = List(size) { i -> gm.getCardPlayer(Player.NORTH).getCardsInHand().elementAtOrNull(i) }
+        val playerEast = List(size) { i -> gm.getCardPlayer(Player.EAST).getCardsInHand().elementAtOrNull(i) }
 
         val seed = gm.game.getSeed()
         val gameJsonString = "" //Gson().toJson(gm)
 
         val goingUp = (gm.game as GameHearts).getGoingUp()
-        val geniusValueSouth = List(Table.nCardsInHand) { i ->
+        val geniusValueSouth = List(gm.game.rules.getInitialNumberOfCardsPerPlayer()) { i ->
             getGeniusCardValue(
                 (gm.getCardPlayer(Player.SOUTH) as GeniusHeartsPlayer),
                 gm.getCardPlayer(Player.SOUTH).getCardsInHand().elementAtOrNull(i)

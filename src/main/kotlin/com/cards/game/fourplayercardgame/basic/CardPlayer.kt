@@ -1,4 +1,4 @@
-package com.cards.game.fourplayercardgame
+package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
@@ -6,7 +6,8 @@ import kotlin.random.Random
 
 open class CardPlayer(
     val player: Player,
-    val game: Game) {
+    val game: Game
+) {
 
     private var cardsInHand: MutableList<Card> = mutableListOf()
 

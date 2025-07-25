@@ -1,18 +1,17 @@
-package com.cards.game.fourplayercardgame
+package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
+import com.cards.game.fourplayercardgame.GameStatusAfterLastMove
+import com.cards.game.fourplayercardgame.Score
 import kotlin.random.Random
 
 abstract class Game(
     private val seed: Int = Random.Default.nextInt()) {
 
-    abstract fun getGameRules(): GameRules
+    private val completedRoundList = arrayListOf<Round>()
 
     val rules = getGameRules()
-
     private var leadPlayer = Player.WEST
-
-    private val completedRoundList = arrayListOf<Round>()
     private var currentRound = Round(rules, leadPlayer)
 
     fun completeRoundsPlayed() = completedRoundList.size
@@ -33,8 +32,6 @@ abstract class Game(
         }
     }
 
-    abstract fun doGameSpecificActionsAfterCompletedRound()
-
     private fun addRound(round: Round) {
         if (!isFinished()) {
             completedRoundList.add(round)
@@ -43,13 +40,13 @@ abstract class Game(
         }
     }
 
-    protected abstract fun isFinished(): Boolean
-
     private fun getLastTrickWinner(): Player? {
-        if (!currentRound.isNew()) {
-            return currentRound.getLastCompletedTrickWinner()
+        val lastTrick = if (!currentRound.isNew()) {
+            currentRound.getLastCompletedTrick()
+        } else {
+            completedRoundList.last().getLastCompletedTrick()
         }
-        return completedRoundList.last().getLastCompletedTrickWinner()
+        return lastTrick?.getWinner()
     }
 
     fun getCurrentRound() = currentRound
@@ -63,14 +60,12 @@ abstract class Game(
 
     protected fun getTotalScore(): Score {
         val score = Score()
-        completedRoundList.forEachIndexed { index, r ->  score.plus(determineRoundScore(index, r.getScore()))}
+        completedRoundList.forEachIndexed { index, r -> score.plus(determineRoundScore(index, rules.getScoreForRound(r)))}
         return score
     }
 
-    protected abstract fun determineRoundScore(roundNumber: Int, score: Score): Score
-
     private fun getScorePerRound(): List<Score> {
-        return completedRoundList.mapIndexed { index, r ->  determineRoundScore(index, r.getScore())}
+        return completedRoundList.mapIndexed { index, r ->  determineRoundScore(index, rules.getScoreForRound(r))}
     }
 
     fun getCumulativeScorePerRound(): List<Score> {
@@ -79,5 +74,9 @@ abstract class Game(
         return list
     }
 
+    protected abstract fun getGameRules(): GameRules
+    protected abstract fun doGameSpecificActionsAfterCompletedRound()
+    protected abstract fun isFinished(): Boolean
+    protected abstract fun determineRoundScore(roundNumber: Int, score: Score): Score
 }
 

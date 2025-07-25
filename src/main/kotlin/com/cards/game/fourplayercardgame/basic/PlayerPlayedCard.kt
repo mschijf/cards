@@ -1,4 +1,4 @@
-package com.cards.game.fourplayercardgame
+package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
 
