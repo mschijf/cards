@@ -144,6 +144,7 @@ function showCard(cardId, cardModel, show) {
 function showPlayerCards(player, playerHand, show) {
     for (let cardIndex = 0; cardIndex < playerHand.length; cardIndex++) {
         showCard(player + cardIndex, playerHand[cardIndex], show)
+        // showCard(player + cardIndex, playerHand[cardIndex], true)
     }
 }
 
@@ -276,10 +277,20 @@ function cardFromHandToTable(movePlayed) {
     if (playerHandCardImage == null) {
         playerHandCardImage = lastPlayerHandCardImage(movePlayed.player, movePlayed.cardsInHand)
     }
-    playerHandCardImage.src = NoCardImage()
-
+    shiftCardsToLeft(playerHandCardImage)
     showInfo("")
 }
+
+function shiftCardsToLeft(playerHandCardImage) {
+    let i = playerHandCardImage.id[playerHandCardImage.id.length-1]
+    let name = playerHandCardImage.id.substring(0, playerHandCardImage.id.length-1)
+    for (let j=parseInt(i); j < 7; j++) {
+        let nb = j + 1
+        document.getElementById(name+j).src = document.getElementById(name+nb).src
+    }
+    document.getElementById(name+7).src = NoCardImage()
+}
+
 
 function doNextMove(nextPlayer) {
     if (isHumanPlayer(nextPlayer)) {
