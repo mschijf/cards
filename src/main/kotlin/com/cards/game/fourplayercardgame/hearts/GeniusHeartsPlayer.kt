@@ -92,7 +92,7 @@ class GeniusHeartsPlayer(
                 .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), -200)
         } else {
             if (trick.isLastPlayerToMove() ) {
-                if (trick.getValue() == 0 && !analyzer.hasAllCardsOfColor(leadColor) && analyzer.canGetRidOfLeadPosition(leadColor)) {
+                if (game.rules.getValueForTrick(trick) == 0 && !analyzer.hasAllCardsOfColor(leadColor) && analyzer.canGetRidOfLeadPosition(leadColor)) {
                     // save to throw the highest card
                     analyzer
                         .evaluateByRankHigherThanOtherCard(winningCard, 0, 1)

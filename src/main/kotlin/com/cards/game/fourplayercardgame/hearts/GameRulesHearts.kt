@@ -51,6 +51,15 @@ class GameRulesHearts: GameRules {
 
     override fun getValueForTrick(trick: Trick)  = trick.getCardsPlayed().sumOf { c -> cardValue(c.card) }
 
+    override fun getScoreForRound(round: Round): Score {
+        val score = Score()
+        if (!round.isComplete()) {
+            return score
+        }
+        round.getCompletedTrickList().forEach { t -> score.plus(getScoreForTrick(t)) }
+        return score
+    }
+
     override fun roundIsComplete(round: Round): Boolean = round.completedTricksPlayed() >= Table.nTricksPerRound
 
     override fun legalPlayableCardsForTrickOnTable(trickOnTable: Trick, cardsInHand: List<Card>): List<Card> {

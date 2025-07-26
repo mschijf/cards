@@ -62,15 +62,13 @@ abstract class Game(
     )
 
     protected fun getTotalScore(): Score {
-        val score = Score()
-        completedRoundList.forEachIndexed { index, r ->  score.plus(determineRoundScore(index, r.getScore()))}
-        return score
+        return getCumulativeScorePerRound().lastOrNull()?: Score()
     }
 
     protected abstract fun determineRoundScore(roundNumber: Int, score: Score): Score
 
     private fun getScorePerRound(): List<Score> {
-        return completedRoundList.mapIndexed { index, r ->  determineRoundScore(index, r.getScore())}
+        return completedRoundList.mapIndexed { index, r ->  determineRoundScore(index, rules.getScoreForRound(r))}
     }
 
     fun getCumulativeScorePerRound(): List<Score> {
