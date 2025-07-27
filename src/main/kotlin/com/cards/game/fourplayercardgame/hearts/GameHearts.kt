@@ -14,7 +14,7 @@ import kotlin.collections.ifEmpty
 import kotlin.math.max
 
 private const val ALL_POINTS_FOR_PIT = 15
-private const val VALUE_TO_GO_DOWN = 60
+private const val VALUE_TO_GO_DOWN = 14
 private const val VALUE_TO_FINISH = 0
 
 class GameHearts(): Game() {
@@ -77,24 +77,22 @@ class GameHearts(): Game() {
 
     //score
     override fun getScoreForTrick(trick: Trick): Score {
-        val score = Score()
-        if (trick.isComplete()) {
-            val winner = trick.winner()
-            score.plusScorePerPlayer(
-                winner!!.tablePosition,
+        return if (!trick.isComplete()) {
+            Score.ZERO
+        } else {
+            Score.scoreForPlayer(
+                trick.winner()!!,
                 getPlayerList().sumOf { player -> cardValue(trick.getCardPlayedBy(player)!!) }
             )
         }
-        return score
     }
 
     private fun getBasicScoreForRound(round: Round): Score {
-        val score = Score()
-        if (!round.isComplete()) {
-            return score
-        }
-        round.getCompletedTrickList().forEach { trick ->
-            score.plus(getScoreForTrick(trick))
+        var score = Score.ZERO
+        if (round.isComplete()) {
+            round.getCompletedTrickList().forEach { trick ->
+                score = score.plus(getScoreForTrick(trick))
+            }
         }
         return score
     }
@@ -104,9 +102,9 @@ class GameHearts(): Game() {
         if (goingDownRoundNumber != null)
             return goingDownRoundNumber!!
 
-        val score = Score()
+        var score = Score.ZERO
         completeRoundsPlayed().forEachIndexed { idx, round ->
-            score.plus(getBasicScoreForRound(round))
+            score = score.plus(getBasicScoreForRound(round))
             if (score.maxValue() >= VALUE_TO_GO_DOWN) {
                 goingDownRoundNumber = idx+1
                 return idx + 1
@@ -122,20 +120,20 @@ class GameHearts(): Game() {
         val goingDown = roundNumber >= goingDownFromRoundNumber()
         if (!goingDown) {
             if (score.maxValue() == ALL_POINTS_FOR_PIT) {
-                val newScore = Score()
-                newScore.plusScorePerPlayer(TablePosition.EAST, if (score.getEastValue() == 0) ALL_POINTS_FOR_PIT else 0)
-                newScore.plusScorePerPlayer(TablePosition.WEST, if (score.getWestValue() == 0) ALL_POINTS_FOR_PIT else 0)
-                newScore.plusScorePerPlayer(TablePosition.NORTH, if (score.getNorthValue() == 0) ALL_POINTS_FOR_PIT else 0)
-                newScore.plusScorePerPlayer(TablePosition.SOUTH, if (score.getSouthValue() == 0) ALL_POINTS_FOR_PIT else 0)
+                var newScore = Score.ZERO
+                newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.WEST), if (score.westValue == 0) ALL_POINTS_FOR_PIT else 0)
+                newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.NORTH), if (score.northValue == 0) ALL_POINTS_FOR_PIT else 0)
+                newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.EAST), if (score.eastValue == 0) ALL_POINTS_FOR_PIT else 0)
+                newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.SOUTH), if (score.southValue == 0) ALL_POINTS_FOR_PIT else 0)
                 return newScore
             }
             return score
         } else {
-            val newScore = Score()
-            newScore.plusScorePerPlayer(TablePosition.EAST, -score.getEastValue())
-            newScore.plusScorePerPlayer(TablePosition.WEST, -score.getWestValue())
-            newScore.plusScorePerPlayer(TablePosition.NORTH, -score.getNorthValue())
-            newScore.plusScorePerPlayer(TablePosition.SOUTH, -score.getSouthValue())
+            var newScore = Score.ZERO
+            newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.WEST), -score.westValue)
+            newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.NORTH), -score.northValue)
+            newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.EAST), -score.eastValue)
+            newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.SOUTH), -score.southValue)
             return newScore
         }
     }

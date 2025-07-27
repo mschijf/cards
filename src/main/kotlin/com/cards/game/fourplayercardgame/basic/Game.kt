@@ -68,7 +68,7 @@ abstract class Game() {
 
     // score
     fun getTotalScore(): Score {
-        return getCumulativeScorePerRound().lastOrNull()?: Score()
+        return getCumulativeScorePerRound().lastOrNull()?: Score.ZERO
     }
 
     private fun getScorePerRound(): List<Score> {
@@ -77,8 +77,8 @@ abstract class Game() {
 
     fun getCumulativeScorePerRound(): List<Score> {
         val list = getScorePerRound()
-        list.forEachIndexed{ index, sc ->  sc.plus(if (index > 0) list[index-1] else Score()) }
-        return list
+        val x = list.runningFold(Score.ZERO) { acc, sc -> acc.plus(sc) }.drop(1)
+        return x
     }
 }
 

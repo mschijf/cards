@@ -116,10 +116,10 @@ class GameService {
         return ScoreModel (
             gm.game.getCumulativeScorePerRound()
                 .map { spr -> PlayerScore(
-                    spr.getSouthValue(),
-                    spr.getWestValue(),
-                    spr.getEastValue(),
-                    spr.getNorthValue())
+                    spr.southValue,
+                    spr.westValue,
+                    spr.eastValue,
+                    spr.northValue)
                 }
         )
     }
