@@ -4,16 +4,23 @@ import com.cards.game.card.Card
 
 abstract class Game() {
 
-    abstract fun getGameRules(): GameRules
+    //trick
+    abstract fun winnerForTrick(trick: Trick) : Player?
+    abstract fun winningCardForTrick(trick: Trick) : Card?
+    abstract fun legalPlayableCardsForTrick(trickOnTable: Trick, cardsInHand: List<Card>): List<Card>
+    abstract fun getScoreForTrick(trick: Trick): Score
+    abstract fun getValueForTrick(trick: Trick): Int
 
-    val rules = getGameRules()
+//    //round
+    abstract fun getScoreForRound(game: Game, round: Round): Score
+    abstract fun roundIsComplete(round: Round): Boolean
 
-    private var leadPlayer = Player.WEST
 
     private val completedRoundList = arrayListOf<Round>()
-    private var currentRound = Round(rules, leadPlayer)
+    private var currentRound = startNewRound(Player.WEST)
 
     fun completeRoundsPlayed() = completedRoundList
+    fun startNewRound(leadPlayer: Player) = Round(this, leadPlayer)
 
     fun playCard(card: Card) {
         if (isFinished()) {
@@ -23,8 +30,7 @@ abstract class Game() {
         currentRound.playCard(card)
         if (currentRound.isComplete()) {
             addRound(currentRound)
-            leadPlayer = leadPlayer.nextPlayer()
-            currentRound = Round(rules, leadPlayer)
+            currentRound = startNewRound(currentRound.getLeadPLayer().nextPlayer())
             doGameSpecificActionsAfterCompletedRound()
         }
     }
@@ -62,7 +68,7 @@ abstract class Game() {
     }
 
     private fun getScorePerRound(): List<Score> {
-        return completedRoundList.mapIndexed { index, round ->  rules.getScoreForRound(this, round)}
+        return completedRoundList.mapIndexed { index, round ->  getScoreForRound(this, round)}
     }
 
     fun getCumulativeScorePerRound(): List<Score> {

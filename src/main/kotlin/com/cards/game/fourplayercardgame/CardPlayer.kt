@@ -25,7 +25,7 @@ open class CardPlayer(
     }
 
     open fun chooseCard(): Card {
-        val legalCards = game.rules.legalPlayableCardsForTrickOnTable(
+        val legalCards = game.legalPlayableCardsForTrick(
             game.getCurrentRound().getTrickOnTable(),
             getCardsInHand()
         )

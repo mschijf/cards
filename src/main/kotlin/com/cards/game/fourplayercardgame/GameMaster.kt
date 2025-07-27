@@ -45,7 +45,7 @@ class GameMaster(
             return false
 
         val cardsInHand = getCardPlayer(player).getCardsInHand()
-        val legalCards = game.rules.legalPlayableCardsForTrickOnTable(trickOnTable, cardsInHand)
+        val legalCards = game.legalPlayableCardsForTrick(trickOnTable, cardsInHand)
         return legalCards.contains(card)
     }
 

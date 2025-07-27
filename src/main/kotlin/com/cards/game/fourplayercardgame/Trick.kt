@@ -3,7 +3,7 @@ package com.cards.game.fourplayercardgame
 import com.cards.game.card.Card
 
 class Trick(
-    private val gameRules: GameRules,
+    private val game: Game,
     private val leadPlayer: Player) {
 
     private var playerToMove = leadPlayer
@@ -40,6 +40,6 @@ class Trick(
     }
 
 
-    fun winner(): Player? = gameRules.winnerForTrick(this)
-    fun winningCard(): Card? = gameRules.winningCardForTrick(this)
+    fun winner(): Player? = game.winnerForTrick(this)
+    fun winningCard(): Card? = game.winningCardForTrick(this)
 }

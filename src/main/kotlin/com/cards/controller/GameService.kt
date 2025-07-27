@@ -45,6 +45,8 @@ class GameService {
         val playerEast =
             List(Table.nCardsInHand) { i -> gm.getCardPlayer(Player.EAST).getCardsInHand().elementAtOrNull(i) }
 
+        //todo: add legal cards to play for player to move, can be used n 'setClickable' in board-scripts.js
+
         val gameJsonString = "" //Gson().toJson(gm)
 
         val goingUp = (gm.game as GameHearts).getGoingUp()
