@@ -6,7 +6,6 @@ import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.CardPlayer
 import com.cards.game.fourplayercardgame.Player
 import com.cards.game.fourplayercardgame.Table
-import kotlin.random.Random
 
 class GeniusHeartsPlayer(
     player: Player,
@@ -15,7 +14,7 @@ class GeniusHeartsPlayer(
     override fun chooseCard(): Card {
         return getMetaCardList()
             .metaCardList
-            .shuffled(Random(game.getSeed()))
+            .shuffled()
             .maxByOrNull { metaCard -> metaCard.value }!!
             .card
     }

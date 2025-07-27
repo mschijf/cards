@@ -1,10 +1,8 @@
 package com.cards.game.fourplayercardgame
 
 import com.cards.game.card.Card
-import kotlin.random.Random
 
-abstract class Game(
-    private val seed: Int = Random.Default.nextInt()) {
+abstract class Game() {
 
     abstract fun getGameRules(): GameRules
 
@@ -15,9 +13,7 @@ abstract class Game(
     private val completedRoundList = arrayListOf<Round>()
     private var currentRound = Round(rules, leadPlayer)
 
-    fun completeRoundsPlayed() = completedRoundList.size
-
-    fun getSeed() = seed
+    fun completeRoundsPlayed() = completedRoundList
 
     fun playCard(card: Card) {
         if (isFinished()) {
@@ -65,10 +61,8 @@ abstract class Game(
         return getCumulativeScorePerRound().lastOrNull()?: Score()
     }
 
-    protected abstract fun determineRoundScore(roundNumber: Int, score: Score): Score
-
     private fun getScorePerRound(): List<Score> {
-        return completedRoundList.mapIndexed { index, r ->  determineRoundScore(index, rules.getScoreForRound(r))}
+        return completedRoundList.mapIndexed { index, round ->  rules.getScoreForRound(this, round)}
     }
 
     fun getCumulativeScorePerRound(): List<Score> {

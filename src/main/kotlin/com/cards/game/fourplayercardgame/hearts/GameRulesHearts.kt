@@ -4,6 +4,11 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.*
+import kotlin.math.max
+
+private const val ALL_POINTS_FOR_PIT = 15
+const val VALUE_TO_GO_DOWN = 15
+const val VALUE_TO_FINISH = 0
 
 class GameRulesHearts: GameRules {
 
@@ -51,13 +56,36 @@ class GameRulesHearts: GameRules {
 
     override fun getValueForTrick(trick: Trick)  = trick.getCardsPlayed().sumOf { c -> cardValue(c.card) }
 
-    override fun getScoreForRound(round: Round): Score {
+    override fun getScoreForRound(game: Game, round: Round): Score {
         val score = Score()
         if (!round.isComplete()) {
             return score
         }
-        round.getCompletedTrickList().forEach { t -> score.plus(getScoreForTrick(t)) }
-        return score
+        round.getCompletedTrickList().forEach { trick ->
+            score.plus(getScoreForTrick(trick))
+        }
+        val roundNumber = max(0, game.completeRoundsPlayed().indexOf(round))
+
+        val goingDown = roundNumber >= (game as GameHearts).getGoingDownFromRound()
+        if (!goingDown) {
+            if (score.maxValue() == ALL_POINTS_FOR_PIT) {
+                val newScore = Score()
+                newScore.plusScorePerPlayer(Player.EAST, if (score.getEastValue() == 0) ALL_POINTS_FOR_PIT else 0)
+                newScore.plusScorePerPlayer(Player.WEST, if (score.getWestValue() == 0) ALL_POINTS_FOR_PIT else 0)
+                newScore.plusScorePerPlayer(Player.NORTH, if (score.getNorthValue() == 0) ALL_POINTS_FOR_PIT else 0)
+                newScore.plusScorePerPlayer(Player.SOUTH, if (score.getSouthValue() == 0) ALL_POINTS_FOR_PIT else 0)
+                return newScore
+            }
+            return score
+        } else {
+            val newScore = Score()
+            newScore.plusScorePerPlayer(Player.EAST, -score.getEastValue())
+            newScore.plusScorePerPlayer(Player.WEST, -score.getWestValue())
+            newScore.plusScorePerPlayer(Player.NORTH, -score.getNorthValue())
+            newScore.plusScorePerPlayer(Player.SOUTH, -score.getSouthValue())
+            return newScore
+        }
+
     }
 
     override fun roundIsComplete(round: Round): Boolean = round.completedTricksPlayed() >= Table.nTricksPerRound

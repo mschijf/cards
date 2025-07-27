@@ -10,7 +10,7 @@ interface GameRules {
     fun getValueForTrick(trick: Trick): Int
 
     //round
-    fun getScoreForRound(round: Round): Score
+    fun getScoreForRound(game: Game, round: Round): Score
     fun roundIsComplete(round: Round): Boolean
 
     //other

@@ -14,7 +14,7 @@ class GameMaster(
     }
 
     private fun dealCards() {
-        cardDeck.shuffle(game.getSeed())
+        cardDeck.shuffle()
         val cardsInHand = cardDeck.numberOfCards() / Player.values().size
         playerList.forEachIndexed { i, player ->
             player.setCardsInHand(cardDeck.getCards(cardsInHand*i, cardsInHand))

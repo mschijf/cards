@@ -11,7 +11,6 @@ data class GameStatusModel(
     val playerWest: List<Card?>,
     val playerNorth: List<Card?>,
     val playerEast: List<Card?>,
-    val seed: Int,
     val gameJsonString: String,
 
     val goingUp: Boolean,

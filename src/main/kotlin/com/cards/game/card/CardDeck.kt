@@ -1,14 +1,12 @@
 package com.cards.game.card
 
-import kotlin.random.Random
-
 class CardDeck {
     private val baseDeck = CardColor.values().flatMap{clr -> CardRank.values().map{rnk -> Card(clr, rnk)}}
 
     private var deck = baseDeck
 
-    fun shuffle(seed: Int) {
-        deck = baseDeck.shuffled(Random(seed))
+    fun shuffle() {
+        deck = baseDeck.shuffled()
     }
 
     fun numberOfCards() = deck.size

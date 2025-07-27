@@ -1,32 +1,26 @@
 package com.cards.controller
 
-import com.cards.controller.model.CardPlayedModel
-import com.cards.controller.model.GameStatusModel
-import com.cards.controller.model.PlayerScore
-import com.cards.controller.model.ScoreModel
-import com.cards.controller.model.TableModel
-import com.cards.controller.model.TrickCompletedModel
+import com.cards.controller.model.*
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.hearts.GameHearts
 import com.cards.game.fourplayercardgame.GameMaster
 import com.cards.game.fourplayercardgame.Player
 import com.cards.game.fourplayercardgame.Table
+import com.cards.game.fourplayercardgame.hearts.GameHearts
 import com.cards.game.fourplayercardgame.hearts.GeniusHeartsPlayer
 import org.springframework.stereotype.Service
-import kotlin.random.Random
 
 @Service
 class GameService {
     private lateinit var gm: GameMaster
 
     init {
-        newGame(0)
+        newGame()
     }
 
-    fun newGame(seed: Int = Random.nextInt()): GameStatusModel {
-        val game = GameHearts(seed)
+    fun newGame(): GameStatusModel {
+        val game = GameHearts()
         val playerList = Player.values().map { p -> GeniusHeartsPlayer(p, game) }
         gm = GameMaster(game, playerList)
         return getGameStatus()
@@ -51,7 +45,6 @@ class GameService {
         val playerEast =
             List(Table.nCardsInHand) { i -> gm.getCardPlayer(Player.EAST).getCardsInHand().elementAtOrNull(i) }
 
-        val seed = gm.game.getSeed()
         val gameJsonString = "" //Gson().toJson(gm)
 
         val goingUp = (gm.game as GameHearts).getGoingUp()
@@ -70,7 +63,6 @@ class GameService {
             playerWest,
             playerNorth,
             playerEast,
-            seed,
             gameJsonString,
             goingUp,
             geniusValueSouth,

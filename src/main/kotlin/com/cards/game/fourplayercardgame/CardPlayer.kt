@@ -2,7 +2,6 @@ package com.cards.game.fourplayercardgame
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
-import kotlin.random.Random
 
 open class CardPlayer(
     val player: Player,
@@ -30,6 +29,6 @@ open class CardPlayer(
             game.getCurrentRound().getTrickOnTable(),
             getCardsInHand()
         )
-        return legalCards.random(Random(game.getSeed()))
+        return legalCards.random()
     }
 }

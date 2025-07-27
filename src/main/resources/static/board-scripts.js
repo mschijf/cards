@@ -160,7 +160,7 @@ function showExtras(gameStatus) {
     document.getElementById("buttonJson").onclick = function () {
         showJson(gameStatus.gameJsonString)
     };
-    showJson(gameStatus.seed)
+    showJson("")
 }
 
 let __lastWinnerId = "pointToWinnerNorth"
@@ -184,7 +184,7 @@ function handleGameStatus(gameStatus) {
     showExtras(gameStatus)
     showLeader(gameStatus.leadPlayer)
 
-    showJson(gameStatus.seed)
+    showJson("")
     let waitForNextMove = isHumanPlayer(gameStatus.playerToMove) ? 0 : 500
     setTimeout(function () {
         doNextMove(gameStatus.playerToMove)
@@ -372,8 +372,10 @@ function handleScoreCard(scoreModel) {
 //-----------------------------------------------------------------------------------------
 
 function handleLog(logLines) {
-    document.getElementById("log").value = logLines
-    scrollLogToBottom()
+    if (document.getElementById("log") !== null) {
+        document.getElementById("log").value = logLines
+        scrollLogToBottom()
+    }
 }
 
 function scrollLogToBottom() {
