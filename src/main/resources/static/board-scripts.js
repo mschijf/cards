@@ -255,13 +255,13 @@ function handleMove(movePlayed) {
         roundCompleteTime = 1000
         setTimeout(function () {
             requestForScoreCard();
+            if (movePlayed.trickCompleted.gameOver) {
+                showInfo("---- GAME OVER ----")
+            }
         }, trickCompleteTime)
     }
-
-    if (movePlayed.trickCompleted != null && movePlayed.trickCompleted.gameOver) {
-        showInfo("---- GAME OVER ----")
+    if (movePlayed.trickCompleted != null && movePlayed.trickCompleted.gameOver)
         return
-    }
 
     setTimeout(function () {
         requestGameStatus();

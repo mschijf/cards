@@ -49,7 +49,7 @@ class GameService {
 
         val gameJsonString = "" //Gson().toJson(gm)
 
-        val goingUp = (gm.game as GameHearts).getGoingUp()
+        val goingUp = (gm.game as GameHearts).isGoingUp()
         val geniusValueSouth = List(Table.nCardsInHand) { i ->
             getGeniusCardValue(
                 (gm.getCardPlayer(Player.SOUTH) as GeniusHeartsPlayer),

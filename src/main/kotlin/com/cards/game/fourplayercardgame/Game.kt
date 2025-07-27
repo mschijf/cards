@@ -16,7 +16,6 @@ abstract class Game() {
 
     //round
     abstract fun roundIsComplete(round: Round): Boolean
-    abstract fun doGameSpecificActionsAfterCompletedRoundPlayed()
     abstract fun getScoreForRound(game: Game, round: Round): Score
 
     //game
@@ -44,7 +43,6 @@ abstract class Game() {
         if (currentRound.isComplete()) {
             addRound(currentRound)
             currentRound = startNewRound(currentRound.getLeadPLayer().nextPlayer())
-            doGameSpecificActionsAfterCompletedRoundPlayed()
         }
     }
 
@@ -69,6 +67,5 @@ abstract class Game() {
         list.forEachIndexed{ index, sc ->  sc.plus(if (index > 0) list[index-1] else Score()) }
         return list
     }
-
 }
 

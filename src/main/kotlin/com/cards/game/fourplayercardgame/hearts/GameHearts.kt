@@ -14,16 +14,12 @@ import kotlin.collections.ifEmpty
 import kotlin.math.max
 
 private const val ALL_POINTS_FOR_PIT = 15
-private const val VALUE_TO_GO_DOWN = 15
+private const val VALUE_TO_GO_DOWN = 5
 private const val VALUE_TO_FINISH = 0
 
 class GameHearts(): Game() {
 
-    private var goingDownFromRoundNumber = Int.MAX_VALUE
-
-    fun getGoingDownFromRound() = goingDownFromRoundNumber
-
-    fun getGoingUp() = completeRoundsPlayed().size < goingDownFromRoundNumber
+    fun isGoingUp() = completeRoundsPlayed().size < goingDownFromRoundNumber()
 
     private fun toRankNumber (card: Card) : Int = card.rank.rankNumber - 7
 
@@ -35,8 +31,6 @@ class GameHearts(): Game() {
             CardColor.DIAMONDS -> 0
         }
     }
-
-
 
     //trick
     override fun winnerForTrick(trick: Trick) : Player? {
@@ -68,14 +62,8 @@ class GameHearts(): Game() {
     //round
     override fun roundIsComplete(round: Round): Boolean = round.completedTricksPlayed() >= Table.nTricksPerRound
 
-    override fun doGameSpecificActionsAfterCompletedRoundPlayed() {
-        if (getGoingUp() && getTotalScore().maxValue() >= VALUE_TO_GO_DOWN) {
-            goingDownFromRoundNumber = completeRoundsPlayed().size
-        }
-    }
-
     //game
-    override fun isFinished() = !getGoingUp() && (getTotalScore().minValue() <= VALUE_TO_FINISH)
+    override fun isFinished() = !isGoingUp() && (getTotalScore().minValue() <= VALUE_TO_FINISH)
 
     //score
     override fun getScoreForTrick(trick: Trick): Score {
@@ -89,7 +77,7 @@ class GameHearts(): Game() {
         return score
     }
 
-    override fun getScoreForRound(game: Game, round: Round): Score {
+    private fun getBasicScoreForRound(round: Round): Score {
         val score = Score()
         if (!round.isComplete()) {
             return score
@@ -97,9 +85,30 @@ class GameHearts(): Game() {
         round.getCompletedTrickList().forEach { trick ->
             score.plus(getScoreForTrick(trick))
         }
+        return score
+    }
+
+    private var goingDownRoundNumber: Int? = null
+    private fun goingDownFromRoundNumber(): Int {
+        if (goingDownRoundNumber != null)
+            return goingDownRoundNumber!!
+
+        val score = Score()
+        completeRoundsPlayed().forEachIndexed { idx, round ->
+            score.plus(getBasicScoreForRound(round))
+            if (score.maxValue() >= VALUE_TO_GO_DOWN) {
+                goingDownRoundNumber = idx+1
+                return idx + 1
+            }
+        }
+        return Int.MAX_VALUE
+    }
+
+    override fun getScoreForRound(game: Game, round: Round): Score {
+        val score = getBasicScoreForRound(round)
         val roundNumber = max(0, game.completeRoundsPlayed().indexOf(round))
 
-        val goingDown = roundNumber >= (game as GameHearts).getGoingDownFromRound()
+        val goingDown = roundNumber >= goingDownFromRoundNumber()
         if (!goingDown) {
             if (score.maxValue() == ALL_POINTS_FOR_PIT) {
                 val newScore = Score()
