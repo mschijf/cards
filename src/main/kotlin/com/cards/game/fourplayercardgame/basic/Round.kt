@@ -1,14 +1,24 @@
-package com.cards.game.fourplayercardgame
+package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
+import com.cards.game.fourplayercardgame.Player
 
 class Round(
     private val game: Game,
-    private val leadPlayer: Player) {
+    private val leadPlayer: Player
+) {
 
     private val completedTrickList = arrayListOf<Trick>()
-
     private var currentTrick = Trick(game, leadPlayer)
+
+    fun getLeadPLayer() = leadPlayer
+    fun completedTricksPlayed() = completedTrickList.size
+    fun isNew(): Boolean = completedTrickList.isEmpty() && currentTrick.isNew()
+    fun getTrickOnTable() = currentTrick
+    fun getLastCompletedTrickWinner(): Player? = completedTrickList.lastOrNull()?.winner()
+    fun getCompletedTrickList() = completedTrickList
+
+    fun isComplete(): Boolean = game.roundIsComplete(this)
 
     fun playCard(card: Card) {
         currentTrick.addCard(card)
@@ -25,12 +35,4 @@ class Round(
         else
             throw Exception("Trying to add more tricks to a Deal than the maximum allowed")
     }
-
-    fun getLeadPLayer() = leadPlayer
-    fun completedTricksPlayed() = completedTrickList.size
-    fun isComplete(): Boolean = game.roundIsComplete(this)
-    fun isNew(): Boolean = completedTrickList.isEmpty() && currentTrick.isNew()
-    fun getTrickOnTable() = currentTrick
-    fun getLastCompletedTrickWinner(): Player? = completedTrickList.lastOrNull()?.winner()
-    fun getCompletedTrickList() = completedTrickList
 }

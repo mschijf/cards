@@ -2,6 +2,7 @@ package com.cards.game.fourplayercardgame
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardDeck
+import com.cards.game.fourplayercardgame.basic.Game
 
 class GameMaster(
     val game : Game,

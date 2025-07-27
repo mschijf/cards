@@ -3,12 +3,12 @@ package com.cards.game.fourplayercardgame.hearts
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.Game
+import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.Player
-import com.cards.game.fourplayercardgame.Round
+import com.cards.game.fourplayercardgame.basic.Round
 import com.cards.game.fourplayercardgame.Score
 import com.cards.game.fourplayercardgame.Table
-import com.cards.game.fourplayercardgame.Trick
+import com.cards.game.fourplayercardgame.basic.Trick
 import kotlin.collections.filter
 import kotlin.collections.ifEmpty
 import kotlin.math.max

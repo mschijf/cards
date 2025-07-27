@@ -1,24 +1,26 @@
-package com.cards.game.fourplayercardgame
+package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
+import com.cards.game.fourplayercardgame.Player
+import com.cards.game.fourplayercardgame.Score
 
 abstract class Game() {
 
     private val completedRoundList = mutableListOf<Round>()
     private var currentRound = startNewRound(Player.WEST)
 
-    //trick
+    //abstract trick
     abstract fun winnerForTrick(trick: Trick) : Player?
     abstract fun winningCardForTrick(trick: Trick) : Card?
     abstract fun legalPlayableCardsForTrick(trickOnTable: Trick, cardsInHand: List<Card>): List<Card>
     abstract fun getScoreForTrick(trick: Trick): Score
     abstract fun getValueForTrick(trick: Trick): Int
 
-    //round
+    //abstract round
     abstract fun roundIsComplete(round: Round): Boolean
     abstract fun getScoreForRound(game: Game, round: Round): Score
 
-    //game
+    //abstract game
     abstract fun isFinished(): Boolean
 
     fun startNewRound(leadPlayer: Player) = Round(this, leadPlayer)
@@ -54,6 +56,7 @@ abstract class Game() {
         }
     }
 
+    // score
     fun getTotalScore(): Score {
         return getCumulativeScorePerRound().lastOrNull()?: Score()
     }
