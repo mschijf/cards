@@ -3,7 +3,7 @@ package com.cards.game.fourplayercardgame.hearts
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.CardPlayer
+import com.cards.game.fourplayercardgame.basic.CardPlayer
 import com.cards.game.fourplayercardgame.Player
 import com.cards.game.fourplayercardgame.Table
 

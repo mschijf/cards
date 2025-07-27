@@ -1,18 +1,18 @@
-package com.cards.game.fourplayercardgame
+package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
-import com.cards.game.fourplayercardgame.basic.Game
+import com.cards.game.fourplayercardgame.Player
 
-open class CardPlayer(
+abstract class CardPlayer(
     val player: Player,
-    val game: Game
-) {
+    val game: Game) {
 
     private var cardsInHand: MutableList<Card> = mutableListOf()
 
-    fun getCardsInHand() = cardsInHand.toList()
+    abstract fun chooseCard(): Card
 
+    fun getCardsInHand() = cardsInHand.toList()
     fun hasColorInHand(color: CardColor) = cardsInHand.any { card -> card.color == color }
 
     fun setCardsInHand(cardsFromDealer: List<Card>) {
@@ -26,11 +26,4 @@ open class CardPlayer(
         }
     }
 
-    open fun chooseCard(): Card {
-        val legalCards = game.legalPlayableCardsForTrick(
-            game.getCurrentRound().getTrickOnTable(),
-            getCardsInHand()
-        )
-        return legalCards.random()
-    }
 }
