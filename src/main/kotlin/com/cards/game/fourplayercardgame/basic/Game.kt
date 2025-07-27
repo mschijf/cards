@@ -8,7 +8,7 @@ abstract class Game() {
     private val playerList: List<CardPlayer> = initialPlayerList()
 
     private val completedRoundList = mutableListOf<Round>()
-    private var currentRound = startNewRound(playerAtPosition(TablePosition.WEST))
+    private var currentRound = startNewRound(getCardPlayer(TablePosition.WEST))
 
     //abstract player
     abstract fun initialPlayerList(): List<CardPlayer>
@@ -32,7 +32,7 @@ abstract class Game() {
     open fun numberOfTricksPerRound() = 8
 
     fun getPlayerList() = playerList
-    fun playerAtPosition(tablePosition: TablePosition): CardPlayer = playerList.first { pl -> pl.tablePosition == tablePosition }
+    fun getCardPlayer(tablePosition: TablePosition) = getPlayerList().first { cardPlayer -> cardPlayer.tablePosition == tablePosition }
     fun startNewRound(leadPlayer: CardPlayer) = Round(this, leadPlayer)
     fun completeRoundsPlayed() = completedRoundList.toList()
     fun trickCompleted() = currentRound.getTrickOnTable().isNew()

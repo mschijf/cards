@@ -39,7 +39,7 @@ class GameHearts(): Game() {
     }
 
     override fun nextPlayer(player: CardPlayer): CardPlayer {
-        return playerAtPosition(player.tablePosition.neighbour())
+        return getCardPlayer(player.tablePosition.neighbour())
     }
 
     //trick

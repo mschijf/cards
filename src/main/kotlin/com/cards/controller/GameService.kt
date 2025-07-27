@@ -12,37 +12,37 @@ import org.springframework.stereotype.Service
 
 @Service
 class GameService {
-    private lateinit var gm: GameMaster
+    private var gm = newGameMaster()
 
-    init {
-        newGame()
+    private fun newGameMaster(): GameMaster {
+        return GameMaster(GameHearts())
     }
 
     fun newGame(): GameStatusModel {
-        val game = GameHearts()
-        gm = GameMaster(game)
+        gm = newGameMaster()
         return getGameStatus()
     }
 
     fun getGameStatus(): GameStatusModel {
+        val trickOnTable = gm.game.getCurrentRound().getTrickOnTable()
         val onTable = TableModel(
-            gm.game.getCurrentRound().getTrickOnTable().getCardPlayedBy(gm.game.playerAtPosition(TablePosition.SOUTH)),
-            gm.game.getCurrentRound().getTrickOnTable().getCardPlayedBy(gm.game.playerAtPosition(TablePosition.WEST)),
-            gm.game.getCurrentRound().getTrickOnTable().getCardPlayedBy(gm.game.playerAtPosition(TablePosition.NORTH)),
-            gm.game.getCurrentRound().getTrickOnTable().getCardPlayedBy(gm.game.playerAtPosition(TablePosition.EAST))
+            trickOnTable.getCardPlayedBy(gm.game.getCardPlayer(TablePosition.SOUTH)),
+            trickOnTable.getCardPlayedBy(gm.game.getCardPlayer(TablePosition.WEST)),
+            trickOnTable.getCardPlayedBy(gm.game.getCardPlayer(TablePosition.NORTH)),
+            trickOnTable.getCardPlayedBy(gm.game.getCardPlayer(TablePosition.EAST))
         )
         val playerToMove = gm.game.getPlayerToMove()
-        val leadPlayer = gm.game.getCurrentRound().getTrickOnTable().getLeadPlayer()
+        val leadPlayer = trickOnTable.getLeadPlayer()
 
         val nCardsInHand = gm.game.initialNumberOfCardsInHand()
         val playerSouth =
-            List(nCardsInHand) { i -> gm.getCardPlayer(TablePosition.SOUTH).getCardsInHand().elementAtOrNull(i) }
+            List(nCardsInHand) { i -> gm.game.getCardPlayer(TablePosition.SOUTH).getCardsInHand().elementAtOrNull(i) }
         val playerWest =
-            List(nCardsInHand) { i -> gm.getCardPlayer(TablePosition.WEST).getCardsInHand().elementAtOrNull(i) }
+            List(nCardsInHand) { i -> gm.game.getCardPlayer(TablePosition.WEST).getCardsInHand().elementAtOrNull(i) }
         val playerNorth =
-            List(nCardsInHand) { i -> gm.getCardPlayer(TablePosition.NORTH).getCardsInHand().elementAtOrNull(i) }
+            List(nCardsInHand) { i -> gm.game.getCardPlayer(TablePosition.NORTH).getCardsInHand().elementAtOrNull(i) }
         val playerEast =
-            List(nCardsInHand) { i -> gm.getCardPlayer(TablePosition.EAST).getCardsInHand().elementAtOrNull(i) }
+            List(nCardsInHand) { i -> gm.game.getCardPlayer(TablePosition.EAST).getCardsInHand().elementAtOrNull(i) }
 
         //todo: add legal cards to play for player to move, can be used n 'setClickable' in board-scripts.js
 
@@ -51,8 +51,8 @@ class GameService {
         val goingUp = (gm.game as GameHearts).isGoingUp()
         val geniusValueSouth = List(gm.game.initialNumberOfCardsInHand()) { i ->
             getGeniusCardValue(
-                (gm.getCardPlayer(TablePosition.SOUTH) as GeniusHeartsPlayer),
-                gm.getCardPlayer(TablePosition.SOUTH).getCardsInHand().elementAtOrNull(i)
+                (gm.game.getCardPlayer(TablePosition.SOUTH) as GeniusHeartsPlayer),
+                gm.game.getCardPlayer(TablePosition.SOUTH).getCardsInHand().elementAtOrNull(i)
             )
         }
 
@@ -85,7 +85,7 @@ class GameService {
     fun executeMove(color: CardColor, rank: CardRank): CardPlayedModel? {
         val playerToMove = gm.game.getPlayerToMove()
         val suggestedCardToPlay = Card(color, rank)
-        if (!gm.legalCardToPlay(playerToMove, suggestedCardToPlay))
+        if (!gm.isLegalCardToPlay(playerToMove, suggestedCardToPlay))
             return null
 
         val cardsStillInHand = playerToMove.getCardsInHand().size
