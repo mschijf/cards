@@ -1,9 +1,6 @@
-package com.cards.game.fourplayercardgame
+package com.cards.game.fourplayercardgame.basic
 
-import com.cards.game.fourplayercardgame.basic.CardPlayer
-import com.cards.game.fourplayercardgame.basic.TablePosition
-import com.github.jknack.handlebars.internal.lang3.math.NumberUtils.max
-import com.github.jknack.handlebars.internal.lang3.math.NumberUtils.min
+import com.github.jknack.handlebars.internal.lang3.math.NumberUtils
 
 data class Score(val westValue: Int, val northValue: Int, val eastValue: Int, val southValue: Int) {
     fun plus(score: Score): Score {
@@ -19,8 +16,8 @@ data class Score(val westValue: Int, val northValue: Int, val eastValue: Int, va
         return this.plus(scoreForPlayer(player, value))
     }
 
-    fun minValue() = min(westValue, northValue, eastValue, southValue)
-    fun maxValue() = max(westValue, northValue, eastValue, southValue)
+    fun minValue() = NumberUtils.min(westValue, northValue, eastValue, southValue)
+    fun maxValue() = NumberUtils.max(westValue, northValue, eastValue, southValue)
 
     companion object {
         val ZERO = Score(0,0,0,0)

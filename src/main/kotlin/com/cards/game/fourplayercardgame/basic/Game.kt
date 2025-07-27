@@ -1,7 +1,7 @@
 package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.Score
+import com.cards.game.fourplayercardgame.basic.Score
 
 abstract class Game() {
 

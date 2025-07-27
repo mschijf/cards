@@ -6,7 +6,7 @@ import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.basic.Round
-import com.cards.game.fourplayercardgame.Score
+import com.cards.game.fourplayercardgame.basic.Score
 import com.cards.game.fourplayercardgame.basic.CardPlayer
 import com.cards.game.fourplayercardgame.basic.Trick
 import kotlin.collections.filter
