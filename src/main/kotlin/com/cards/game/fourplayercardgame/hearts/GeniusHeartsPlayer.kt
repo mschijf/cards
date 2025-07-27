@@ -2,13 +2,13 @@ package com.cards.game.fourplayercardgame.hearts
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
+import com.cards.game.card.CardDeck
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.CardPlayer
-import com.cards.game.fourplayercardgame.Player
-import com.cards.game.fourplayercardgame.Table
+import com.cards.game.fourplayercardgame.basic.TablePosition
 
 class GeniusHeartsPlayer(
-    player: Player,
+    player: TablePosition,
     game: GameHearts) : CardPlayer(player, game) {
 
     override fun chooseCard(): Card {
@@ -29,17 +29,17 @@ class GeniusHeartsPlayer(
     }
 
     private fun getCardsStillInPlay(): List<Card> {
-        return Table.cardDeck.getCards().minus(getCardsPlayed().toSet()).minus(getCardsInHand().toSet())
+        return CardDeck.getBaseDeckCards().minus(getCardsPlayed().toSet()).minus(getCardsInHand().toSet())
     }
 
     fun getMetaCardList(): HeartsAnalyzer {
         val trick = game.getCurrentRound().getTrickOnTable()
         val leadColor = trick.leadColor()
 
-        if ( trick.playerToMove() != this.player )
+        if ( trick.playerToMove() != this )
             return zeroValued()
 
-        if (trick.isLeadPLayer(this.player))
+        if (trick.isLeadPLayer(this))
             return evaluateLeadPLayer()
 
         if (hasColorInHand(leadColor!!))

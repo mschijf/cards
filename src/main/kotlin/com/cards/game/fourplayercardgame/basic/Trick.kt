@@ -1,30 +1,30 @@
 package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.Player
-import com.cards.game.fourplayercardgame.PlayerPlayedCard
+import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.PlayerPlayedCard
 
 class Trick(
     private val game: Game,
-    private val leadPlayer: Player
+    private val leadPlayer: CardPlayer
 ) {
 
     private var playerToMove = leadPlayer
     private val cardsPlayed = arrayListOf<PlayerPlayedCard>()
 
     fun getLeadPlayer() = leadPlayer
-    fun isLeadPLayer(player: Player) = player == leadPlayer
+    fun isLeadPLayer(player: CardPlayer) = player == leadPlayer
     fun leadColor() = getCardPlayedBy(leadPlayer)?.color
     fun playerToMove() = playerToMove
     fun getCardsPlayed() = cardsPlayed
-    fun isComplete(): Boolean = cardsPlayed.size >= Player.values().size
-    fun isLastPlayerToMove() = (getCardsPlayed().size == Player.values().size-1)
+    fun isComplete(): Boolean = cardsPlayed.size >= TablePosition.values().size
+    fun isLastPlayerToMove() = (getCardsPlayed().size == TablePosition.values().size-1)
     fun isNew(): Boolean = cardsPlayed.isEmpty()
 
-    fun winner(): Player? = game.winnerForTrick(this)
+    fun winner(): CardPlayer? = game.winnerForTrick(this)
     fun winningCard(): Card? = game.winningCardForTrick(this)
 
-    fun getCardPlayedBy(player: Player): Card? {
+    fun getCardPlayedBy(player: CardPlayer): Card? {
         return cardsPlayed
             .firstOrNull { p -> p.player == player }
             ?.card
@@ -35,6 +35,6 @@ class Trick(
             throw Exception("Adding a card to a completed trick")
 
         cardsPlayed.add(PlayerPlayedCard(playerToMove, aCard))
-        playerToMove = playerToMove.nextPlayer()
+        playerToMove = game.nextPlayer(playerToMove)
     }
 }

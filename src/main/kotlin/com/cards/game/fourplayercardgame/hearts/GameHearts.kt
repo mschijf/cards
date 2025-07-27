@@ -4,22 +4,23 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.Game
-import com.cards.game.fourplayercardgame.Player
+import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.basic.Round
 import com.cards.game.fourplayercardgame.Score
-import com.cards.game.fourplayercardgame.Table
+import com.cards.game.fourplayercardgame.basic.CardPlayer
 import com.cards.game.fourplayercardgame.basic.Trick
 import kotlin.collections.filter
 import kotlin.collections.ifEmpty
 import kotlin.math.max
 
 private const val ALL_POINTS_FOR_PIT = 15
-private const val VALUE_TO_GO_DOWN = 5
+private const val VALUE_TO_GO_DOWN = 60
 private const val VALUE_TO_FINISH = 0
 
 class GameHearts(): Game() {
 
     fun isGoingUp() = completeRoundsPlayed().size < goingDownFromRoundNumber()
+
 
     private fun toRankNumber (card: Card) : Int = card.rank.rankNumber - 7
 
@@ -32,8 +33,17 @@ class GameHearts(): Game() {
         }
     }
 
+    //player
+    override fun initialPlayerList(): List<CardPlayer> {
+        return TablePosition.values().map { p -> GeniusHeartsPlayer(p, this) }
+    }
+
+    override fun nextPlayer(player: CardPlayer): CardPlayer {
+        return playerAtPosition(player.tablePosition.neighbour())
+    }
+
     //trick
-    override fun winnerForTrick(trick: Trick) : Player? {
+    override fun winnerForTrick(trick: Trick) : CardPlayer? {
         return if (!trick.isComplete()) {
             null
         } else {
@@ -60,7 +70,7 @@ class GameHearts(): Game() {
     override fun getValueForTrick(trick: Trick)  = trick.getCardsPlayed().sumOf { c -> cardValue(c.card) }
 
     //round
-    override fun roundIsComplete(round: Round): Boolean = round.completedTricksPlayed() >= Table.nTricksPerRound
+    override fun roundIsComplete(round: Round): Boolean = round.completedTricksPlayed() >= numberOfTricksPerRound()
 
     //game
     override fun isFinished() = !isGoingUp() && (getTotalScore().minValue() <= VALUE_TO_FINISH)
@@ -71,8 +81,9 @@ class GameHearts(): Game() {
         if (trick.isComplete()) {
             val winner = trick.winner()
             score.plusScorePerPlayer(
-                winner!!,
-                Player.values().sumOf {p -> cardValue(trick.getCardPlayedBy(p)!!)})
+                winner!!.tablePosition,
+                getPlayerList().sumOf { player -> cardValue(trick.getCardPlayedBy(player)!!) }
+            )
         }
         return score
     }
@@ -112,19 +123,19 @@ class GameHearts(): Game() {
         if (!goingDown) {
             if (score.maxValue() == ALL_POINTS_FOR_PIT) {
                 val newScore = Score()
-                newScore.plusScorePerPlayer(Player.EAST, if (score.getEastValue() == 0) ALL_POINTS_FOR_PIT else 0)
-                newScore.plusScorePerPlayer(Player.WEST, if (score.getWestValue() == 0) ALL_POINTS_FOR_PIT else 0)
-                newScore.plusScorePerPlayer(Player.NORTH, if (score.getNorthValue() == 0) ALL_POINTS_FOR_PIT else 0)
-                newScore.plusScorePerPlayer(Player.SOUTH, if (score.getSouthValue() == 0) ALL_POINTS_FOR_PIT else 0)
+                newScore.plusScorePerPlayer(TablePosition.EAST, if (score.getEastValue() == 0) ALL_POINTS_FOR_PIT else 0)
+                newScore.plusScorePerPlayer(TablePosition.WEST, if (score.getWestValue() == 0) ALL_POINTS_FOR_PIT else 0)
+                newScore.plusScorePerPlayer(TablePosition.NORTH, if (score.getNorthValue() == 0) ALL_POINTS_FOR_PIT else 0)
+                newScore.plusScorePerPlayer(TablePosition.SOUTH, if (score.getSouthValue() == 0) ALL_POINTS_FOR_PIT else 0)
                 return newScore
             }
             return score
         } else {
             val newScore = Score()
-            newScore.plusScorePerPlayer(Player.EAST, -score.getEastValue())
-            newScore.plusScorePerPlayer(Player.WEST, -score.getWestValue())
-            newScore.plusScorePerPlayer(Player.NORTH, -score.getNorthValue())
-            newScore.plusScorePerPlayer(Player.SOUTH, -score.getSouthValue())
+            newScore.plusScorePerPlayer(TablePosition.EAST, -score.getEastValue())
+            newScore.plusScorePerPlayer(TablePosition.WEST, -score.getWestValue())
+            newScore.plusScorePerPlayer(TablePosition.NORTH, -score.getNorthValue())
+            newScore.plusScorePerPlayer(TablePosition.SOUTH, -score.getSouthValue())
             return newScore
         }
     }

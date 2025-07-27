@@ -1,16 +1,21 @@
 package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.Player
 import com.cards.game.fourplayercardgame.Score
 
 abstract class Game() {
 
+    private val playerList: List<CardPlayer> = initialPlayerList()
+
     private val completedRoundList = mutableListOf<Round>()
-    private var currentRound = startNewRound(Player.WEST)
+    private var currentRound = startNewRound(playerAtPosition(TablePosition.WEST))
+
+    //abstract player
+    abstract fun initialPlayerList(): List<CardPlayer>
+    abstract fun nextPlayer(player: CardPlayer): CardPlayer
 
     //abstract trick
-    abstract fun winnerForTrick(trick: Trick) : Player?
+    abstract fun winnerForTrick(trick: Trick) : CardPlayer?
     abstract fun winningCardForTrick(trick: Trick) : Card?
     abstract fun legalPlayableCardsForTrick(trickOnTable: Trick, cardsInHand: List<Card>): List<Card>
     abstract fun getScoreForTrick(trick: Trick): Score
@@ -23,13 +28,18 @@ abstract class Game() {
     //abstract game
     abstract fun isFinished(): Boolean
 
-    fun startNewRound(leadPlayer: Player) = Round(this, leadPlayer)
+    open fun initialNumberOfCardsInHand() = 8
+    open fun numberOfTricksPerRound() = 8
+
+    fun getPlayerList() = playerList
+    fun playerAtPosition(tablePosition: TablePosition): CardPlayer = playerList.first { pl -> pl.tablePosition == tablePosition }
+    fun startNewRound(leadPlayer: CardPlayer) = Round(this, leadPlayer)
     fun completeRoundsPlayed() = completedRoundList.toList()
     fun trickCompleted() = currentRound.getTrickOnTable().isNew()
     fun roundCompleted() = currentRound.isNew()
     fun getCurrentRound() = currentRound
     fun getPlayerToMove() = currentRound.getTrickOnTable().playerToMove()
-    fun getLastTrickWinner(): Player? =
+    fun getLastTrickWinner(): CardPlayer? =
         if (!currentRound.isNew())
             currentRound.getLastCompletedTrickWinner()
         else
@@ -44,7 +54,7 @@ abstract class Game() {
         currentRound.playCard(card)
         if (currentRound.isComplete()) {
             addRound(currentRound)
-            currentRound = startNewRound(currentRound.getLeadPLayer().nextPlayer())
+            currentRound = startNewRound(nextPlayer(currentRound.getLeadPLayer()))
         }
     }
 
