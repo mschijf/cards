@@ -31,7 +31,7 @@ class GameMaster(
         if (legalCardToPlay(player, card)) {
             getCardPlayer(player).removeCard(card)
             game.playCard(card)
-            if (game.getStatusAfterLastMove().roundCompleted) {
+            if (game.roundCompleted()) {
                 dealCards()
             }
         } else {

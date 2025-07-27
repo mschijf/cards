@@ -31,6 +31,6 @@ class Round(
     fun isComplete(): Boolean = game.roundIsComplete(this)
     fun isNew(): Boolean = completedTrickList.isEmpty() && currentTrick.isNew()
     fun getTrickOnTable() = currentTrick
-    fun getLastCompletedTrickWinner(): Player? = if (completedTrickList.isNotEmpty()) completedTrickList.last().winner() else null
+    fun getLastCompletedTrickWinner(): Player? = completedTrickList.lastOrNull()?.winner()
     fun getCompletedTrickList() = completedTrickList
 }

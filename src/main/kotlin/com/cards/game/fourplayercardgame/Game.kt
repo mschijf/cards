@@ -4,6 +4,9 @@ import com.cards.game.card.Card
 
 abstract class Game() {
 
+    private val completedRoundList = mutableListOf<Round>()
+    private var currentRound = startNewRound(Player.WEST)
+
     //trick
     abstract fun winnerForTrick(trick: Trick) : Player?
     abstract fun winningCardForTrick(trick: Trick) : Card?
@@ -11,16 +14,26 @@ abstract class Game() {
     abstract fun getScoreForTrick(trick: Trick): Score
     abstract fun getValueForTrick(trick: Trick): Int
 
-//    //round
-    abstract fun getScoreForRound(game: Game, round: Round): Score
+    //round
     abstract fun roundIsComplete(round: Round): Boolean
+    abstract fun doGameSpecificActionsAfterCompletedRoundPlayed()
+    abstract fun getScoreForRound(game: Game, round: Round): Score
 
+    //game
+    abstract fun isFinished(): Boolean
 
-    private val completedRoundList = arrayListOf<Round>()
-    private var currentRound = startNewRound(Player.WEST)
-
-    fun completeRoundsPlayed() = completedRoundList
     fun startNewRound(leadPlayer: Player) = Round(this, leadPlayer)
+    fun completeRoundsPlayed() = completedRoundList.toList()
+    fun trickCompleted() = currentRound.getTrickOnTable().isNew()
+    fun roundCompleted() = currentRound.isNew()
+    fun getCurrentRound() = currentRound
+    fun getPlayerToMove() = currentRound.getTrickOnTable().playerToMove()
+    fun getLastTrickWinner(): Player? =
+        if (!currentRound.isNew())
+            currentRound.getLastCompletedTrickWinner()
+        else
+            completedRoundList.lastOrNull()?.getLastCompletedTrickWinner()
+
 
     fun playCard(card: Card) {
         if (isFinished()) {
@@ -31,11 +44,9 @@ abstract class Game() {
         if (currentRound.isComplete()) {
             addRound(currentRound)
             currentRound = startNewRound(currentRound.getLeadPLayer().nextPlayer())
-            doGameSpecificActionsAfterCompletedRound()
+            doGameSpecificActionsAfterCompletedRoundPlayed()
         }
     }
-
-    abstract fun doGameSpecificActionsAfterCompletedRound()
 
     private fun addRound(round: Round) {
         if (!isFinished()) {
@@ -45,25 +56,7 @@ abstract class Game() {
         }
     }
 
-    protected abstract fun isFinished(): Boolean
-
-    private fun getLastTrickWinner(): Player? {
-        if (!currentRound.isNew()) {
-            return currentRound.getLastCompletedTrickWinner()
-        }
-        return completedRoundList.last().getLastCompletedTrickWinner()
-    }
-
-    fun getCurrentRound() = currentRound
-    fun getPlayerToMove() = currentRound.getTrickOnTable().playerToMove()
-    fun getStatusAfterLastMove() = GameStatusAfterLastMove(
-        currentRound.getTrickOnTable().isNew(),
-        getLastTrickWinner(),
-        currentRound.isNew(),
-        isFinished()
-    )
-
-    protected fun getTotalScore(): Score {
+    fun getTotalScore(): Score {
         return getCumulativeScorePerRound().lastOrNull()?: Score()
     }
 

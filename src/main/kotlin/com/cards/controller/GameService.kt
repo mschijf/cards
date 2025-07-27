@@ -93,12 +93,11 @@ class GameService {
 
         gm.playCard(suggestedCardToPlay)
 
-        val gameStatusAfterLastMove = gm.game.getStatusAfterLastMove()
-        val trickCompleted = if (gameStatusAfterLastMove.trickCompleted)
+        val trickCompleted = if (gm.game.trickCompleted())
             TrickCompletedModel(
-                gameStatusAfterLastMove.trickWinner!!,
-                gameStatusAfterLastMove.roundCompleted,
-                gameStatusAfterLastMove.gameFinished
+                gm.game.getLastTrickWinner()!!,
+                gm.game.roundCompleted(),
+                gm.game.isFinished(),
             )
         else
             null
