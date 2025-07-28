@@ -2,7 +2,7 @@ package com.cards.game.fourplayercardgame.hearts.ai
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
-import com.cards.game.card.CardDeck
+import com.cards.game.card.CardDeck32
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.hearts.GameHearts
@@ -30,7 +30,7 @@ class GeniusPlayerHearts(
     }
 
     private fun getCardsStillInPlay(): List<Card> {
-        return CardDeck.getBaseDeckCards().minus(getCardsPlayed().toSet()).minus(getCardsInHand().toSet())
+        return CardDeck32.getBaseDeckCards().minus(getCardsPlayed().toSet()).minus(getCardsInHand().toSet())
     }
 
     fun getMetaCardList(): HeartsAnalyzer {

@@ -1,7 +1,6 @@
 package com.cards.game.fourplayercardgame.hearts
 
 object HeartsConstants {
-    const val INITIAL_NUMBER_OF_CARDS_IN_HAND = 8
     const val NUMBER_OF_TRICKS_PER_ROUND = 8
 
     const val ALL_POINTS_FOR_PIT = 15

@@ -1,7 +1,7 @@
 package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
-import com.cards.game.card.CardDeck
+import com.cards.game.card.CardDeck32
 
 abstract class Game() {
 
@@ -9,7 +9,7 @@ abstract class Game() {
 
     private val completedRoundList = mutableListOf<Round>()
     private var currentRound = createFirstRound()
-    private val cardDeck = CardDeck()
+    private val cardDeck = CardDeck32()
 
     init {
         dealCards()
