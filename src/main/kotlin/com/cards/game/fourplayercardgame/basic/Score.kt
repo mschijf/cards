@@ -1,12 +1,10 @@
-package com.cards.game.fourplayercardgame.hearts
+package com.cards.game.fourplayercardgame.basic
 
-import com.cards.game.fourplayercardgame.basic.Player
-import com.cards.game.fourplayercardgame.basic.Table
 import com.github.jknack.handlebars.internal.lang3.math.NumberUtils
 
-data class ScoreHearts(val westValue: Int, val northValue: Int, val eastValue: Int, val southValue: Int) {
-    fun plus(score: ScoreHearts): ScoreHearts {
-        return ScoreHearts(
+data class Score(val westValue: Int, val northValue: Int, val eastValue: Int, val southValue: Int) {
+    fun plus(score: Score): Score {
+        return Score(
             westValue + score.westValue,
             northValue + score.northValue,
             eastValue + score.eastValue,
@@ -14,8 +12,8 @@ data class ScoreHearts(val westValue: Int, val northValue: Int, val eastValue: I
         )
     }
 
-    fun minus(score: ScoreHearts): ScoreHearts {
-        return ScoreHearts(
+    fun minus(score: Score): Score {
+        return Score(
             westValue - score.westValue,
             northValue - score.northValue,
             eastValue - score.eastValue,
@@ -25,12 +23,13 @@ data class ScoreHearts(val westValue: Int, val northValue: Int, val eastValue: I
 
     fun minValue() = NumberUtils.min(westValue, northValue, eastValue, southValue)
     fun maxValue() = NumberUtils.max(westValue, northValue, eastValue, southValue)
+    fun totalValue() = westValue + northValue + eastValue + southValue
 
     companion object {
-        val ZERO = ScoreHearts(0,0,0,0)
+        val ZERO = Score(0,0,0,0)
 
-        fun scoreForPlayer(player: Player, value: Int): ScoreHearts {
-            return ScoreHearts(
+        fun scoreForPlayer(player: Player, value: Int): Score {
+            return Score(
                 if (player.tablePosition == Table.WEST) value else 0,
                 if (player.tablePosition == Table.NORTH) value else 0,
                 if (player.tablePosition == Table.EAST) value else 0,

@@ -2,6 +2,7 @@ package com.cards.game.fourplayercardgame.hearts
 
 import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Round
+import com.cards.game.fourplayercardgame.basic.Score
 import com.cards.game.fourplayercardgame.basic.Trick
 
 class RoundHearts(leadPlayer: Player) : Round(leadPlayer) {
@@ -15,11 +16,11 @@ class RoundHearts(leadPlayer: Player) : Round(leadPlayer) {
     }
 
     //score
-    fun getBasicScore(): ScoreHearts {
-        var score = ScoreHearts.ZERO
+    override fun getScore(): Score {
+        var score = Score.ZERO
         if (isComplete()) {
             getCompletedTrickList().forEach { trick ->
-                score = score.plus((trick as TrickHearts).getScore())
+                score = score.plus(trick.getScore())
             }
         }
         return score

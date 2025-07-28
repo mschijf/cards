@@ -2,6 +2,7 @@ package com.cards.game.fourplayercardgame.hearts
 
 import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.basic.Player
+import com.cards.game.fourplayercardgame.basic.Score
 import com.cards.game.fourplayercardgame.basic.Trick
 
 class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
@@ -33,13 +34,11 @@ class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
     }
 
     //score
-    fun getValue()  = getCardsPlayed().sumOf { c -> HEARTS.cardValue(c.card) }
-
-    fun getScore(): ScoreHearts {
+    override fun getScore(): Score {
         return if (!isComplete()) {
-            ScoreHearts.ZERO
+            Score.ZERO
         } else {
-            ScoreHearts.scoreForPlayer(winner()!!, getValue())
+            Score.scoreForPlayer(winner()!!, getCardsPlayed().sumOf { playerPlayedCard -> HEARTS.cardValue(playerPlayedCard.card) })
         }
     }
 
