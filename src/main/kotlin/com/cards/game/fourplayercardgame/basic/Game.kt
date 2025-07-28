@@ -18,21 +18,16 @@ abstract class Game() {
     //abstract player
     abstract fun initialPlayerList(): List<Player>
 
-    //abstract trick
-    abstract fun getScoreForTrick(trick: Trick): Score
-    abstract fun getValueForTrick(trick: Trick): Int
-
     //abstract round
     protected abstract fun createFirstRound(): Round
     protected abstract fun createNextRound(previousRound: Round): Round
-    abstract fun getScoreForRound(game: Game, round: Round): Score
 
     //abstract game
     abstract fun isFinished(): Boolean
 
     fun getPlayerList() = playerList
     fun getCardPlayer(tablePosition: TablePosition) = getPlayerList().first { cardPlayer -> cardPlayer.tablePosition == tablePosition }
-    fun completeRoundsPlayed() = completedRoundList.toList()
+    fun getCompleteRoundsPlayed() = completedRoundList.toList()
     fun trickCompleted() = currentRound.getTrickOnTable().hasNotStarted()
     fun roundCompleted() = currentRound.hasNotStarted()
     fun getCurrentRound() = currentRound
@@ -91,22 +86,6 @@ abstract class Game() {
         val cardsInHand = player.getCardsInHand()
         val legalCards = trickOnTable.legalPlayableCards(cardsInHand)
         return legalCards.contains(card)
-    }
-
-
-    // score
-    fun getTotalScore(): Score {
-        return getCumulativeScorePerRound().lastOrNull()?: Score.ZERO
-    }
-
-    private fun getScorePerRound(): List<Score> {
-        return completedRoundList.mapIndexed { index, round ->  getScoreForRound(this, round)}
-    }
-
-    fun getCumulativeScorePerRound(): List<Score> {
-        val list = getScorePerRound()
-        val x = list.runningFold(Score.ZERO) { acc, sc -> acc.plus(sc) }.drop(1)
-        return x
     }
 }
 
