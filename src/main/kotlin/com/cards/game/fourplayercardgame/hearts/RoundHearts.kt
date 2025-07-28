@@ -11,6 +11,17 @@ class RoundHearts(leadPlayer: Player) : Round(leadPlayer) {
     }
 
     override fun isComplete(): Boolean {
-        return completedTricksPlayed() >= HeartsConstants.NUMBER_OF_TRICKS_PER_ROUND
+        return completedTricksPlayed() >= HEARTS.NUMBER_OF_TRICKS_PER_ROUND
+    }
+
+    //score
+    fun getBasicScore(): ScoreHearts {
+        var score = ScoreHearts.ZERO
+        if (isComplete()) {
+            getCompletedTrickList().forEach { trick ->
+                score = score.plus((trick as TrickHearts).getScore())
+            }
+        }
+        return score
     }
 }

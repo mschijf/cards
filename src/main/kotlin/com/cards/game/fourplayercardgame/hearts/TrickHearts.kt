@@ -31,4 +31,16 @@ class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
             .maxByOrNull { playerPlayedCard -> toRankNumber(playerPlayedCard.card) }
             ?.card
     }
+
+    //score
+    fun getValue()  = getCardsPlayed().sumOf { c -> HEARTS.cardValue(c.card) }
+
+    fun getScore(): ScoreHearts {
+        return if (!isComplete()) {
+            ScoreHearts.ZERO
+        } else {
+            ScoreHearts.scoreForPlayer(winner()!!, getValue())
+        }
+    }
+
 }

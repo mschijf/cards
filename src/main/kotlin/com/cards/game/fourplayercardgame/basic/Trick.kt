@@ -7,7 +7,7 @@ abstract class Trick(
     private val leadPlayer: Player) {
 
     private var playerToMove = leadPlayer
-    private val cardsPlayed = arrayListOf<PlayerPlayedCard>()
+    private val cardsPlayed = mutableListOf<PlayerPlayedCard>()
 
     fun getLeadPlayer() = leadPlayer
     fun isLeadPLayer(player: Player) = player == leadPlayer

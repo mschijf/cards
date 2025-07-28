@@ -1,31 +1,18 @@
 package com.cards.game.fourplayercardgame.hearts
 
-import com.cards.game.card.Card
-import com.cards.game.card.CardColor
-import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.basic.Round
 import com.cards.game.fourplayercardgame.basic.Player
-import com.cards.game.fourplayercardgame.basic.Trick
-import com.cards.game.fourplayercardgame.hearts.HeartsConstants.ALL_POINTS_FOR_PIT
-import com.cards.game.fourplayercardgame.hearts.HeartsConstants.VALUE_TO_FINISH
-import com.cards.game.fourplayercardgame.hearts.HeartsConstants.VALUE_TO_GO_DOWN
+import com.cards.game.fourplayercardgame.hearts.HEARTS.ALL_POINTS_FOR_PIT
+import com.cards.game.fourplayercardgame.hearts.HEARTS.VALUE_TO_FINISH
+import com.cards.game.fourplayercardgame.hearts.HEARTS.VALUE_TO_GO_DOWN
 import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
 import kotlin.math.max
 
 class GameHearts(): Game() {
 
     fun isGoingUp() = getCompleteRoundsPlayed().size < goingDownFromRoundNumber()
-
-    private fun cardValue(card: Card): Int {
-        return when (card.color) {
-            CardColor.HEARTS -> 1
-            CardColor.CLUBS -> if (card.rank == CardRank.JACK) 2 else 0
-            CardColor.SPADES -> if (card.rank == CardRank.QUEEN) 5 else 0
-            CardColor.DIAMONDS -> 0
-        }
-    }
 
     //player
     override fun initialPlayerList(): List<Player> {
@@ -45,27 +32,14 @@ class GameHearts(): Game() {
     override fun isFinished() = !isGoingUp() && (getTotalScore().minValue() <= VALUE_TO_FINISH)
 
     //score
-    fun getValueForTrick(trick: Trick)  = trick.getCardsPlayed().sumOf { c -> cardValue(c.card) }
-
-    fun getScoreForTrick(trick: Trick): ScoreHearts {
-        return if (!trick.isComplete()) {
-            ScoreHearts.ZERO
-        } else {
-            ScoreHearts.scoreForPlayer(
-                trick.winner()!!,
-                getPlayerList().sumOf { player -> cardValue(trick.getCardPlayedBy(player)!!) }
-            )
-        }
+    fun getCumulativeScorePerRound(): List<ScoreHearts> {
+        return getCompleteRoundsPlayed()
+            .mapIndexed { index, round ->  getGameScoreForRound(this, round as RoundHearts)}
+            .runningFold(ScoreHearts.ZERO) { acc, sc -> acc.plus(sc) }.drop(1)
     }
 
-    private fun getBasicScoreForRound(round: Round): ScoreHearts {
-        var score = ScoreHearts.ZERO
-        if (round.isComplete()) {
-            round.getCompletedTrickList().forEach { trick ->
-                score = score.plus(getScoreForTrick(trick))
-            }
-        }
-        return score
+    private fun getTotalScore(): ScoreHearts {
+        return getCumulativeScorePerRound().lastOrNull()?: ScoreHearts.ZERO
     }
 
     private var goingDownRoundNumber: Int? = null
@@ -75,7 +49,7 @@ class GameHearts(): Game() {
 
         var score = ScoreHearts.ZERO
         getCompleteRoundsPlayed().forEachIndexed { idx, round ->
-            score = score.plus(getBasicScoreForRound(round))
+            score = score.plus((round as RoundHearts).getBasicScore())
             if (score.maxValue() >= VALUE_TO_GO_DOWN) {
                 goingDownRoundNumber = idx+1
                 return idx + 1
@@ -84,40 +58,24 @@ class GameHearts(): Game() {
         return Int.MAX_VALUE
     }
 
-    private fun getScoreForRound(game: Game, round: Round): ScoreHearts {
-        val score = getBasicScoreForRound(round)
+    private fun getGameScoreForRound(game: GameHearts, round: RoundHearts): ScoreHearts {
+        val score = round.getBasicScore()
         val roundNumber = max(0, game.getCompleteRoundsPlayed().indexOf(round))
 
-        val goingDown = roundNumber >= goingDownFromRoundNumber()
-        if (!goingDown) {
+        val goingUp = roundNumber < goingDownFromRoundNumber()
+        return if (goingUp) {
             if (score.maxValue() == ALL_POINTS_FOR_PIT) {
-                return ScoreHearts(
+                ScoreHearts(
                     westValue = if (score.westValue == 0) ALL_POINTS_FOR_PIT else 0,
                     northValue = if (score.northValue == 0) ALL_POINTS_FOR_PIT else 0,
                     eastValue = if (score.eastValue == 0) ALL_POINTS_FOR_PIT else 0,
                     southValue = if (score.southValue == 0) ALL_POINTS_FOR_PIT else 0
                 )
+            } else {
+                score
             }
-            return score
         } else {
-            return ScoreHearts.ZERO.minus(score)
+            ScoreHearts.ZERO.minus(score)
         }
     }
-
-    fun getTotalScore(): ScoreHearts {
-        return getCumulativeScorePerRound().lastOrNull()?: ScoreHearts.ZERO
-    }
-
-    private fun getScorePerRound(): List<ScoreHearts> {
-        return getCompleteRoundsPlayed().mapIndexed { index, round ->  getScoreForRound(this, round)}
-    }
-
-    fun getCumulativeScorePerRound(): List<ScoreHearts> {
-        val list = getScorePerRound()
-        val x = list.runningFold(ScoreHearts.ZERO) { acc, sc -> acc.plus(sc) }.drop(1)
-        return x
-    }
-
-
-
 }

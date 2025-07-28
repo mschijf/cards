@@ -5,7 +5,7 @@ import com.cards.game.card.Card
 abstract class Round(
     private val leadPlayer: Player) {
 
-    private val completedTrickList = arrayListOf<Trick>()
+    private val completedTrickList = mutableListOf<Trick>()
     private var currentTrick: Trick = createTrick(leadPlayer)
 
     abstract fun createTrick(leadPlayer: Player): Trick
@@ -16,7 +16,7 @@ abstract class Round(
     fun hasNotStarted(): Boolean = completedTrickList.isEmpty() && currentTrick.hasNotStarted()
     fun getTrickOnTable() = currentTrick
     fun getLastCompletedTrickWinner(): Player? = completedTrickList.lastOrNull()?.winner()
-    fun getCompletedTrickList() = completedTrickList
+    fun getCompletedTrickList() = completedTrickList.toList()
 
     fun playCard(card: Card) {
         currentTrick.addCard(card)
