@@ -1,7 +1,7 @@
 package com.cards.game.fourplayercardgame.basic
 
+import com.cards.game.card.CARDDECK
 import com.cards.game.card.Card
-import com.cards.game.card.CardDeck32
 
 abstract class Game() {
 
@@ -9,7 +9,6 @@ abstract class Game() {
 
     private val completedRoundList = mutableListOf<Round>()
     private var currentRound = createFirstRound()
-    private val cardDeck = CardDeck32()
 
     init {
         dealCards()
@@ -49,8 +48,8 @@ abstract class Game() {
 
     //deal cards
     private fun dealCards() {
-        cardDeck.shuffle()
-        val cardPiles = cardDeck.getCards().chunked(cardDeck.numberOfCards()/ playerList.size)
+        val cardDeck = CARDDECK.baseDeckCardsSevenAndHigher.shuffled()
+        val cardPiles = cardDeck.chunked(cardDeck.size/ playerList.size)
         playerList.forEachIndexed { idx, player -> player.setCardsInHand(cardPiles[idx])}
     }
 
