@@ -2,7 +2,7 @@ package com.cards.game.fourplayercardgame
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardDeck
-import com.cards.game.fourplayercardgame.basic.CardPlayer
+import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Game
 
 class GameMaster(
@@ -26,7 +26,7 @@ class GameMaster(
         playCard(game.getCurrentRound().getTrickOnTable().playerToMove(), card)
     }
 
-    private fun playCard(player: CardPlayer, card: Card) {
+    private fun playCard(player: Player, card: Card) {
         if (isLegalCardToPlay(player, card)) {
             player.removeCard(card)
             game.playCard(card)
@@ -38,7 +38,7 @@ class GameMaster(
         }
     }
 
-    fun isLegalCardToPlay(player: CardPlayer, card: Card): Boolean {
+    fun isLegalCardToPlay(player: Player, card: Card): Boolean {
         val trickOnTable = game.getCurrentRound().getTrickOnTable()
         if (trickOnTable.playerToMove() != player)
             return false

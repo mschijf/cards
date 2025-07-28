@@ -2,9 +2,8 @@ package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
-import com.cards.game.fourplayercardgame.basic.TablePosition
 
-abstract class CardPlayer(
+abstract class Player(
     val tablePosition: TablePosition,
     val game: Game) {
 

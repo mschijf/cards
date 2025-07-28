@@ -4,12 +4,12 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardDeck
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.basic.CardPlayer
+import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.TablePosition
 
 class GeniusHeartsPlayer(
     player: TablePosition,
-    game: GameHearts) : CardPlayer(player, game) {
+    game: GameHearts) : Player(player, game) {
 
     override fun chooseCard(): Card {
         return getMetaCardList()

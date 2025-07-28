@@ -7,7 +7,7 @@ import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.basic.Round
 import com.cards.game.fourplayercardgame.basic.Score
-import com.cards.game.fourplayercardgame.basic.CardPlayer
+import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Trick
 import kotlin.collections.filter
 import kotlin.collections.ifEmpty
@@ -34,16 +34,16 @@ class GameHearts(): Game() {
     }
 
     //player
-    override fun initialPlayerList(): List<CardPlayer> {
+    override fun initialPlayerList(): List<Player> {
         return TablePosition.values().map { p -> GeniusHeartsPlayer(p, this) }
     }
 
-    override fun nextPlayer(player: CardPlayer): CardPlayer {
+    override fun nextPlayer(player: Player): Player {
         return getCardPlayer(player.tablePosition.neighbour())
     }
 
     //trick
-    override fun winnerForTrick(trick: Trick) : CardPlayer? {
+    override fun winnerForTrick(trick: Trick) : Player? {
         return if (!trick.isComplete()) {
             null
         } else {

@@ -12,7 +12,7 @@ data class Score(val westValue: Int, val northValue: Int, val eastValue: Int, va
         )
     }
 
-    fun plusForPlayer(player: CardPlayer, value: Int): Score {
+    fun plusForPlayer(player: Player, value: Int): Score {
         return this.plus(scoreForPlayer(player, value))
     }
 
@@ -22,7 +22,7 @@ data class Score(val westValue: Int, val northValue: Int, val eastValue: Int, va
     companion object {
         val ZERO = Score(0,0,0,0)
 
-        fun scoreForPlayer(player: CardPlayer, value: Int): Score {
+        fun scoreForPlayer(player: Player, value: Int): Score {
             return Score(
                 if (player.tablePosition == TablePosition.WEST) value else 0,
                 if (player.tablePosition == TablePosition.NORTH) value else 0,

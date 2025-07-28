@@ -1,21 +1,20 @@
 package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.basic.Score
 
 abstract class Game() {
 
-    private val playerList: List<CardPlayer> = initialPlayerList()
+    private val playerList: List<Player> = initialPlayerList()
 
     private val completedRoundList = mutableListOf<Round>()
     private var currentRound = startNewRound(getCardPlayer(TablePosition.WEST))
 
     //abstract player
-    abstract fun initialPlayerList(): List<CardPlayer>
-    abstract fun nextPlayer(player: CardPlayer): CardPlayer
+    abstract fun initialPlayerList(): List<Player>
+    abstract fun nextPlayer(player: Player): Player
 
     //abstract trick
-    abstract fun winnerForTrick(trick: Trick) : CardPlayer?
+    abstract fun winnerForTrick(trick: Trick) : Player?
     abstract fun winningCardForTrick(trick: Trick) : Card?
     abstract fun legalPlayableCardsForTrick(trickOnTable: Trick, cardsInHand: List<Card>): List<Card>
     abstract fun getScoreForTrick(trick: Trick): Score
@@ -33,13 +32,13 @@ abstract class Game() {
 
     fun getPlayerList() = playerList
     fun getCardPlayer(tablePosition: TablePosition) = getPlayerList().first { cardPlayer -> cardPlayer.tablePosition == tablePosition }
-    fun startNewRound(leadPlayer: CardPlayer) = Round(this, leadPlayer)
+    fun startNewRound(leadPlayer: Player) = Round(this, leadPlayer)
     fun completeRoundsPlayed() = completedRoundList.toList()
     fun trickCompleted() = currentRound.getTrickOnTable().isNew()
     fun roundCompleted() = currentRound.isNew()
     fun getCurrentRound() = currentRound
     fun getPlayerToMove() = currentRound.getTrickOnTable().playerToMove()
-    fun getLastTrickWinner(): CardPlayer? =
+    fun getLastTrickWinner(): Player? =
         if (!currentRound.isNew())
             currentRound.getLastCompletedTrickWinner()
         else
