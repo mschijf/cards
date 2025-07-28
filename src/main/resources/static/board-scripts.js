@@ -142,20 +142,33 @@ function showCard(cardId, cardModel, show) {
 }
 
 function showPlayerCards(player, playerHand, show) {
-    for (let cardIndex = 0; cardIndex < playerHand.length; cardIndex++) {
-        showCard(player + cardIndex, playerHand[cardIndex], show)
-        // showCard(player + cardIndex, playerHand[cardIndex], true)
+    for (let cardIndex = 0; cardIndex < 8; cardIndex++) {
+        if (cardIndex < playerHand.length)
+            showCard(player + cardIndex, playerHand[cardIndex].card, show)
+        else {
+            showCard(player + cardIndex, null, show)
+        }
     }
 }
 
-function showGeniusSouthValues(values) {
-    for (let i = 0; i < values.length; i++) {
-        document.getElementById("meta" + i).innerHTML = values[i]
+function clearGeniusSouthValues() {
+    for (let i = 0; i < 8; i++) {
+        document.getElementById("meta" + i).innerHTML = ""
+    }
+}
+
+function showGeniusSouthValues(cardModelListPlayerSouth) {
+    for (let i = 0; i < 8; i++) {
+        document.getElementById("meta" + i).innerHTML = ""
+    }
+    for (let i = 0; i < cardModelListPlayerSouth.length; i++) {
+        document.getElementById("meta" + i).innerHTML = cardModelListPlayerSouth[i].geniusValue
     }
 }
 
 function showExtras(gameStatus) {
-    showGeniusSouthValues(gameStatus.geniusValueSouth)
+    clearGeniusSouthValues()
+    showGeniusSouthValues(gameStatus.playerSouth)
     document.getElementById("upDownSignal").src = upDownSignalImage(gameStatus.goingUp)
     document.getElementById("buttonJson").onclick = function () {
         showJson(gameStatus.gameJsonString)
@@ -207,9 +220,9 @@ function setClickableCards() {
     for (let cardIndex = 0; cardIndex < __globalGameStatus.playerSouth.length; cardIndex++) {
         let aCardImage = document.getElementById("playerSouth" + cardIndex)
         let cardModel = __globalGameStatus.playerSouth[cardIndex]
-        if (cardModel != null) {
+        if (cardModel != null && cardModel.playable === true) {
             aCardImage.onclick = function () {
-                doMove(cardModel)
+                doMove(cardModel.card)
             };
             aCardImage.style.cursor = "pointer"
         } else {
@@ -220,7 +233,7 @@ function setClickableCards() {
 }
 
 function disableClickableCards() {
-    for (let cardIndex = 0; cardIndex < __globalGameStatus.playerSouth.length; cardIndex++) {
+    for (let cardIndex = 0; cardIndex < 8; cardIndex++) {
         let aCardImage = document.getElementById("playerSouth" + cardIndex)
         aCardImage.onclick = null
         aCardImage.style.cursor = "default"

@@ -7,12 +7,16 @@ data class GameStatusModel(
     val onTable: TableModel,
     val playerToMove: TablePosition,
     val leadPlayer: TablePosition,
-    val playerSouth: List<Card?>,
-    val playerWest: List<Card?>,
-    val playerNorth: List<Card?>,
-    val playerEast: List<Card?>,
+    val playerSouth: List<CardInHandModel>,
+    val playerWest: List<CardInHandModel>,
+    val playerNorth: List<CardInHandModel>,
+    val playerEast: List<CardInHandModel>,
     val gameJsonString: String,
 
     val goingUp: Boolean,
-    val geniusValueSouth: List<String?>,
 )
+
+data class CardInHandModel(
+    val card: Card,
+    val playable: Boolean,
+    val geniusValue: String)

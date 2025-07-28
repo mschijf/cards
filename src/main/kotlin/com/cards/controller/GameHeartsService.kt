@@ -6,7 +6,6 @@ import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.hearts.GameHearts
-import com.cards.game.fourplayercardgame.hearts.HeartsConstants
 import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
 import org.springframework.stereotype.Service
 
@@ -35,17 +34,9 @@ class GameHeartsService {
         val playerWest = makePlayerCardListModel(TablePosition.WEST)
         val playerEast = makePlayerCardListModel(TablePosition.EAST)
 
-        //todo: add legal cards to play for player to move, can be used in 'setClickable' in board-scripts.js
-
         val gameJsonString = "" //Gson().toJson(gm)
 
         val goingUp = gameHearts.isGoingUp()
-        val geniusValueSouth = List(HeartsConstants.INITIAL_NUMBER_OF_CARDS_IN_HAND) { i ->
-            getGeniusCardValue(
-                (gameHearts.getCardPlayer(TablePosition.SOUTH) as GeniusPlayerHearts),
-                gameHearts.getCardPlayer(TablePosition.SOUTH).getCardsInHand().elementAtOrNull(i)
-            )
-        }
 
         return GameStatusModel(
             onTable,
@@ -57,23 +48,27 @@ class GameHeartsService {
             playerEast,
             gameJsonString,
             goingUp,
-            geniusValueSouth,
         )
     }
 
-    private fun makePlayerCardListModel(tablePosition: TablePosition): List<Card?> {
-        return List(HeartsConstants.INITIAL_NUMBER_OF_CARDS_IN_HAND) { index ->
-            gameHearts
-                .getCardPlayer(tablePosition)
-                .getCardsInHand()
-                .sortedBy { card -> 100 * card.color.ordinal + card.rank.ordinal }
-                .elementAtOrNull(index) }
+    private fun makePlayerCardListModel(tablePosition: TablePosition): List<CardInHandModel> {
+        val player = gameHearts.getCardPlayer(tablePosition)
+        return player
+            .getCardsInHand()
+            .sortedBy { card -> 100 * card.color.ordinal + card.rank.ordinal }
+            .map { card ->
+                CardInHandModel(
+                    card,
+                    gameHearts.isLegalCardToPlay(player, card),
+                    getGeniusCardValue(player as GeniusPlayerHearts, card)
+                )
+            }
     }
 
-    private fun getGeniusCardValue(geniusPlayerHearts: GeniusPlayerHearts, card: Card?): String? {
-        if (card == null)
-            return null
-        return geniusPlayerHearts.getMetaCardList().getCardValue(card)?.toString() ?: "x"
+    private fun getGeniusCardValue(geniusPlayerHearts: GeniusPlayerHearts, card: Card): String {
+        return geniusPlayerHearts
+            .getMetaCardList()
+            .getCardValue(card)?.toString() ?: "x"
     }
 
     fun computeMove(): CardPlayedModel? {
