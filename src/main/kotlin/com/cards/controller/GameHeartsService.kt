@@ -4,7 +4,7 @@ import com.cards.controller.model.*
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.hearts.GameHearts
 import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
 import org.springframework.stereotype.Service
@@ -21,18 +21,18 @@ class GameHeartsService {
     fun getGameStatus(): GameStatusModel {
         val trickOnTable = gameHearts.getCurrentRound().getTrickOnTable()
         val onTable = TableModel(
-            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(TablePosition.SOUTH)),
-            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(TablePosition.WEST)),
-            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(TablePosition.NORTH)),
-            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(TablePosition.EAST))
+            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.SOUTH)),
+            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.WEST)),
+            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.NORTH)),
+            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.EAST))
         )
         val playerToMove = gameHearts.getPlayerToMove()
         val leadPlayer = trickOnTable.getLeadPlayer()
 
-        val playerSouth = makePlayerCardListModel(TablePosition.SOUTH)
-        val playerNorth = makePlayerCardListModel(TablePosition.NORTH)
-        val playerWest = makePlayerCardListModel(TablePosition.WEST)
-        val playerEast = makePlayerCardListModel(TablePosition.EAST)
+        val playerSouth = makePlayerCardListModel(Table.SOUTH)
+        val playerNorth = makePlayerCardListModel(Table.NORTH)
+        val playerWest = makePlayerCardListModel(Table.WEST)
+        val playerEast = makePlayerCardListModel(Table.EAST)
 
         val gameJsonString = "" //Gson().toJson(gm)
 
@@ -51,7 +51,7 @@ class GameHeartsService {
         )
     }
 
-    private fun makePlayerCardListModel(tablePosition: TablePosition): List<CardInHandModel> {
+    private fun makePlayerCardListModel(tablePosition: Table): List<CardInHandModel> {
         val player = gameHearts.getCardPlayer(tablePosition)
         return player
             .getCardsInHand()

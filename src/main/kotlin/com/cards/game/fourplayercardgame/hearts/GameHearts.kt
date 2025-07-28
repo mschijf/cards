@@ -4,7 +4,7 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.Game
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.basic.Round
 import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Trick
@@ -29,12 +29,12 @@ class GameHearts(): Game() {
 
     //player
     override fun initialPlayerList(): List<Player> {
-        return TablePosition.values().map { p -> GeniusPlayerHearts(p, this) }
+        return Table.values().map { p -> GeniusPlayerHearts(p, this) }
     }
 
     //round
     override fun createFirstRound(): Round {
-        return RoundHearts(getCardPlayer(TablePosition.WEST))
+        return RoundHearts(getCardPlayer(Table.WEST))
     }
 
     override fun createNextRound(previousRound: Round): Round {

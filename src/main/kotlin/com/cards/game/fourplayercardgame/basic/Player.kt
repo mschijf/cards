@@ -4,7 +4,7 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 
 abstract class Player(
-    val tablePosition: TablePosition) {
+    val tablePosition: Table) {
 
     private var cardsInHand: MutableList<Card> = mutableListOf()
 

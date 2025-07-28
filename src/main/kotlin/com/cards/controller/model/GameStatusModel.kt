@@ -1,12 +1,12 @@
 package com.cards.controller.model
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.Table
 
 data class GameStatusModel(
     val onTable: TableModel,
-    val playerToMove: TablePosition,
-    val leadPlayer: TablePosition,
+    val playerToMove: Table,
+    val leadPlayer: Table,
     val playerSouth: List<CardInHandModel>,
     val playerWest: List<CardInHandModel>,
     val playerNorth: List<CardInHandModel>,

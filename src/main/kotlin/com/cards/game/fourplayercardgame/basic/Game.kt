@@ -26,17 +26,17 @@ abstract class Game() {
     abstract fun isFinished(): Boolean
 
     fun getPlayerList() = playerList
-    fun getCardPlayer(tablePosition: TablePosition) = getPlayerList().first { cardPlayer -> cardPlayer.tablePosition == tablePosition }
+    fun getCardPlayer(tablePosition: Table) = getPlayerList().first { cardPlayer -> cardPlayer.tablePosition == tablePosition }
     fun getCompleteRoundsPlayed() = completedRoundList.toList()
     fun trickCompleted() = currentRound.getTrickOnTable().hasNotStarted()
     fun roundCompleted() = currentRound.hasNotStarted()
     fun getCurrentRound() = currentRound
     fun getPlayerToMove() = currentRound.getTrickOnTable().playerToMove()
     fun getLastTrickWinner(): Player? =
-        if (!currentRound.hasNotStarted())
-            currentRound.getLastCompletedTrickWinner()
-        else
+        if (currentRound.hasNotStarted())
             completedRoundList.lastOrNull()?.getLastCompletedTrickWinner()
+        else
+            currentRound.getLastCompletedTrickWinner()
 
     //round
     private fun addRound(round: Round) {

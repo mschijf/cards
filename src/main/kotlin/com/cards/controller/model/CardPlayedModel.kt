@@ -1,13 +1,13 @@
 package com.cards.controller.model
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.Table
 
 data class CardPlayedModel(
-    val player: TablePosition,
+    val player: Table,
     val cardPlayed: Card,
-    val nextPlayer: TablePosition,
+    val nextPlayer: Table,
     val cardsInHand: Int,
     val trickCompleted: TrickCompletedModel?)
 
-data class TrickCompletedModel(val trickWinner: TablePosition, val roundCompleted: Boolean, val gameOver: Boolean)
+data class TrickCompletedModel(val trickWinner: Table, val roundCompleted: Boolean, val gameOver: Boolean)

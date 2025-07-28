@@ -15,8 +15,8 @@ abstract class Trick(
     fun isLeadColor(color: CardColor) = color == getLeadColor()
     fun playerToMove() = playerToMove
     fun getCardsPlayed() = cardsPlayed
-    fun isComplete(): Boolean = cardsPlayed.size >= TablePosition.values().size
-    fun isLastPlayerToMove() = (getCardsPlayed().size == TablePosition.values().size-1)
+    fun isComplete(): Boolean = cardsPlayed.size >= Table.values().size
+    fun isLastPlayerToMove() = (getCardsPlayed().size == Table.values().size)
     fun hasNotStarted(): Boolean = cardsPlayed.isEmpty()
 
     abstract fun legalPlayableCards(cardsList: List<Card>): List<Card>
