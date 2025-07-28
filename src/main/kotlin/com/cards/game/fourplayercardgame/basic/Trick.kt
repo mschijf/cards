@@ -1,26 +1,26 @@
 package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
+import com.cards.game.card.CardColor
 
-class Trick(
-    private val game: Game,
-    private val leadPlayer: Player
-) {
+abstract class Trick(
+    private val leadPlayer: Player) {
 
     private var playerToMove = leadPlayer
     private val cardsPlayed = arrayListOf<PlayerPlayedCard>()
 
     fun getLeadPlayer() = leadPlayer
     fun isLeadPLayer(player: Player) = player == leadPlayer
-    fun leadColor() = getCardPlayedBy(leadPlayer)?.color
+    fun getLeadColor() = getCardPlayedBy(leadPlayer)?.color
+    fun isLeadColor(color: CardColor) = color == getLeadColor()
     fun playerToMove() = playerToMove
     fun getCardsPlayed() = cardsPlayed
     fun isComplete(): Boolean = cardsPlayed.size >= TablePosition.values().size
     fun isLastPlayerToMove() = (getCardsPlayed().size == TablePosition.values().size-1)
-    fun isNew(): Boolean = cardsPlayed.isEmpty()
+    fun hasNotStarted(): Boolean = cardsPlayed.isEmpty()
 
-    fun winner(): Player? = game.winnerForTrick(this)
-    fun winningCard(): Card? = game.winningCardForTrick(this)
+    abstract fun winner(): Player?
+    abstract fun winningCard(): Card?
 
     fun getCardPlayedBy(player: Player): Card? {
         return cardsPlayed
@@ -33,6 +33,6 @@ class Trick(
             throw Exception("Adding a card to a completed trick")
 
         cardsPlayed.add(PlayerPlayedCard(playerToMove, aCard))
-        playerToMove = game.nextPlayer(playerToMove)
+        playerToMove = playerToMove.nextPlayer()
     }
 }

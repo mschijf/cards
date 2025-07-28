@@ -1,15 +1,17 @@
-package com.cards.game.fourplayercardgame.hearts
+package com.cards.game.fourplayercardgame.hearts.ai
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardDeck
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.hearts.GameHearts
+import com.cards.game.fourplayercardgame.hearts.PlayerHearts
 
 class GeniusHeartsPlayer(
-    player: TablePosition,
-    game: GameHearts) : Player(player, game) {
+    tablePosition: TablePosition,
+    game: GameHearts
+) : PlayerHearts(tablePosition, game) {
 
     override fun chooseCard(): Card {
         return getMetaCardList()
@@ -34,7 +36,7 @@ class GeniusHeartsPlayer(
 
     fun getMetaCardList(): HeartsAnalyzer {
         val trick = game.getCurrentRound().getTrickOnTable()
-        val leadColor = trick.leadColor()
+        val leadColor = trick.getLeadColor()
 
         if ( trick.playerToMove() != this )
             return zeroValued()
@@ -47,8 +49,6 @@ class GeniusHeartsPlayer(
 
         return evaluateFollowerButCannotFollowLeadColor()
     }
-
-    //==================================================================================================================
 
     private fun zeroValued(): HeartsAnalyzer {
         return HeartsAnalyzer(getCardsInHand())
@@ -67,7 +67,7 @@ class GeniusHeartsPlayer(
 
     private fun evaluateFollowerAndCanFollowLeadColor(): HeartsAnalyzer {
         val trick = game.getCurrentRound().getTrickOnTable()
-        val leadColor = trick.leadColor() ?: throw Exception("Trick on table does not have a lead color")
+        val leadColor = trick.getLeadColor() ?: throw Exception("Trick on table does not have a lead color")
         val winningCard = trick.winningCard()!!
         val legalCards = game.legalPlayableCardsForTrick(trick, getCardsInHand())
         val analyzer = HeartsAnalyzer(legalCards, getCardsPlayed(), getCardsStillInPlay())

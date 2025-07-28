@@ -4,12 +4,12 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 
 abstract class Player(
-    val tablePosition: TablePosition,
-    val game: Game) {
+    val tablePosition: TablePosition) {
 
     private var cardsInHand: MutableList<Card> = mutableListOf()
 
     abstract fun chooseCard(): Card
+    abstract fun nextPlayer(): Player
 
     fun getCardsInHand() = cardsInHand.toList()
     fun hasColorInHand(color: CardColor) = cardsInHand.any { card -> card.color == color }

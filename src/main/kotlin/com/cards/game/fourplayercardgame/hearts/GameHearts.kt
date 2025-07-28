@@ -9,20 +9,17 @@ import com.cards.game.fourplayercardgame.basic.Round
 import com.cards.game.fourplayercardgame.basic.Score
 import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Trick
+import com.cards.game.fourplayercardgame.hearts.HeartsConstants.ALL_POINTS_FOR_PIT
+import com.cards.game.fourplayercardgame.hearts.HeartsConstants.VALUE_TO_FINISH
+import com.cards.game.fourplayercardgame.hearts.HeartsConstants.VALUE_TO_GO_DOWN
+import com.cards.game.fourplayercardgame.hearts.ai.GeniusHeartsPlayer
 import kotlin.collections.filter
 import kotlin.collections.ifEmpty
 import kotlin.math.max
 
-private const val ALL_POINTS_FOR_PIT = 15
-private const val VALUE_TO_GO_DOWN = 14
-private const val VALUE_TO_FINISH = 0
-
 class GameHearts(): Game() {
 
     fun isGoingUp() = completeRoundsPlayed().size < goingDownFromRoundNumber()
-
-
-    private fun toRankNumber (card: Card) : Int = card.rank.rankNumber - 7
 
     private fun cardValue(card: Card): Int {
         return when (card.color) {
@@ -38,44 +35,23 @@ class GameHearts(): Game() {
         return TablePosition.values().map { p -> GeniusHeartsPlayer(p, this) }
     }
 
-    override fun nextPlayer(player: Player): Player {
-        return getCardPlayer(player.tablePosition.neighbour())
-    }
-
-    //trick
-    override fun winnerForTrick(trick: Trick) : Player? {
-        return if (!trick.isComplete()) {
-            null
-        } else {
-            trick.getCardsPlayed()
-                .filter { f -> f.card.color == trick.leadColor() }
-                .maxByOrNull { f -> toRankNumber(f.card) }
-                ?.player
-        }
-    }
-
-    override fun winningCardForTrick(trick: Trick) : Card? {
-        return trick.getCardsPlayed()
-            .filter { f -> f.card.color == trick.leadColor() }
-            .maxByOrNull { f -> toRankNumber(f.card) }
-            ?.card
-    }
-
     override fun legalPlayableCardsForTrick(trickOnTable: Trick, cardsInHand: List<Card>): List<Card> {
         return cardsInHand
-            .filter{ card -> card.color == trickOnTable.leadColor()}
+            .filter{ card -> trickOnTable.isLeadColor(card.color)}
             .ifEmpty { cardsInHand }
     }
 
-    override fun getValueForTrick(trick: Trick)  = trick.getCardsPlayed().sumOf { c -> cardValue(c.card) }
-
     //round
-    override fun roundIsComplete(round: Round): Boolean = round.completedTricksPlayed() >= numberOfTricksPerRound()
+    override fun createRound(leadPlayer: Player): Round {
+        return RoundHearts(leadPlayer)
+    }
 
     //game
     override fun isFinished() = !isGoingUp() && (getTotalScore().minValue() <= VALUE_TO_FINISH)
 
     //score
+    override fun getValueForTrick(trick: Trick)  = trick.getCardsPlayed().sumOf { c -> cardValue(c.card) }
+
     override fun getScoreForTrick(trick: Trick): Score {
         return if (!trick.isComplete()) {
             Score.ZERO
@@ -120,21 +96,16 @@ class GameHearts(): Game() {
         val goingDown = roundNumber >= goingDownFromRoundNumber()
         if (!goingDown) {
             if (score.maxValue() == ALL_POINTS_FOR_PIT) {
-                var newScore = Score.ZERO
-                newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.WEST), if (score.westValue == 0) ALL_POINTS_FOR_PIT else 0)
-                newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.NORTH), if (score.northValue == 0) ALL_POINTS_FOR_PIT else 0)
-                newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.EAST), if (score.eastValue == 0) ALL_POINTS_FOR_PIT else 0)
-                newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.SOUTH), if (score.southValue == 0) ALL_POINTS_FOR_PIT else 0)
-                return newScore
+                return Score(
+                    westValue = if (score.westValue == 0) ALL_POINTS_FOR_PIT else 0,
+                    northValue = if (score.northValue == 0) ALL_POINTS_FOR_PIT else 0,
+                    eastValue = if (score.eastValue == 0) ALL_POINTS_FOR_PIT else 0,
+                    southValue = if (score.southValue == 0) ALL_POINTS_FOR_PIT else 0
+                )
             }
             return score
         } else {
-            var newScore = Score.ZERO
-            newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.WEST), -score.westValue)
-            newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.NORTH), -score.northValue)
-            newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.EAST), -score.eastValue)
-            newScore = newScore.plusForPlayer(getCardPlayer(TablePosition.SOUTH), -score.southValue)
-            return newScore
+            return Score.ZERO.minus(score)
         }
     }
 }

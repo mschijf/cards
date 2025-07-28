@@ -12,8 +12,13 @@ data class Score(val westValue: Int, val northValue: Int, val eastValue: Int, va
         )
     }
 
-    fun plusForPlayer(player: Player, value: Int): Score {
-        return this.plus(scoreForPlayer(player, value))
+    fun minus(score: Score): Score {
+        return Score(
+            westValue - score.westValue,
+            northValue - score.northValue,
+            eastValue - score.eastValue,
+            southValue - score.southValue
+        )
     }
 
     fun minValue() = NumberUtils.min(westValue, northValue, eastValue, southValue)

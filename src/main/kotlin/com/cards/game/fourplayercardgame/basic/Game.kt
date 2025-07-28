@@ -1,62 +1,50 @@
 package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
+import com.cards.game.card.CardDeck
+import com.cards.game.fourplayercardgame.hearts.HeartsConstants.INITIAL_NUMBER_OF_CARDS_IN_HAND
 
 abstract class Game() {
 
     private val playerList: List<Player> = initialPlayerList()
 
     private val completedRoundList = mutableListOf<Round>()
-    private var currentRound = startNewRound(getCardPlayer(TablePosition.WEST))
+    private var currentRound = createRound(getCardPlayer(TablePosition.WEST))
+    private val cardDeck = CardDeck()
+
+    init {
+        dealCards()
+    }
 
     //abstract player
     abstract fun initialPlayerList(): List<Player>
-    abstract fun nextPlayer(player: Player): Player
 
     //abstract trick
-    abstract fun winnerForTrick(trick: Trick) : Player?
-    abstract fun winningCardForTrick(trick: Trick) : Card?
     abstract fun legalPlayableCardsForTrick(trickOnTable: Trick, cardsInHand: List<Card>): List<Card>
     abstract fun getScoreForTrick(trick: Trick): Score
     abstract fun getValueForTrick(trick: Trick): Int
 
     //abstract round
-    abstract fun roundIsComplete(round: Round): Boolean
+    protected abstract fun createRound(leadPlayer: Player): Round
     abstract fun getScoreForRound(game: Game, round: Round): Score
 
     //abstract game
     abstract fun isFinished(): Boolean
 
-    open fun initialNumberOfCardsInHand() = 8
-    open fun numberOfTricksPerRound() = 8
-
     fun getPlayerList() = playerList
     fun getCardPlayer(tablePosition: TablePosition) = getPlayerList().first { cardPlayer -> cardPlayer.tablePosition == tablePosition }
-    fun startNewRound(leadPlayer: Player) = Round(this, leadPlayer)
     fun completeRoundsPlayed() = completedRoundList.toList()
-    fun trickCompleted() = currentRound.getTrickOnTable().isNew()
-    fun roundCompleted() = currentRound.isNew()
+    fun trickCompleted() = currentRound.getTrickOnTable().hasNotStarted()
+    fun roundCompleted() = currentRound.hasNotStarted()
     fun getCurrentRound() = currentRound
     fun getPlayerToMove() = currentRound.getTrickOnTable().playerToMove()
     fun getLastTrickWinner(): Player? =
-        if (!currentRound.isNew())
+        if (!currentRound.hasNotStarted())
             currentRound.getLastCompletedTrickWinner()
         else
             completedRoundList.lastOrNull()?.getLastCompletedTrickWinner()
 
-
-    fun playCard(card: Card) {
-        if (isFinished()) {
-            throw Exception("Trying to play a card, but the game is already over")
-        }
-
-        currentRound.playCard(card)
-        if (currentRound.isComplete()) {
-            addRound(currentRound)
-            currentRound = startNewRound(nextPlayer(currentRound.getLeadPLayer()))
-        }
-    }
-
+    //round
     private fun addRound(round: Round) {
         if (!isFinished()) {
             completedRoundList.add(round)
@@ -64,6 +52,50 @@ abstract class Game() {
             throw Exception("Trying to add a round to a finished game")
         }
     }
+
+    //deal cards
+    private fun dealCards() {
+        cardDeck.shuffle()
+        val cardsInHand = INITIAL_NUMBER_OF_CARDS_IN_HAND
+        getPlayerList().forEachIndexed { i, player ->
+            player.setCardsInHand(cardDeck.getCards(cardsInHand*i, cardsInHand))
+        }
+    }
+
+    //play card
+    fun playCard(card: Card) {
+        if (isFinished()) {
+            throw Exception("Trying to play a card, but the game is already over")
+        }
+
+        val playerToMove = currentRound.getTrickOnTable().playerToMove()
+        if (isLegalCardToPlay(playerToMove, card)) {
+            playerToMove.removeCard(card)
+
+            currentRound.playCard(card)
+            if (currentRound.isComplete()) {
+                addRound(currentRound)
+                currentRound = createRound(currentRound.getLeadPlayer().nextPlayer())
+            }
+
+            if (roundCompleted()) {
+                dealCards()
+            }
+        } else {
+            throw Exception("trying to play an illegal card: Card($card)")
+        }
+    }
+
+    fun isLegalCardToPlay(player: Player, card: Card): Boolean {
+        val trickOnTable = getCurrentRound().getTrickOnTable()
+        if (trickOnTable.playerToMove() != player)
+            return false
+
+        val cardsInHand = player.getCardsInHand()
+        val legalCards = legalPlayableCardsForTrick(trickOnTable, cardsInHand)
+        return legalCards.contains(card)
+    }
+
 
     // score
     fun getTotalScore(): Score {

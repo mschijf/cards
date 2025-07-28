@@ -2,29 +2,28 @@ package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
 
-class Round(
-    private val game: Game,
-    private val leadPlayer: Player,
-) {
+abstract class Round(
+    private val leadPlayer: Player) {
 
     private val completedTrickList = arrayListOf<Trick>()
-    private var currentTrick = Trick(game, leadPlayer)
+    private var currentTrick: Trick = createTrick(leadPlayer)
 
-    fun getLeadPLayer() = leadPlayer
+    abstract fun createTrick(leadPlayer: Player): Trick
+    abstract fun isComplete(): Boolean
+
+    fun getLeadPlayer() = leadPlayer
     fun completedTricksPlayed() = completedTrickList.size
-    fun isNew(): Boolean = completedTrickList.isEmpty() && currentTrick.isNew()
+    fun hasNotStarted(): Boolean = completedTrickList.isEmpty() && currentTrick.hasNotStarted()
     fun getTrickOnTable() = currentTrick
     fun getLastCompletedTrickWinner(): Player? = completedTrickList.lastOrNull()?.winner()
     fun getCompletedTrickList() = completedTrickList
-
-    fun isComplete(): Boolean = game.roundIsComplete(this)
 
     fun playCard(card: Card) {
         currentTrick.addCard(card)
         if (currentTrick.isComplete()) {
             val winner = currentTrick.winner()!!
             addTrick(currentTrick)
-            currentTrick = Trick(game, winner)
+            currentTrick = createTrick(winner)
         }
     }
 

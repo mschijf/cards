@@ -1,4 +1,4 @@
-package com.cards.game.fourplayercardgame.hearts
+package com.cards.game.fourplayercardgame.hearts.ai
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
