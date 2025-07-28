@@ -68,7 +68,7 @@ class GameHeartsService {
     private fun getGeniusCardValue(geniusPlayerHearts: GeniusPlayerHearts, card: Card): String {
         return geniusPlayerHearts
             .getMetaCardList()
-            .getCardValue(card)?.toString() ?: "x"
+            .getCardAnalysisValue(card)?.toString() ?: "x"
     }
 
     fun computeMove(): CardPlayedModel? {

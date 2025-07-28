@@ -15,7 +15,7 @@ class HeartsAnalyzer(
     private fun higher (card1: Card, card2: Card) = toRankNumber(card1) > toRankNumber(card2)
     private fun lower (card1: Card, card2: Card) = toRankNumber(card1) < toRankNumber(card2)
 
-    fun getCardValue(card: Card): Int? = metaCardList.firstOrNull { metacard -> metacard.card == card }?.value
+    fun getCardAnalysisValue(card: Card): Int? = metaCardList.firstOrNull { metacard -> metacard.card == card }?.value
     
     constructor(cardsInHand: List<Card>):this(cardsInHand, emptyList<Card>(), emptyList<Card>())
 
