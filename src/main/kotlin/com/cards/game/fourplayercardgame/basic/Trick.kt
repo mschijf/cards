@@ -19,6 +19,7 @@ abstract class Trick(
     fun isLastPlayerToMove() = (getCardsPlayed().size == TablePosition.values().size-1)
     fun hasNotStarted(): Boolean = cardsPlayed.isEmpty()
 
+    abstract fun legalPlayableCards(cardsList: List<Card>): List<Card>
     abstract fun winner(): Player?
     abstract fun winningCard(): Card?
 

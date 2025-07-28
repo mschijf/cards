@@ -8,6 +8,12 @@ class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
 
     private fun toRankNumber (card: Card) : Int = card.rank.rankNumber - 7
 
+    override fun legalPlayableCards(cardsList: List<Card>): List<Card> {
+        return cardsList
+            .filter{ card -> isLeadColor(card.color)}
+            .ifEmpty { cardsList }
+    }
+
     override fun winner(): Player? {
         return if (!isComplete()) {
             null

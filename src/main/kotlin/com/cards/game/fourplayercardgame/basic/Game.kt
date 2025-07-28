@@ -2,14 +2,13 @@ package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardDeck
-import com.cards.game.fourplayercardgame.hearts.HeartsConstants.INITIAL_NUMBER_OF_CARDS_IN_HAND
 
 abstract class Game() {
 
     private val playerList: List<Player> = initialPlayerList()
 
     private val completedRoundList = mutableListOf<Round>()
-    private var currentRound = createRound(getCardPlayer(TablePosition.WEST))
+    private var currentRound = createFirstRound()
     private val cardDeck = CardDeck()
 
     init {
@@ -20,12 +19,12 @@ abstract class Game() {
     abstract fun initialPlayerList(): List<Player>
 
     //abstract trick
-    abstract fun legalPlayableCardsForTrick(trickOnTable: Trick, cardsInHand: List<Card>): List<Card>
     abstract fun getScoreForTrick(trick: Trick): Score
     abstract fun getValueForTrick(trick: Trick): Int
 
     //abstract round
-    protected abstract fun createRound(leadPlayer: Player): Round
+    protected abstract fun createFirstRound(): Round
+    protected abstract fun createNextRound(previousRound: Round): Round
     abstract fun getScoreForRound(game: Game, round: Round): Score
 
     //abstract game
@@ -56,10 +55,8 @@ abstract class Game() {
     //deal cards
     private fun dealCards() {
         cardDeck.shuffle()
-        val cardsInHand = INITIAL_NUMBER_OF_CARDS_IN_HAND
-        getPlayerList().forEachIndexed { i, player ->
-            player.setCardsInHand(cardDeck.getCards(cardsInHand*i, cardsInHand))
-        }
+        val cardPiles = cardDeck.getCards().chunked(cardDeck.numberOfCards()/ playerList.size)
+        playerList.forEachIndexed { idx, player -> player.setCardsInHand(cardPiles[idx])}
     }
 
     //play card
@@ -75,7 +72,7 @@ abstract class Game() {
             currentRound.playCard(card)
             if (currentRound.isComplete()) {
                 addRound(currentRound)
-                currentRound = createRound(currentRound.getLeadPlayer().nextPlayer())
+                currentRound = createNextRound(currentRound)
             }
 
             if (roundCompleted()) {
@@ -92,7 +89,7 @@ abstract class Game() {
             return false
 
         val cardsInHand = player.getCardsInHand()
-        val legalCards = legalPlayableCardsForTrick(trickOnTable, cardsInHand)
+        val legalCards = trickOnTable.legalPlayableCards(cardsInHand)
         return legalCards.contains(card)
     }
 

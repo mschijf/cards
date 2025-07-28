@@ -12,9 +12,7 @@ import com.cards.game.fourplayercardgame.basic.Trick
 import com.cards.game.fourplayercardgame.hearts.HeartsConstants.ALL_POINTS_FOR_PIT
 import com.cards.game.fourplayercardgame.hearts.HeartsConstants.VALUE_TO_FINISH
 import com.cards.game.fourplayercardgame.hearts.HeartsConstants.VALUE_TO_GO_DOWN
-import com.cards.game.fourplayercardgame.hearts.ai.GeniusHeartsPlayer
-import kotlin.collections.filter
-import kotlin.collections.ifEmpty
+import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
 import kotlin.math.max
 
 class GameHearts(): Game() {
@@ -32,18 +30,16 @@ class GameHearts(): Game() {
 
     //player
     override fun initialPlayerList(): List<Player> {
-        return TablePosition.values().map { p -> GeniusHeartsPlayer(p, this) }
-    }
-
-    override fun legalPlayableCardsForTrick(trickOnTable: Trick, cardsInHand: List<Card>): List<Card> {
-        return cardsInHand
-            .filter{ card -> trickOnTable.isLeadColor(card.color)}
-            .ifEmpty { cardsInHand }
+        return TablePosition.values().map { p -> GeniusPlayerHearts(p, this) }
     }
 
     //round
-    override fun createRound(leadPlayer: Player): Round {
-        return RoundHearts(leadPlayer)
+    override fun createFirstRound(): Round {
+        return RoundHearts(getCardPlayer(TablePosition.WEST))
+    }
+
+    override fun createNextRound(previousRound: Round): Round {
+        return RoundHearts(previousRound.getLeadPlayer().nextPlayer())
     }
 
     //game

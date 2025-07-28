@@ -14,7 +14,7 @@ const val REQUESTPATH_BASE = "/api/v1/"
 
 @RestController
 @RequestMapping(REQUESTPATH_BASE)
-class Controller @Autowired constructor(private val gameService: GameService) {
+class Controller @Autowired constructor(private val gameService: GameHeartsService) {
 
     @PostMapping("/new-game")
     fun newGame(): GameStatusModel {

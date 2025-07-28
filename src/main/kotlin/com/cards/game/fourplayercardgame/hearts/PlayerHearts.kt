@@ -13,8 +13,7 @@ open class PlayerHearts (
     }
 
     override fun chooseCard(): Card {
-        val trick = game.getCurrentRound().getTrickOnTable()
-        val legalCards = game.legalPlayableCardsForTrick(trick, getCardsInHand())
+        val legalCards = game.getCurrentRound().getTrickOnTable().legalPlayableCards(getCardsInHand())
         return legalCards.first()
     }
 }

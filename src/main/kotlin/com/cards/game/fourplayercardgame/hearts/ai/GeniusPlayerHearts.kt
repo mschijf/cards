@@ -8,10 +8,9 @@ import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.hearts.GameHearts
 import com.cards.game.fourplayercardgame.hearts.PlayerHearts
 
-class GeniusHeartsPlayer(
+class GeniusPlayerHearts(
     tablePosition: TablePosition,
-    game: GameHearts
-) : PlayerHearts(tablePosition, game) {
+    game: GameHearts) : PlayerHearts(tablePosition, game) {
 
     override fun chooseCard(): Card {
         return getMetaCardList()
@@ -69,7 +68,7 @@ class GeniusHeartsPlayer(
         val trick = game.getCurrentRound().getTrickOnTable()
         val leadColor = trick.getLeadColor() ?: throw Exception("Trick on table does not have a lead color")
         val winningCard = trick.winningCard()!!
-        val legalCards = game.legalPlayableCardsForTrick(trick, getCardsInHand())
+        val legalCards = trick.legalPlayableCards(getCardsInHand())
         val analyzer = HeartsAnalyzer(legalCards, getCardsPlayed(), getCardsStillInPlay())
         if (analyzer.hasOnlyLowerCardsThanLeader(winningCard)) {
             //throw highest card, especially QS or JC
@@ -119,7 +118,7 @@ class GeniusHeartsPlayer(
 
     private fun evaluateFollowerButCannotFollowLeadColor(): HeartsAnalyzer {
         val trick = game.getCurrentRound().getTrickOnTable()
-        val legalCards = game.legalPlayableCardsForTrick(trick, getCardsInHand())
+        val legalCards = trick.legalPlayableCards(getCardsInHand())
         val analyzer = HeartsAnalyzer(legalCards, getCardsPlayed(), getCardsStillInPlay())
         analyzer
             .evaluateByRank(rankStepValue = 1)

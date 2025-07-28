@@ -16,7 +16,6 @@ abstract class Player(
 
     fun setCardsInHand(cardsFromDealer: List<Card>) {
         cardsInHand = cardsFromDealer.toMutableList()
-        cardsInHand.sortBy { card -> 100 * card.color.ordinal + card.rank.ordinal }
     }
 
     fun removeCard(card: Card) {

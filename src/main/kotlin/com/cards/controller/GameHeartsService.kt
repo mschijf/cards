@@ -7,11 +7,11 @@ import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.hearts.GameHearts
 import com.cards.game.fourplayercardgame.hearts.HeartsConstants
-import com.cards.game.fourplayercardgame.hearts.ai.GeniusHeartsPlayer
+import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
 import org.springframework.stereotype.Service
 
 @Service
-class GameService {
+class GameHeartsService {
     private var gameHearts = GameHearts()
 
     fun newGame(): GameStatusModel {
@@ -30,24 +30,19 @@ class GameService {
         val playerToMove = gameHearts.getPlayerToMove()
         val leadPlayer = trickOnTable.getLeadPlayer()
 
-        val nCardsInHand = HeartsConstants.INITIAL_NUMBER_OF_CARDS_IN_HAND
-        val playerSouth =
-            List(nCardsInHand) { i -> gameHearts.getCardPlayer(TablePosition.SOUTH).getCardsInHand().elementAtOrNull(i) }
-        val playerWest =
-            List(nCardsInHand) { i -> gameHearts.getCardPlayer(TablePosition.WEST).getCardsInHand().elementAtOrNull(i) }
-        val playerNorth =
-            List(nCardsInHand) { i -> gameHearts.getCardPlayer(TablePosition.NORTH).getCardsInHand().elementAtOrNull(i) }
-        val playerEast =
-            List(nCardsInHand) { i -> gameHearts.getCardPlayer(TablePosition.EAST).getCardsInHand().elementAtOrNull(i) }
+        val playerSouth = makePlayerCardListModel(TablePosition.SOUTH)
+        val playerNorth = makePlayerCardListModel(TablePosition.NORTH)
+        val playerWest = makePlayerCardListModel(TablePosition.WEST)
+        val playerEast = makePlayerCardListModel(TablePosition.EAST)
 
-        //todo: add legal cards to play for player to move, can be used n 'setClickable' in board-scripts.js
+        //todo: add legal cards to play for player to move, can be used in 'setClickable' in board-scripts.js
 
         val gameJsonString = "" //Gson().toJson(gm)
 
         val goingUp = gameHearts.isGoingUp()
         val geniusValueSouth = List(HeartsConstants.INITIAL_NUMBER_OF_CARDS_IN_HAND) { i ->
             getGeniusCardValue(
-                (gameHearts.getCardPlayer(TablePosition.SOUTH) as GeniusHeartsPlayer),
+                (gameHearts.getCardPlayer(TablePosition.SOUTH) as GeniusPlayerHearts),
                 gameHearts.getCardPlayer(TablePosition.SOUTH).getCardsInHand().elementAtOrNull(i)
             )
         }
@@ -66,10 +61,19 @@ class GameService {
         )
     }
 
-    private fun getGeniusCardValue(geniusHeartsPlayer: GeniusHeartsPlayer, card: Card?): String? {
+    private fun makePlayerCardListModel(tablePosition: TablePosition): List<Card?> {
+        return List(HeartsConstants.INITIAL_NUMBER_OF_CARDS_IN_HAND) { index ->
+            gameHearts
+                .getCardPlayer(tablePosition)
+                .getCardsInHand()
+                .sortedBy { card -> 100 * card.color.ordinal + card.rank.ordinal }
+                .elementAtOrNull(index) }
+    }
+
+    private fun getGeniusCardValue(geniusPlayerHearts: GeniusPlayerHearts, card: Card?): String? {
         if (card == null)
             return null
-        return geniusHeartsPlayer.getMetaCardList().getCardValue(card)?.toString() ?: "x"
+        return geniusPlayerHearts.getMetaCardList().getCardValue(card)?.toString() ?: "x"
     }
 
     fun computeMove(): CardPlayedModel? {
