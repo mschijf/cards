@@ -56,13 +56,25 @@
             
             <div class="grid-table">
                 <div class="flexcontainer-table">
-                    <div class="table-player-west"><img  id="tableWest" src="carddeck/NoCard.svg" class="card-size-normal"></div>
-                    <div class="flexcontainer-column">
-                        <div class="table-player-north"><img id="tableNorth" src="carddeck/NoCard.svg" class="card-size-normal"></div>
-                        <div class="table-arrow-middle"><img id="pointToWinnerNorth" src="assets/Green_Arrow_Up.svg" class="up-down-arrow"></div>
-                        <div class="table-player-south"><img id="tableSouth" src="carddeck/NoCard.svg" class="card-size-normal"></div>
+                    <div class="table-player-west">
+                        <img  id="tableWest" src="carddeck/NoCard.svg" class="card-size-normal">
+                        <div class="player-table-label"><label id="playerWestTableLabel">Harry</label></div>
                     </div>
-                    <div class="table-player-east"><img id="tableEast" src="carddeck/NoCard.svg" class="card-size-normal"></div>
+                    <div class="flexcontainer-column">
+                        <div class="table-player-north">
+                            <div class="player-table-label"><label id="playerNorthTableLabel">Thea</label></div>
+                            <img id="tableNorth" src="carddeck/NoCard.svg" class="card-size-normal">
+                        </div>
+                        <div class="table-arrow-middle"><img id="pointToWinnerNorth" src="assets/Green_Arrow_Up.svg" class="up-down-arrow"></div>
+                        <div class="table-player-south">
+                            <img id="tableSouth" src="carddeck/NoCard.svg" class="card-size-normal">
+                            <div class="player-table-label"><label id="playerSouthTableLabel">Truus</label></div>
+                        </div>
+                    </div>
+                    <div class="table-player-east">
+                        <img id="tableEast" src="carddeck/NoCard.svg" class="card-size-normal">
+                        <div class="player-table-label"><label id="playerEastTableLabel">Martin</label></div>
+                    </div>
                 </div>    
             </div>
 
@@ -189,6 +201,7 @@
         <!-- Card images by Adrian Kennard - Own work, CC0, <a href="https://commons.wikimedia.org/w/index.php?curid=70667162">https://commons.wikimedia.org/w/index.php?curid=70667162</a>     -->
     </body>
 
-    <script type="text/javascript" src="./board-scripts.js"></script>
+    <script type="text/javascript" src="./board-scripts-generic.js"></script>
+    <script type="text/javascript" src="./board-scripts-hearts.js"></script>
     <script type="text/javascript" src="./rest-calls.js"></script>
 </html>

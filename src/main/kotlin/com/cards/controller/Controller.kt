@@ -28,8 +28,8 @@ class Controller(private val gameService: GameHeartsService) {
         return gameService.getGameStatus()
     }
 
-    @GetMapping("/score-list")
-    fun getScoreList(): ScoreModel {
+    @GetMapping("/score-list/")
+    fun getScoreListKlaverjassen(): ScoreModel {
         return gameService.getScoreCard()
     }
 

@@ -76,13 +76,13 @@
 }
 
 .table-player-west {
-    padding-top: 115px;
+    padding-top: 131px;
     padding-right: 10px;
     padding-left: 50px;
 }
 
 .table-player-east {
-    padding-top: 115px;
+    padding-top: 131px;
 }
 
 .flexcontainer-player {
@@ -92,6 +92,11 @@
 
 .player-card {
     padding-right: 10px;
+}
+
+.player-table-label {
+    color: white;
+    text-align: center;
 }
 
 textarea.info-lines {
