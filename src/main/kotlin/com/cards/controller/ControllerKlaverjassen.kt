@@ -9,11 +9,11 @@ import com.cards.game.card.CardRank
 import com.cards.tools.Log
 import org.springframework.web.bind.annotation.*
 
-const val REQUESTPATH_BASE = "/api/v1/"
+const val REQUESTPATH_BASE_KLAVERJJASSEN = "/api/v1/klaverjassen/"
 
 @RestController
-@RequestMapping(REQUESTPATH_BASE)
-class Controller(private val gameService: GameHeartsService) {
+@RequestMapping(REQUESTPATH_BASE_KLAVERJJASSEN)
+class ControllerKlaverjassen(private val gameService: GameHeartsService) {
 
     @PostMapping("/new-game")
     fun newGame(): GameStatusModelHearts {

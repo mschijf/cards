@@ -1,3 +1,5 @@
+let gameType="hearts"
+
 function upDownSignalImage(goingUp) {
     if (goingUp)
         return "assets/Green_Arrow_Up.svg"

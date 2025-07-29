@@ -1,7 +1,9 @@
+let requestBase = "api/v1/" + gameType
+
 function requestForNewGame() {
     let request = new XMLHttpRequest();
 
-    request.open("POST", "/api/v1/new-game/");
+    request.open("POST", requestBase + "/new-game");
     request.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
             let gameStatus = JSON.parse(this.responseText);
@@ -14,7 +16,7 @@ function requestForNewGame() {
 function requestGameStatus() {
     let request = new XMLHttpRequest();
 
-    request.open("GET", "/api/v1/game-status/");
+    request.open("GET", requestBase + "/game-status/");
     request.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
             let gameStatus = JSON.parse(this.responseText);
@@ -27,7 +29,7 @@ function requestGameStatus() {
 function requestForScoreCard() {
     let request = new XMLHttpRequest();
 
-    request.open("GET", "/api/v1/score-list/");
+    request.open("GET", requestBase + "/score-list/");
     request.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
             let scoreModel = JSON.parse(this.responseText);
@@ -41,7 +43,7 @@ function requestForScoreCard() {
 function requestComputeMove() {
     let request = new XMLHttpRequest();
 
-    request.open("POST", "/api/v1/computeMove/");
+    request.open("POST", requestBase + "/computeMove/");
     request.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
             let movePlayed = JSON.parse(this.responseText);
@@ -56,7 +58,7 @@ function requestComputeMove() {
 function requestDoMove(cardModel) {
     let request = new XMLHttpRequest();
 
-    request.open("POST", "/api/v1/executeMove/" + cardModel.color + "/" + cardModel.rank);
+    request.open("POST", requestBase + "/executeMove/" + cardModel.color + "/" + cardModel.rank);
     request.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
             let movePlayed = JSON.parse(this.responseText);
@@ -73,7 +75,7 @@ function requestDoMove(cardModel) {
 function requestLog() {
     let request = new XMLHttpRequest();
 
-    request.open("GET", "/api/v1/log/");
+    request.open("GET", requestBase + "/log/");
     request.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
             let logLines = this.responseText;
