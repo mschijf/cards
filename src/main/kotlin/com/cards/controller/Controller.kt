@@ -2,15 +2,12 @@ package com.cards.controller
 
 import com.cards.controller.model.CardPlayedModel
 import com.cards.controller.model.CardPlayedResponse
-import com.cards.controller.model.GameStatusModel
+import com.cards.controller.model.GameStatusModelHearts
 import com.cards.controller.model.ScoreModel
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.tools.Log
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.ui.ModelMap
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.ModelAndView
 
 const val REQUESTPATH_BASE = "/api/v1/"
 
@@ -19,13 +16,13 @@ const val REQUESTPATH_BASE = "/api/v1/"
 class Controller(private val gameService: GameHeartsService) {
 
     @PostMapping("/new-game")
-    fun newGame(): GameStatusModel {
+    fun newGame(): GameStatusModelHearts {
         return gameService.newGame()
     }
 
     @GetMapping("/game-status")
-    fun getGameStatus(): GameStatusModel {
-        return gameService.getGameStatus()
+    fun getGameStatus(): GameStatusModelHearts {
+        return gameService.getGameStatusHearts()
     }
 
     @GetMapping("/score-list/")

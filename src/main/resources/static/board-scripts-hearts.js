@@ -5,16 +5,8 @@ function upDownSignalImage(goingUp) {
         return "assets/Red_Arrow_Down.svg"
 }
 
-function showExtras(gameStatus) {
-    clearGeniusSouthValues()
-    showGeniusSouthValues(gameStatus.playerSouth)
-
+function showGameSpecific(gameStatus) {
     document.getElementById("upDownSignal").src = upDownSignalImage(gameStatus.goingUp)
-
-    document.getElementById("buttonJson").onclick = function () {
-        showJson(gameStatus.gameJsonString)
-    };
-    showJson("")
 }
 
 function handleScoreCard(scoreModel) {

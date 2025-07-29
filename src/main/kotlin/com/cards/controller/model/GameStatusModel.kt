@@ -12,8 +12,6 @@ data class GameStatusModel(
     val playerNorth: List<CardInHandModel>,
     val playerEast: List<CardInHandModel>,
     val gameJsonString: String,
-
-    val goingUp: Boolean,
 )
 
 data class CardInHandModel(

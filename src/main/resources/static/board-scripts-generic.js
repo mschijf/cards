@@ -4,7 +4,7 @@ window.onload = function () {
 
 //---------------------------------------------------------------------------------------------------------------------
 
-let __globalGameStatus = null
+let __globalGameStatusGeneric = null
 
 function NoCardImage() {
     return "carddeck/NoCard.SVG"
@@ -178,19 +178,34 @@ function showLeader(leader) {
 //-----------------------------------------------------------------------------------------
 
 function handleGameStatus(gameStatus) {
-    __globalGameStatus = gameStatus
-    showPlayerCards("playerSouth", gameStatus.playerSouth, true)
-    showPlayerCards("playerWest", gameStatus.playerWest, false)
-    showPlayerCards("playerNorth", gameStatus.playerNorth, false)
-    showPlayerCards("playerEast", gameStatus.playerEast, false)
-    showExtras(gameStatus)
-    showLeader(gameStatus.leadPlayer)
+    handleGameStatusGeneric(gameStatus.generic)
+    showGameSpecific(gameStatus)
+}
+
+function handleGameStatusGeneric(gameStatusGeneric) {
+    __globalGameStatusGeneric = gameStatusGeneric
+    showPlayerCards("playerSouth", gameStatusGeneric.playerSouth, true)
+    showPlayerCards("playerWest", gameStatusGeneric.playerWest, false)
+    showPlayerCards("playerNorth", gameStatusGeneric.playerNorth, false)
+    showPlayerCards("playerEast", gameStatusGeneric.playerEast, false)
+    showExtras(gameStatusGeneric)
+    showLeader(gameStatusGeneric.leadPlayer)
 
     showJson("")
-    let waitForNextMove = isHumanPlayer(gameStatus.playerToMove) ? 0 : 500
+    let waitForNextMove = isHumanPlayer(gameStatusGeneric.playerToMove) ? 0 : 500
     setTimeout(function () {
-        doNextMove(gameStatus.playerToMove)
+        doNextMove(gameStatusGeneric.playerToMove)
     }, waitForNextMove)
+}
+
+function showExtras(gameStatusGeneric) {
+    clearGeniusSouthValues()
+    showGeniusSouthValues(gameStatusGeneric.playerSouth)
+
+    document.getElementById("buttonJson").onclick = function () {
+        showJson(gameStatusGeneric.gameJsonString)
+    };
+    showJson("")
 }
 
 
@@ -206,9 +221,9 @@ function doMove(cardModel) {
 }
 
 function setClickableCards() {
-    for (let cardIndex = 0; cardIndex < __globalGameStatus.playerSouth.length; cardIndex++) {
+    for (let cardIndex = 0; cardIndex < __globalGameStatusGeneric.playerSouth.length; cardIndex++) {
         let aCardImage = document.getElementById("playerSouth" + cardIndex)
-        let cardModel = __globalGameStatus.playerSouth[cardIndex]
+        let cardModel = __globalGameStatusGeneric.playerSouth[cardIndex]
         if (cardModel != null && cardModel.playable === true) {
             aCardImage.onclick = function () {
                 doMove(cardModel.card)

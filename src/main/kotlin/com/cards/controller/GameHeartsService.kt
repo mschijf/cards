@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service
 class GameHeartsService {
     private var gameHearts = GameHearts()
 
-    fun newGame(): GameStatusModel {
+    fun newGame(): GameStatusModelHearts {
         gameHearts = GameHearts()
-        return getGameStatus()
+        return getGameStatusHearts()
     }
 
-    fun getGameStatus(): GameStatusModel {
+    fun getGameStatusHearts(): GameStatusModelHearts {
         val trickOnTable = gameHearts.getCurrentRound().getTrickOnTable()
         val onTable = TableModel(
             trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.SOUTH)),
@@ -38,15 +38,17 @@ class GameHeartsService {
 
         val goingUp = gameHearts.isGoingUp()
 
-        return GameStatusModel(
-            onTable,
-            playerToMove.tablePosition,
-            leadPlayer.tablePosition,
-            playerSouth,
-            playerWest,
-            playerNorth,
-            playerEast,
-            gameJsonString,
+        return GameStatusModelHearts(
+            GameStatusModel (
+                onTable,
+                playerToMove.tablePosition,
+                leadPlayer.tablePosition,
+                playerSouth,
+                playerWest,
+                playerNorth,
+                playerEast,
+                gameJsonString,
+            ),
             goingUp,
         )
     }
