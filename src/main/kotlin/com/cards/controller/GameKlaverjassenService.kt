@@ -5,28 +5,28 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.Table
-import com.cards.game.fourplayercardgame.hearts.GameHearts
-import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
+import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
+import com.cards.game.fourplayercardgame.klaverjassen.PlayerKlaverjassen
 import org.springframework.stereotype.Service
 
 @Service
-class GameHeartsService {
-    private var gameHearts = GameHearts()
+class GameKlaverjassenService {
+    private var gameKlaverjassen = GameKlaverjassen()
 
-    fun newGame(): GameStatusModelHearts {
-        gameHearts = GameHearts()
+    fun newGame(): GameStatusModelKlaverjassen {
+        gameKlaverjassen = GameKlaverjassen()
         return getGameStatus()
     }
 
-    fun getGameStatus(): GameStatusModelHearts {
-        val trickOnTable = gameHearts.getCurrentRound().getTrickOnTable()
+    fun getGameStatus(): GameStatusModelKlaverjassen {
+        val trickOnTable = gameKlaverjassen.getCurrentRound().getTrickOnTable()
         val onTable = TableModel(
-            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.SOUTH)),
-            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.WEST)),
-            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.NORTH)),
-            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.EAST))
+            trickOnTable.getCardPlayedBy(gameKlaverjassen.getCardPlayer(Table.SOUTH)),
+            trickOnTable.getCardPlayedBy(gameKlaverjassen.getCardPlayer(Table.WEST)),
+            trickOnTable.getCardPlayedBy(gameKlaverjassen.getCardPlayer(Table.NORTH)),
+            trickOnTable.getCardPlayedBy(gameKlaverjassen.getCardPlayer(Table.EAST))
         )
-        val playerToMove = gameHearts.getPlayerToMove()
+        val playerToMove = gameKlaverjassen.getPlayerToMove()
         val leadPlayer = trickOnTable.getLeadPlayer()
 
         val playerSouth = makePlayerCardListModel(Table.SOUTH)
@@ -36,9 +36,7 @@ class GameHeartsService {
 
         val gameJsonString = "" //Gson().toJson(gm)
 
-        val goingUp = gameHearts.isGoingUp()
-
-        return GameStatusModelHearts(
+        return GameStatusModelKlaverjassen(
             GameStatusModel (
                 onTable,
                 playerToMove.tablePosition,
@@ -49,56 +47,55 @@ class GameHeartsService {
                 playerEast,
                 gameJsonString,
             ),
-            goingUp,
+            gameKlaverjassen.getTrumpColor(),
+            gameKlaverjassen.getContractOwner().tablePosition
         )
     }
 
     private fun makePlayerCardListModel(tablePosition: Table): List<CardInHandModel> {
-        val player = gameHearts.getCardPlayer(tablePosition)
+        val player = gameKlaverjassen.getCardPlayer(tablePosition)
         return player
             .getCardsInHand()
             .sortedBy { card -> 100 * card.color.ordinal + card.rank.ordinal }
             .map { card ->
                 CardInHandModel(
                     card,
-                    gameHearts.isLegalCardToPlay(player, card),
-                    getGeniusCardValue(player as GeniusPlayerHearts, card)
+                    gameKlaverjassen.isLegalCardToPlay(player, card),
+                    getGeniusCardValue(player as PlayerKlaverjassen, card)
                 )
             }
     }
 
-    private fun getGeniusCardValue(geniusPlayerHearts: GeniusPlayerHearts, card: Card): String {
-        return geniusPlayerHearts
-            .getMetaCardList()
-            .getCardAnalysisValue(card)?.toString() ?: "x"
+    private fun getGeniusCardValue(geniusPlayerKlaverjassen: PlayerKlaverjassen, card: Card): String {
+        return "?"
     }
 
     fun computeMove(): CardPlayedModel? {
-        val playerToMove = gameHearts.getPlayerToMove()
+        val playerToMove = gameKlaverjassen.getPlayerToMove()
         val suggestedCardToPlay = playerToMove.chooseCard()
         return executeMove(suggestedCardToPlay.color, suggestedCardToPlay.rank)
     }
 
     fun executeMove(color: CardColor, rank: CardRank): CardPlayedModel? {
-        val playerToMove = gameHearts.getPlayerToMove()
+        val playerToMove = gameKlaverjassen.getPlayerToMove()
         val suggestedCardToPlay = Card(color, rank)
-        if (!gameHearts.isLegalCardToPlay(playerToMove, suggestedCardToPlay))
+        if (!gameKlaverjassen.isLegalCardToPlay(playerToMove, suggestedCardToPlay))
             return null
 
         val cardsStillInHand = playerToMove.getCardsInHand().size
 
-        gameHearts.playCard(suggestedCardToPlay)
+        gameKlaverjassen.playCard(suggestedCardToPlay)
 
-        val trickCompleted = if (gameHearts.trickCompleted())
+        val trickCompleted = if (gameKlaverjassen.trickCompleted())
             TrickCompletedModel(
-                gameHearts.getLastTrickWinner()!!.tablePosition,
-                gameHearts.roundCompleted(),
-                gameHearts.isFinished(),
+                gameKlaverjassen.getLastTrickWinner()!!.tablePosition,
+                gameKlaverjassen.roundCompleted(),
+                gameKlaverjassen.isFinished(),
             )
         else
             null
 
-        val nextPlayer = gameHearts.getPlayerToMove()
+        val nextPlayer = gameKlaverjassen.getPlayerToMove()
 
         return CardPlayedModel(
             playerToMove.tablePosition,
@@ -111,7 +108,7 @@ class GameHeartsService {
 
     fun getScoreCard(): ScoreModel {
         return ScoreModel (
-            gameHearts.getCumulativeScorePerRound()
+            gameKlaverjassen.getCumulativeScorePerRound()
                 .map { spr -> PlayerScore(
                     spr.southValue,
                     spr.westValue,

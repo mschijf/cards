@@ -22,7 +22,7 @@ class ControllerHearts(private val gameService: GameHeartsService) {
 
     @GetMapping("/game-status")
     fun getGameStatus(): GameStatusModelHearts {
-        return gameService.getGameStatusHearts()
+        return gameService.getGameStatus()
     }
 
     @GetMapping("/score-list/")

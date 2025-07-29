@@ -5,6 +5,6 @@ import com.cards.game.fourplayercardgame.basic.Table
 
 data class GameStatusModelKlaverjassen(
     val generic: GameStatusModel,
-    val trump: CardColor,
+    val trumpColor: CardColor,
     val contractOwner: Table
 )

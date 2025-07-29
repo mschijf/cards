@@ -7,8 +7,6 @@ import com.cards.game.fourplayercardgame.basic.Trick
 
 class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
 
-    private fun toRankNumber (card: Card) : Int = card.rank.rankNumber - 7
-
     override fun legalPlayableCards(cardsList: List<Card>): List<Card> {
         return cardsList
             .filter{ card -> isLeadColor(card.color)}
@@ -21,7 +19,7 @@ class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
         } else {
             getCardsPlayed()
                 .filter { playerPlayedCard -> isLeadColor(playerPlayedCard.card.color) }
-                .maxByOrNull { playerPlayedCard -> toRankNumber(playerPlayedCard.card) }
+                .maxByOrNull { playerPlayedCard -> HEARTS.toRankNumber(playerPlayedCard.card) }
                 ?.player
         }
     }
@@ -29,7 +27,7 @@ class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
     override fun winningCard(): Card? {
         return getCardsPlayed()
             .filter { playerPlayedCard -> isLeadColor(playerPlayedCard.card.color) }
-            .maxByOrNull { playerPlayedCard -> toRankNumber(playerPlayedCard.card) }
+            .maxByOrNull { playerPlayedCard -> HEARTS.toRankNumber(playerPlayedCard.card) }
             ?.card
     }
 

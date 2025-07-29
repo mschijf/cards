@@ -19,4 +19,6 @@ object HEARTS {
             CardColor.DIAMONDS -> 0
         }
     }
+
+    fun toRankNumber (card: Card) : Int = card.rank.rankNumber - 7
 }

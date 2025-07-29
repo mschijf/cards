@@ -1,7 +1,7 @@
 let gameType="klaverjassen"
 
 function showGameSpecific(gameStatus) {
-    document.getElementById("trumpCard").src = "carddeck/2H.SVG"
+    document.getElementById("trumpCard").src = cardColorAndRankToImageURL(gameStatus.trumpColor, "TWO")
 }
 
 function handleScoreCard(scoreModel) {

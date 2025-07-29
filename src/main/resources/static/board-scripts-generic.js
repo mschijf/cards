@@ -14,14 +14,10 @@ function CardBackImage() {
     return "carddeck/CardBack.SVG"
 }
 
-function cardModelToImageURL(cardModel) {
-    if (cardModel == null) {
-        return NoCardImage()
-    }
-
+function cardColorAndRankToImageURL(cardColor, cardRank) {
     let colorString = ""
     let rankString = ""
-    switch (cardModel.color) {
+    switch (cardColor) {
         case "SPADES":
             colorString = "S";
             break;
@@ -35,7 +31,7 @@ function cardModelToImageURL(cardModel) {
             colorString = "D";
             break;
     }
-    switch (cardModel.rank) {
+    switch (cardRank) {
         case "TWO":
             rankString = "2";
             break;
@@ -77,6 +73,13 @@ function cardModelToImageURL(cardModel) {
             break;
     }
     return "carddeck/" + rankString + colorString + ".SVG"
+}
+
+function cardModelToImageURL(cardModel) {
+    if (cardModel == null) {
+        return NoCardImage()
+    }
+    return cardColorAndRankToImageURL(cardModel.color, cardModel.rank)
 }
 
 function playerModelToTableImage(player) {

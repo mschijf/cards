@@ -2,7 +2,7 @@ package com.cards.controller
 
 import com.cards.controller.model.CardPlayedModel
 import com.cards.controller.model.CardPlayedResponse
-import com.cards.controller.model.GameStatusModelHearts
+import com.cards.controller.model.GameStatusModelKlaverjassen
 import com.cards.controller.model.ScoreModel
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
@@ -13,16 +13,16 @@ const val REQUESTPATH_BASE_KLAVERJJASSEN = "/api/v1/klaverjassen/"
 
 @RestController
 @RequestMapping(REQUESTPATH_BASE_KLAVERJJASSEN)
-class ControllerKlaverjassen(private val gameService: GameHeartsService) {
+class ControllerKlaverjassen(private val gameService: GameKlaverjassenService) {
 
     @PostMapping("/new-game")
-    fun newGame(): GameStatusModelHearts {
+    fun newGame(): GameStatusModelKlaverjassen {
         return gameService.newGame()
     }
 
     @GetMapping("/game-status")
-    fun getGameStatus(): GameStatusModelHearts {
-        return gameService.getGameStatusHearts()
+    fun getGameStatus(): GameStatusModelKlaverjassen {
+        return gameService.getGameStatus()
     }
 
     @GetMapping("/score-list/")
