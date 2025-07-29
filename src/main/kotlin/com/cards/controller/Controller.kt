@@ -8,13 +8,15 @@ import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.tools.Log
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.ui.ModelMap
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.ModelAndView
 
 const val REQUESTPATH_BASE = "/api/v1/"
 
 @RestController
 @RequestMapping(REQUESTPATH_BASE)
-class Controller @Autowired constructor(private val gameService: GameHeartsService) {
+class Controller(private val gameService: GameHeartsService) {
 
     @PostMapping("/new-game")
     fun newGame(): GameStatusModel {

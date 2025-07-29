@@ -1,3 +1,9 @@
+window.onload = function () {
+    initGame()
+};
+
+//---------------------------------------------------------------------------------------------------------------------
+
 let __globalGameStatus = null
 
 function upDownSignalImage(goingUp) {
