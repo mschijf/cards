@@ -85,5 +85,28 @@ function requestLog() {
     request.send();
 }
 
+function requestComputeTrumpCardColor() {
+    let request = new XMLHttpRequest();
 
+    request.open("POST", requestBase + "/computeTrumpCardChoice/");
+    request.onreadystatechange = function() {
+        if(this.readyState === 4 && this.status === 200) {
+            let trumpColor = JSON.parse(this.responseText);
+            handleTrumpColorSet(trumpColor)
+        }
+    };
+    request.send();
+}
 
+function requestExecuteTrumpCardColorChoice(cardColor) {
+    let request = new XMLHttpRequest();
+
+    request.open("POST", requestBase + "/executeTrumpCardChoice/" + cardColor);
+    request.onreadystatechange = function() {
+        if(this.readyState === 4 && this.status === 200) {
+            let trumpColor = JSON.parse(this.responseText);
+            handleTrumpColorSet(trumpColor)
+        }
+    };
+    request.send();
+}

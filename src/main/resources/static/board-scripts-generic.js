@@ -183,6 +183,9 @@ function showLeader(leader) {
 function handleGameStatus(gameStatus) {
     handleGameStatusGeneric(gameStatus.generic)
     showGameSpecific(gameStatus)
+    if (gameStatus.generic.newRoundStarted) {
+        handleGameSpecificNewRoundStartActions(gameStatus)
+    }
     handleNextMove(gameStatus.generic)
 }
 

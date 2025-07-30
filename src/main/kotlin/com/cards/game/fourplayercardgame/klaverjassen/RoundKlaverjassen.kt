@@ -3,7 +3,6 @@ package com.cards.game.fourplayercardgame.klaverjassen
 import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Round
-import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.basic.Trick
 
 
@@ -11,10 +10,14 @@ class RoundKlaverjassen(
     leadPlayer: Player,
     private val game: GameKlaverjassen) : Round(leadPlayer) {
 
-    private val trumpColor: CardColor = CardColor.HEARTS
+    private var trumpColor: CardColor = CardColor.CLUBS
 
     fun getTrumpColor() = trumpColor
-    fun getContractOwner() = game.getCardPlayer(Table.WEST)
+    fun setTrumpColor(cardColor: CardColor) {
+        trumpColor= cardColor
+    }
+
+    fun getContractOwner() = getLeadPlayer()
 
     override fun createTrick(leadPlayer: Player): Trick {
         return TrickKlaverjassen(leadPlayer, this)

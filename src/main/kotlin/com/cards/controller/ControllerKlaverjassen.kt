@@ -4,6 +4,7 @@ import com.cards.controller.model.CardPlayedModel
 import com.cards.controller.model.CardPlayedResponse
 import com.cards.controller.model.GameStatusModelKlaverjassen
 import com.cards.controller.model.ScoreModelKlaverjassen
+import com.cards.controller.model.TrumpChoiceModel
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.tools.Log
@@ -40,6 +41,17 @@ class ControllerKlaverjassen(private val gameService: ServiceKlaverjassen) {
                     @PathVariable(name = "rank") rank: CardRank): CardPlayedResponse {
         return createCardPlayResponse(gameService.executeMove(color, rank))
     }
+
+    @PostMapping("/computeTrumpCardChoice")
+    fun computeTrumpCardChoice(): TrumpChoiceModel {
+        return gameService.computeTrumpCardChoice()
+    }
+
+    @PostMapping("/executeTrumpCardChoice/{cardColor}")
+    fun executeTrumpCardChoice(@PathVariable(name = "cardColor") color: CardColor): TrumpChoiceModel {
+        return gameService.executeTrumpCardChoice(color)
+    }
+
 
     private fun createCardPlayResponse(response: CardPlayedModel?): CardPlayedResponse {
         return CardPlayedResponse(response!= null, response)

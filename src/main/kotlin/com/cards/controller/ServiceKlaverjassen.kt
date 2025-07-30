@@ -36,12 +36,13 @@ class ServiceKlaverjassen {
         val playerEast = makePlayerCardListModel(Table.EAST)
 
         val gameJsonString = "" //Gson().toJson(gm)
-
+        val nr = gameKlaverjassen.getCurrentRound().hasNotStarted()
         return GameStatusModelKlaverjassen(
             GameStatusModel (
                 onTable,
                 playerToMove.tablePosition,
                 leadPlayer.tablePosition,
+                nr,
                 playerSouth,
                 playerWest,
                 playerNorth,
@@ -118,4 +119,15 @@ class ServiceKlaverjassen {
                 }
         )
     }
+
+    fun computeTrumpCardChoice(): TrumpChoiceModel {
+        val trumpColor = (gameKlaverjassen.getCurrentRound().getLeadPlayer() as PlayerKlaverjassen).chooseTrumpColor()
+        return executeTrumpCardChoice(trumpColor)
+    }
+
+    fun executeTrumpCardChoice(trumpColor: CardColor): TrumpChoiceModel {
+        gameKlaverjassen.setTrumpColor(trumpColor)
+        return TrumpChoiceModel(trumpColor)
+    }
+
 }

@@ -43,6 +43,7 @@ class ServiceHearts {
                 onTable,
                 playerToMove.tablePosition,
                 leadPlayer.tablePosition,
+                gameHearts.getCurrentRound().hasNotStarted(),
                 playerSouth,
                 playerWest,
                 playerNorth,

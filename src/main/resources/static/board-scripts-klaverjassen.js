@@ -39,6 +39,21 @@ function handleScoreCard(scoreModel) {
     }
 }
 
+//--------------------------------------------------------------------------------------------------------------
+
+function handleGameSpecificNewRoundStartActions(gameStatus){
+    clearTrumpIndicator()
+    if (isHumanPlayer(gameStatus.generic.leadPlayer)) {
+        waitForPlayerTrumpSelection()
+    } else {
+        requestComputeTrumpCardColor()
+    }
+}
+
+function clearTrumpIndicator() {
+    document.getElementById("trumpCard").src = CardBackImage()
+}
+
 function initTrumpCardSelect(cardColor) {
     let cardPostFix = cardColor[0].toUpperCase() + cardColor.substring(1).toLowerCase()
     document.getElementById("trump" + cardPostFix).style.cursor = "pointer"
@@ -47,11 +62,7 @@ function initTrumpCardSelect(cardColor) {
     };
 }
 
-function doSomeTest() {
-    selectTrump()
-}
-
-function selectTrump(){
+function waitForPlayerTrumpSelection(){
     initTrumpCardSelect("CLUBS")
     initTrumpCardSelect("HEARTS")
     initTrumpCardSelect("SPADES")
@@ -61,5 +72,16 @@ function selectTrump(){
 
 function closeModalAndRequestTrumpSetting(cardColor) {
     document.getElementById("myModal").style.display = "none";
-    console.log("trump choosen: " + cardColor)
+    requestExecuteTrumpCardColorChoice(cardColor)
 }
+
+function handleTrumpColorSet(trumpColorModel) {
+    document.getElementById("trumpCard").src = cardColorAndRankToImageURL(trumpColorModel.trumpColor, "TWO")
+}
+
+//----------------------------------------------------------------------------------------------------------------
+
+function doSomeTest() {
+    selectTrump()
+}
+

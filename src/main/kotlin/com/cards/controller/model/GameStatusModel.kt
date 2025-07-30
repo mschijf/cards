@@ -7,6 +7,7 @@ data class GameStatusModel(
     val onTable: TableModel,
     val playerToMove: Table,
     val leadPlayer: Table,
+    val newRoundStarted: Boolean = false,
     val playerSouth: List<CardInHandModel>,
     val playerWest: List<CardInHandModel>,
     val playerNorth: List<CardInHandModel>,

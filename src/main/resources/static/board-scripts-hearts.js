@@ -36,3 +36,8 @@ function handleScoreCard(scoreModel) {
     }
 }
 
+function handleGameSpecificNewRoundStartActions(gameStatus){
+    //do nothing
+}
+
+

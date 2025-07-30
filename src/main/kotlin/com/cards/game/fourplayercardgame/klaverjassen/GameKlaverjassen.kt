@@ -1,5 +1,6 @@
 package com.cards.game.fourplayercardgame.klaverjassen
 
+import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Round
@@ -12,7 +13,7 @@ class GameKlaverjassen(): Game()  {
     }
 
     override fun createFirstRound(): Round {
-        return RoundKlaverjassen(getCardPlayer(Table.WEST), this)
+        return RoundKlaverjassen(getCardPlayer(Table.EAST), this)
     }
 
     override fun createNextRound(previousRound: Round): Round {
@@ -21,6 +22,10 @@ class GameKlaverjassen(): Game()  {
 
     override fun isFinished(): Boolean {
         return getCompleteRoundsPlayed().size == KLAVERJASSEN.NUMBER_OF_ROUNDS_PER_GAME
+    }
+
+    fun setTrumpColor(cardColor: CardColor) {
+        (getCurrentRound() as RoundKlaverjassen).setTrumpColor(cardColor)
     }
 
     //score
