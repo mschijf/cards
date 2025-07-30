@@ -26,10 +26,10 @@ function handleScoreCard(scoreModel) {
         let roundNr = document.getElementById("roundNr" + (i + 1))
         roundNr.innerHTML = "" + (i+1)
         if (scoreList.length > i) {
-            scoreNS.innerHTML = scoreList[start + i].south
-            bonusNS.innerHTML = scoreList[start + i].north
-            scoreEW.innerHTML = scoreList[start + i].east
-            bonusEW.innerHTML = scoreList[start + i].west
+            scoreNS.innerHTML = scoreList[start + i].northSouthPoints
+            bonusNS.innerHTML = scoreList[start + i].northSouthBonus
+            scoreEW.innerHTML = scoreList[start + i].eastWestPoints
+            bonusEW.innerHTML = scoreList[start + i].eastWestBonus
         } else {
             scoreNS.innerHTML = ""
             bonusNS.innerHTML = ""

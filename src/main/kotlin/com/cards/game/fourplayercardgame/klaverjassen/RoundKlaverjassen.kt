@@ -3,7 +3,6 @@ package com.cards.game.fourplayercardgame.klaverjassen
 import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Round
-import com.cards.game.fourplayercardgame.basic.Score
 import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.basic.Trick
 
@@ -25,11 +24,11 @@ class RoundKlaverjassen(
         return completedTricksPlayed() >= KLAVERJASSEN.NUMBER_OF_TRICKS_PER_ROUND
     }
 
-    override fun getScore(): Score {
-        var score = Score.ZERO
+    fun getScore(): ScoreKlaverjassen {
+        var score = ScoreKlaverjassen.ZERO
         if (isComplete()) {
             getCompletedTrickList().forEach { trick ->
-                score = score.plus(trick.getScore())
+                score = score.plus((trick as TrickKlaverjassen).getScore())
             }
         }
         return score

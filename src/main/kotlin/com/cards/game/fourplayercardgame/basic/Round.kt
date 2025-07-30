@@ -11,8 +11,6 @@ abstract class Round(
     abstract fun createTrick(leadPlayer: Player): Trick
     abstract fun isComplete(): Boolean
 
-    abstract fun getScore(): Score
-
     fun getLeadPlayer() = leadPlayer
     fun completedTricksPlayed() = completedTrickList.size
     fun hasNotStarted(): Boolean = completedTrickList.isEmpty() && currentTrick.hasNotStarted()

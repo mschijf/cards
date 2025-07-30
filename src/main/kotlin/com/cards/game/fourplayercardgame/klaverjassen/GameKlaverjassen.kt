@@ -1,6 +1,9 @@
 package com.cards.game.fourplayercardgame.klaverjassen
 
-import com.cards.game.fourplayercardgame.basic.*
+import com.cards.game.fourplayercardgame.basic.Game
+import com.cards.game.fourplayercardgame.basic.Player
+import com.cards.game.fourplayercardgame.basic.Round
+import com.cards.game.fourplayercardgame.basic.Table
 
 class GameKlaverjassen(): Game()  {
 
@@ -21,9 +24,9 @@ class GameKlaverjassen(): Game()  {
     }
 
     //score
-    fun getCumulativeScorePerRound(): List<Score> {
+    fun getCumulativeScorePerRound(): List<ScoreKlaverjassen> {
         return getCompleteRoundsPlayed()
-            .map { round ->  round.getScore()}
-            .runningFold(Score.ZERO) { acc, sc -> acc.plus(sc) }.drop(1)
+            .map { round ->  (round as RoundKlaverjassen).getScore()}
+            .runningFold(ScoreKlaverjassen.ZERO) { acc, sc -> acc.plus(sc) }.drop(1)
     }
 }

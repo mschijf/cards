@@ -109,10 +109,10 @@ class ServiceHearts {
         )
     }
 
-    fun getScoreCard(): ScoreModel {
-        return ScoreModel (
+    fun getScoreCard(): ScoreModelHearts {
+        return ScoreModelHearts (
             gameHearts.getCumulativeScorePerRound()
-                .map { spr -> PlayerScore(
+                .map { spr -> RoundScoreHearts(
                     spr.southValue,
                     spr.westValue,
                     spr.eastValue,

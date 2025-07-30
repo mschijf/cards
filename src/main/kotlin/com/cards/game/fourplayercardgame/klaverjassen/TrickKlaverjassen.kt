@@ -2,7 +2,6 @@ package com.cards.game.fourplayercardgame.klaverjassen
 
 import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.basic.Player
-import com.cards.game.fourplayercardgame.basic.Score
 import com.cards.game.fourplayercardgame.basic.Trick
 
 class TrickKlaverjassen(
@@ -68,13 +67,14 @@ class TrickKlaverjassen(
         }
     }
 
-    override fun getScore(): Score {
+    fun getScore(): ScoreKlaverjassen {
         return if (!isComplete()) {
-            Score.ZERO
+            ScoreKlaverjassen.ZERO
         } else {
-            Score.scoreForPlayer(
+            ScoreKlaverjassen.scoreForPlayer(
                 winner()!!,
-                getCardsPlayed().sumOf { playerPlayedCard -> KLAVERJASSEN.cardValue(playerPlayedCard.card, round.getTrumpColor()) }
+                getCardsPlayed().sumOf { playerPlayedCard -> KLAVERJASSEN.cardValue(playerPlayedCard.card, round.getTrumpColor()) },
+                KLAVERJASSEN.bonusValue(getCardsPlayed().map { it.card }, trumpColor = round.getTrumpColor())
             )
         }
     }

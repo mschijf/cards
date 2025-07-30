@@ -3,7 +3,7 @@ package com.cards.controller
 import com.cards.controller.model.CardPlayedModel
 import com.cards.controller.model.CardPlayedResponse
 import com.cards.controller.model.GameStatusModelHearts
-import com.cards.controller.model.ScoreModel
+import com.cards.controller.model.ScoreModelHearts
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.tools.Log
@@ -26,7 +26,7 @@ class ControllerHearts(private val gameService: ServiceHearts) {
     }
 
     @GetMapping("/score-list/")
-    fun getScoreListKlaverjassen(): ScoreModel {
+    fun getScoreListKlaverjassen(): ScoreModelHearts {
         return gameService.getScoreCard()
     }
 

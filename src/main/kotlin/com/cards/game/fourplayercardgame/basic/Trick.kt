@@ -23,9 +23,6 @@ abstract class Trick(
     abstract fun winner(): Player?
     abstract fun winningCard(): Card?
 
-    abstract fun getScore(): Score
-
-
     fun getCardPlayedBy(player: Player): Card? {
         return cardsPlayed
             .firstOrNull { p -> p.player == player }
