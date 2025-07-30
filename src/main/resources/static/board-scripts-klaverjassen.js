@@ -6,4 +6,27 @@ function showGameSpecific(gameStatus) {
 
 function handleScoreCard(scoreModel) {
     let maxRows = 16
+
+    let scoreList = scoreModel.scoreList
+    let start = 0
+    for (let i = 0; i < maxRows; i++) {
+        let scoreNS = document.getElementById("pointsNS" + (i + 1))
+        let scoreEW = document.getElementById("pointsEW" + (i + 1))
+        let bonusNS = document.getElementById("bonusNS" + (i + 1))
+        let bonusEW = document.getElementById("bonusEW" + (i + 1))
+        let roundNr = document.getElementById("roundNr" + (i + 1))
+        roundNr.innerHTML = "" + (i+1)
+        if (scoreList.length > i) {
+            scoreNS.innerHTML = scoreList[start + i].south
+            bonusNS.innerHTML = scoreList[start + i].north
+            scoreEW.innerHTML = scoreList[start + i].east
+            bonusEW.innerHTML = scoreList[start + i].west
+        } else {
+            scoreNS.innerHTML = ""
+            bonusNS.innerHTML = ""
+            scoreEW.innerHTML = ""
+            bonusEW.innerHTML = ""
+        }
+    }
+
 }

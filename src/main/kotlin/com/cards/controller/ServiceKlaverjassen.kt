@@ -10,7 +10,7 @@ import com.cards.game.fourplayercardgame.klaverjassen.PlayerKlaverjassen
 import org.springframework.stereotype.Service
 
 @Service
-class GameKlaverjassenService {
+class ServiceKlaverjassen {
     private var gameKlaverjassen = GameKlaverjassen()
 
     fun newGame(): GameStatusModelKlaverjassen {

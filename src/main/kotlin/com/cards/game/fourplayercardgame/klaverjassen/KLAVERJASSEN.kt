@@ -51,4 +51,37 @@ object KLAVERJASSEN {
         }
     }
 
+    fun toBonusRankNumber(card: Card) : Int {
+        return card.rank.rankNumber
+    }
+
+
+    fun bonusValue(cardList: List<Card>, trumpColor: CardColor): Int {
+        assert(cardList.size == 4)
+        return CardColor.values().sumOf { color -> bonusValueForColor(cardList, color, trumpColor) }
+    }
+
+    private fun bonusValueForColor(cardList: List<Card>, forCardColor: CardColor, trumpColor: CardColor): Int {
+        val checkList = cardList.filter { card -> card.color == forCardColor }.sortedBy { card -> card.rank }
+        val stuk = if (forCardColor == trumpColor && checkList.any { card -> card.rank == CardRank.QUEEN } && checkList.any { card -> card.rank == CardRank.KING }) {
+            20
+        } else {
+            0
+        }
+        val bonus = when (checkList.size) {
+            3 -> if (toBonusRankNumber(checkList[2]) - toBonusRankNumber(checkList[0]) == 2) 20 else 0
+            4 ->
+                if (toBonusRankNumber(checkList[3]) - toBonusRankNumber(checkList[0]) == 3)
+                    50
+                else if (toBonusRankNumber(checkList[2]) - toBonusRankNumber(checkList[0]) == 2)
+                    20
+                else if (toBonusRankNumber(checkList[3]) - toBonusRankNumber(checkList[1]) == 2)
+                    20
+                else
+                    0
+            else -> 0
+        }
+        return bonus + stuk
+    }
+
 }

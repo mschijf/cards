@@ -13,7 +13,7 @@ const val REQUESTPATH_BASE_HEARTS = "/api/v1/hearts/"
 
 @RestController
 @RequestMapping(REQUESTPATH_BASE_HEARTS)
-class ControllerHearts(private val gameService: GameHeartsService) {
+class ControllerHearts(private val gameService: ServiceHearts) {
 
     @PostMapping("/new-game")
     fun newGame(): GameStatusModelHearts {

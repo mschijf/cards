@@ -13,7 +13,7 @@ const val REQUESTPATH_BASE_KLAVERJJASSEN = "/api/v1/klaverjassen/"
 
 @RestController
 @RequestMapping(REQUESTPATH_BASE_KLAVERJJASSEN)
-class ControllerKlaverjassen(private val gameService: GameKlaverjassenService) {
+class ControllerKlaverjassen(private val gameService: ServiceKlaverjassen) {
 
     @PostMapping("/new-game")
     fun newGame(): GameStatusModelKlaverjassen {

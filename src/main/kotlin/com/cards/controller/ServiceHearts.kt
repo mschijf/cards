@@ -10,7 +10,7 @@ import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
 import org.springframework.stereotype.Service
 
 @Service
-class GameHeartsService {
+class ServiceHearts {
     private var gameHearts = GameHearts()
 
     fun newGame(): GameStatusModelHearts {
