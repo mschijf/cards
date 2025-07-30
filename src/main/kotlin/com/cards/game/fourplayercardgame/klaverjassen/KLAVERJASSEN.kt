@@ -3,11 +3,13 @@ package com.cards.game.fourplayercardgame.klaverjassen
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
+import com.cards.game.fourplayercardgame.basic.Table
 
 object KLAVERJASSEN {
 
     const val NUMBER_OF_TRICKS_PER_ROUND = 8
     const val NUMBER_OF_ROUNDS_PER_GAME = 16
+    val VERY_FIRST_START_PLAYER = Table.WEST
 
     fun cardValue(card: Card, trump: CardColor): Int {
         return when (card.rank) {

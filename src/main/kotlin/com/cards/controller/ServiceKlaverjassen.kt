@@ -120,14 +120,16 @@ class ServiceKlaverjassen {
         )
     }
 
-    fun computeTrumpCardChoice(): TrumpChoiceModel {
-        val trumpColor = (gameKlaverjassen.getCurrentRound().getLeadPlayer() as PlayerKlaverjassen).chooseTrumpColor()
-        return executeTrumpCardChoice(trumpColor)
+    fun computeTrumpCardChoice(tablePosition: Table): TrumpChoiceModel {
+        val choosingPlayer = (gameKlaverjassen.getCardPlayer(tablePosition) as PlayerKlaverjassen)
+        val trumpColor = choosingPlayer.chooseTrumpColor()
+        return executeTrumpCardChoice(trumpColor, tablePosition)
     }
 
-    fun executeTrumpCardChoice(trumpColor: CardColor): TrumpChoiceModel {
-        gameKlaverjassen.setTrumpColor(trumpColor)
-        return TrumpChoiceModel(trumpColor)
+    fun executeTrumpCardChoice(trumpColor: CardColor, tablePosition: Table): TrumpChoiceModel {
+        val choosingPlayer = (gameKlaverjassen.getCardPlayer(tablePosition) as PlayerKlaverjassen)
+        gameKlaverjassen.setTrumpColorAndContractOwner(trumpColor, choosingPlayer)
+        return TrumpChoiceModel(trumpColor, choosingPlayer.tablePosition)
     }
 
 }

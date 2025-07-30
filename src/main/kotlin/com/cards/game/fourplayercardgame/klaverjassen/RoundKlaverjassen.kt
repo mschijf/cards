@@ -11,13 +11,15 @@ class RoundKlaverjassen(
     private val game: GameKlaverjassen) : Round(leadPlayer) {
 
     private var trumpColor: CardColor = CardColor.CLUBS
+    private var contractOwner: Player = getLeadPlayer()
 
     fun getTrumpColor() = trumpColor
-    fun setTrumpColor(cardColor: CardColor) {
-        trumpColor= cardColor
-    }
+    fun getContractOwner() = contractOwner
 
-    fun getContractOwner() = getLeadPlayer()
+    fun setTrumpColorAndContractOwner(trumpColor: CardColor, contractOwner: Player) {
+        this.trumpColor= trumpColor
+        this.contractOwner = contractOwner
+    }
 
     override fun createTrick(leadPlayer: Player): Trick {
         return TrickKlaverjassen(leadPlayer, this)
@@ -41,7 +43,7 @@ class RoundKlaverjassen(
         var score = ScoreKlaverjassen.ZERO
         if (isComplete()) {
             getCompletedTrickList().forEach { trick ->
-                println((trick as TrickKlaverjassen).getScore())
+//                println((trick as TrickKlaverjassen).getScore())
                 score = score.plus((trick as TrickKlaverjassen).getScore())
             }
         }

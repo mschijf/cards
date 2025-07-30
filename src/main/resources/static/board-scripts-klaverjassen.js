@@ -1,16 +1,7 @@
 let gameType="klaverjassen"
 
-function clearContract() {
-    document.getElementById("hasContractWest").innerHTML = ""
-    document.getElementById("hasContractNorth").innerHTML = ""
-    document.getElementById("hasContractEast").innerHTML = ""
-    document.getElementById("hasContractSouth").innerHTML = ""
-}
-
 function showGameSpecific(gameStatus) {
-    document.getElementById("trumpCard").src = cardColorAndRankToImageURL(gameStatus.trumpColor, "TWO")
-    clearContract()
-    document.getElementById("hasContract" + playerModelToElementPostFix(gameStatus.contractOwner)).innerHTML = "speelt"
+    updateTrumpAndContractOwner(gameStatus.trumpColor, gameStatus.contractOwner)
 }
 
 function handleScoreCard(scoreModel) {
@@ -43,10 +34,10 @@ function handleScoreCard(scoreModel) {
 
 function handleGameSpecificNewRoundStartActions(gameStatus){
     clearTrumpIndicator()
-    if (isHumanPlayer(gameStatus.generic.leadPlayer)) {
-        waitForPlayerTrumpSelection()
+    if (isHumanPlayer(gameStatus.generic.playerToMove)) {
+        waitForPlayerTrumpSelection(gameStatus.generic.playerToMove)
     } else {
-        requestComputeTrumpCardColor()
+        requestComputeTrumpCardColor(gameStatus.generic.playerToMove)
     }
 }
 
@@ -54,29 +45,42 @@ function clearTrumpIndicator() {
     document.getElementById("trumpCard").src = CardBackImage()
 }
 
-function initTrumpCardSelect(cardColor) {
+function initTrumpCardSelect(cardColor, player) {
     let cardPostFix = cardColor[0].toUpperCase() + cardColor.substring(1).toLowerCase()
     document.getElementById("trump" + cardPostFix).style.cursor = "pointer"
     document.getElementById("trump" + cardPostFix).onclick=function () {
-        closeModalAndRequestTrumpSetting(cardColor)
+        closeModalAndRequestTrumpSetting(cardColor, player)
     };
 }
 
-function waitForPlayerTrumpSelection(){
-    initTrumpCardSelect("CLUBS")
-    initTrumpCardSelect("HEARTS")
-    initTrumpCardSelect("SPADES")
-    initTrumpCardSelect("DIAMONDS")
+function waitForPlayerTrumpSelection(player){
+    initTrumpCardSelect("CLUBS", player)
+    initTrumpCardSelect("HEARTS", player)
+    initTrumpCardSelect("SPADES", player)
+    initTrumpCardSelect("DIAMONDS", player)
     document.getElementById("myModal").style.display = "block";
 }
 
-function closeModalAndRequestTrumpSetting(cardColor) {
+function closeModalAndRequestTrumpSetting(cardColor, player) {
     document.getElementById("myModal").style.display = "none";
-    requestExecuteTrumpCardColorChoice(cardColor)
+    requestExecuteTrumpCardColorChoice(cardColor, player)
 }
 
 function handleTrumpColorSet(trumpColorModel) {
-    document.getElementById("trumpCard").src = cardColorAndRankToImageURL(trumpColorModel.trumpColor, "TWO")
+    updateTrumpAndContractOwner(trumpColorModel.trumpColor, trumpColorModel.contractOwner)
+}
+
+function updateTrumpAndContractOwner(trumpColor, contractOwner) {
+    document.getElementById("trumpCard").src = cardColorAndRankToImageURL(trumpColor, "TWO")
+    clearContract()
+    document.getElementById("hasContract" + playerModelToElementPostFix(contractOwner)).innerHTML = "plays"
+}
+
+function clearContract() {
+    document.getElementById("hasContractWest").innerHTML = ""
+    document.getElementById("hasContractNorth").innerHTML = ""
+    document.getElementById("hasContractEast").innerHTML = ""
+    document.getElementById("hasContractSouth").innerHTML = ""
 }
 
 //----------------------------------------------------------------------------------------------------------------

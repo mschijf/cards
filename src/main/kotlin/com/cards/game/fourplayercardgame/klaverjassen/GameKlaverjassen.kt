@@ -13,7 +13,7 @@ class GameKlaverjassen(): Game()  {
     }
 
     override fun createFirstRound(): Round {
-        return RoundKlaverjassen(getCardPlayer(Table.EAST), this)
+        return RoundKlaverjassen(getCardPlayer(KLAVERJASSEN.VERY_FIRST_START_PLAYER), this)
     }
 
     override fun createNextRound(previousRound: Round): Round {
@@ -24,8 +24,8 @@ class GameKlaverjassen(): Game()  {
         return getCompleteRoundsPlayed().size == KLAVERJASSEN.NUMBER_OF_ROUNDS_PER_GAME
     }
 
-    fun setTrumpColor(cardColor: CardColor) {
-        (getCurrentRound() as RoundKlaverjassen).setTrumpColor(cardColor)
+    fun setTrumpColorAndContractOwner(trumpColor: CardColor, contractOwner: Player) {
+        (getCurrentRound() as RoundKlaverjassen).setTrumpColorAndContractOwner(trumpColor, contractOwner)
     }
 
     //score

@@ -21,7 +21,7 @@ class GameHearts(): Game() {
 
     //round
     override fun createFirstRound(): Round {
-        return RoundHearts(getCardPlayer(Table.WEST))
+        return RoundHearts(getCardPlayer(HEARTS.VERY_FIRST_START_PLAYER))
     }
 
     override fun createNextRound(previousRound: Round): Round {

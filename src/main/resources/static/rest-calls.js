@@ -85,10 +85,10 @@ function requestLog() {
     request.send();
 }
 
-function requestComputeTrumpCardColor() {
+function requestComputeTrumpCardColor(player) {
     let request = new XMLHttpRequest();
 
-    request.open("POST", requestBase + "/computeTrumpCardChoice/");
+    request.open("POST", requestBase + "/computeTrumpCardChoice/" + player);
     request.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
             let trumpColor = JSON.parse(this.responseText);
@@ -98,10 +98,10 @@ function requestComputeTrumpCardColor() {
     request.send();
 }
 
-function requestExecuteTrumpCardColorChoice(cardColor) {
+function requestExecuteTrumpCardColorChoice(cardColor, player) {
     let request = new XMLHttpRequest();
 
-    request.open("POST", requestBase + "/executeTrumpCardChoice/" + cardColor);
+    request.open("POST", requestBase + "/executeTrumpCardChoice/" + cardColor +"/" + player);
     request.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
             let trumpColor = JSON.parse(this.responseText);

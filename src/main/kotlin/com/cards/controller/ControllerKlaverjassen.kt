@@ -7,6 +7,7 @@ import com.cards.controller.model.ScoreModelKlaverjassen
 import com.cards.controller.model.TrumpChoiceModel
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
+import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.tools.Log
 import org.springframework.web.bind.annotation.*
 
@@ -42,14 +43,16 @@ class ControllerKlaverjassen(private val gameService: ServiceKlaverjassen) {
         return createCardPlayResponse(gameService.executeMove(color, rank))
     }
 
-    @PostMapping("/computeTrumpCardChoice")
-    fun computeTrumpCardChoice(): TrumpChoiceModel {
-        return gameService.computeTrumpCardChoice()
+    @PostMapping("/computeTrumpCardChoice/{tablePosition}")
+    fun computeTrumpCardChoice(@PathVariable(name = "tablePosition") tablePosition: Table): TrumpChoiceModel {
+        return gameService.computeTrumpCardChoice(tablePosition)
     }
 
-    @PostMapping("/executeTrumpCardChoice/{cardColor}")
-    fun executeTrumpCardChoice(@PathVariable(name = "cardColor") color: CardColor): TrumpChoiceModel {
-        return gameService.executeTrumpCardChoice(color)
+    @PostMapping("/executeTrumpCardChoice/{cardColor}/{tablePosition}")
+    fun executeTrumpCardChoice(
+        @PathVariable(name = "cardColor") color: CardColor,
+        @PathVariable(name = "tablePosition") tablePosition: Table): TrumpChoiceModel {
+        return gameService.executeTrumpCardChoice(color, tablePosition)
     }
 
 
