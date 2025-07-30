@@ -1,7 +1,16 @@
 let gameType="klaverjassen"
 
+function clearContract() {
+    document.getElementById("hasContractWest").innerHTML = ""
+    document.getElementById("hasContractNorth").innerHTML = ""
+    document.getElementById("hasContractEast").innerHTML = ""
+    document.getElementById("hasContractSouth").innerHTML = ""
+}
+
 function showGameSpecific(gameStatus) {
     document.getElementById("trumpCard").src = cardColorAndRankToImageURL(gameStatus.trumpColor, "TWO")
+    clearContract()
+    document.getElementById("hasContract" + playerModelToElementPostFix(gameStatus.contractOwner)).innerHTML = "speelt"
 }
 
 function handleScoreCard(scoreModel) {
