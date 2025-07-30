@@ -4,13 +4,21 @@ import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Round
 import com.cards.game.fourplayercardgame.basic.Score
+import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.basic.Trick
 
 
-class RoundKlaverjassen(leadPlayer: Player, val trumpColor: CardColor) : Round(leadPlayer) {
+class RoundKlaverjassen(
+    leadPlayer: Player,
+    private val game: GameKlaverjassen) : Round(leadPlayer) {
+
+    private val trumpColor: CardColor = CardColor.HEARTS
+
+    fun getTrumpColor() = trumpColor
+    fun getContractOwner() = game.getCardPlayer(Table.WEST)
 
     override fun createTrick(leadPlayer: Player): Trick {
-        return TrickKlaverjassen(leadPlayer, CardColor.CLUBS)
+        return TrickKlaverjassen(leadPlayer, this)
     }
 
     override fun isComplete(): Boolean {

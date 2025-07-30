@@ -7,6 +7,7 @@ import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.PlayerKlaverjassen
+import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
 import org.springframework.stereotype.Service
 
 @Service
@@ -47,8 +48,8 @@ class ServiceKlaverjassen {
                 playerEast,
                 gameJsonString,
             ),
-            gameKlaverjassen.getTrumpColor(),
-            gameKlaverjassen.getContractOwner().tablePosition
+            (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getTrumpColor(),
+            (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getContractOwner().tablePosition
         )
     }
 

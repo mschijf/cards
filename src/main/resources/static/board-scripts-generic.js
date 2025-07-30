@@ -188,9 +188,9 @@ function handleGameStatus(gameStatus) {
 function handleGameStatusGeneric(gameStatusGeneric) {
     __globalGameStatusGeneric = gameStatusGeneric
     showPlayerCards("playerSouth", gameStatusGeneric.playerSouth, true)
-    showPlayerCards("playerWest", gameStatusGeneric.playerWest, false)
-    showPlayerCards("playerNorth", gameStatusGeneric.playerNorth, false)
-    showPlayerCards("playerEast", gameStatusGeneric.playerEast, false)
+    showPlayerCards("playerWest", gameStatusGeneric.playerWest, true)
+    showPlayerCards("playerNorth", gameStatusGeneric.playerNorth, true)
+    showPlayerCards("playerEast", gameStatusGeneric.playerEast, true)
     showExtras(gameStatusGeneric)
     showLeader(gameStatusGeneric.leadPlayer)
 
