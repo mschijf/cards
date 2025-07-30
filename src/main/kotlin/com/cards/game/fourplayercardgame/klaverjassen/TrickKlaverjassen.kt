@@ -68,12 +68,13 @@ class TrickKlaverjassen(
     }
 
     fun getScore(): ScoreKlaverjassen {
+        val lastTrickPoints = if (round.isLastTrick(this)) 10 else 0
         return if (!isComplete()) {
             ScoreKlaverjassen.ZERO
         } else {
             ScoreKlaverjassen.scoreForPlayer(
                 winner()!!,
-                getCardsPlayed().sumOf { playerPlayedCard -> KLAVERJASSEN.cardValue(playerPlayedCard.card, round.getTrumpColor()) },
+                lastTrickPoints + getCardsPlayed().sumOf { playerPlayedCard -> KLAVERJASSEN.cardValue(playerPlayedCard.card, round.getTrumpColor()) },
                 KLAVERJASSEN.bonusValue(getCardsPlayed().map { it.card }, trumpColor = round.getTrumpColor())
             )
         }

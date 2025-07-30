@@ -24,10 +24,21 @@ class RoundKlaverjassen(
         return completedTricksPlayed() >= KLAVERJASSEN.NUMBER_OF_TRICKS_PER_ROUND
     }
 
+    fun isLastTrick(trick: Trick): Boolean {
+        return if (getCompletedTrickList().size == KLAVERJASSEN.NUMBER_OF_TRICKS_PER_ROUND && getCompletedTrickList().last() == trick) {
+            true
+        } else if (getCompletedTrickList().size == KLAVERJASSEN.NUMBER_OF_TRICKS_PER_ROUND-1 && getTrickOnTable() == trick) {
+            true
+        } else {
+            false
+        }
+    }
+
     fun getScore(): ScoreKlaverjassen {
         var score = ScoreKlaverjassen.ZERO
         if (isComplete()) {
             getCompletedTrickList().forEach { trick ->
+                println((trick as TrickKlaverjassen).getScore())
                 score = score.plus((trick as TrickKlaverjassen).getScore())
             }
         }
