@@ -24,9 +24,8 @@ class GameKlaverjassen(): Game()  {
     }
 
     //score
-    fun getCumulativeScorePerRound(): List<ScoreKlaverjassen> {
+    fun getAllScoresPerRound(): List<ScoreKlaverjassen> {
         return getCompleteRoundsPlayed()
             .map { round ->  (round as RoundKlaverjassen).getScore()}
-            .runningFold(ScoreKlaverjassen.ZERO) { acc, sc -> acc.plus(sc) }.drop(1)
     }
 }

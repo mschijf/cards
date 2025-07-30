@@ -109,12 +109,12 @@ class ServiceKlaverjassen {
 
     fun getScoreCard(): ScoreModelKlaverjassen {
         return ScoreModelKlaverjassen (
-            gameKlaverjassen.getCumulativeScorePerRound()
-                .map { spr -> RoundScoreKlaverjassen(
-                    spr.getNorthSouthPoints(),
-                    spr.getEastWestPoints(),
-                    spr.getNorthSouthBonus(),
-                    spr.getEastWestBonus())
+            gameKlaverjassen.getAllScoresPerRound()
+                .map { roundScore -> RoundScoreKlaverjassen(
+                    roundScore.getNorthSouthPoints(),
+                    roundScore.getEastWestPoints(),
+                    roundScore.getNorthSouthBonus(),
+                    roundScore.getEastWestBonus())
                 }
         )
     }

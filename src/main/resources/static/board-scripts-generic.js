@@ -183,6 +183,7 @@ function showLeader(leader) {
 function handleGameStatus(gameStatus) {
     handleGameStatusGeneric(gameStatus.generic)
     showGameSpecific(gameStatus)
+    handleNextMove(gameStatus.generic)
 }
 
 function handleGameStatusGeneric(gameStatusGeneric) {
@@ -193,13 +194,16 @@ function handleGameStatusGeneric(gameStatusGeneric) {
     showPlayerCards("playerEast", gameStatusGeneric.playerEast, true)
     showExtras(gameStatusGeneric)
     showLeader(gameStatusGeneric.leadPlayer)
-
     showJson("")
+}
+
+function handleNextMove(gameStatusGeneric) {
     let waitForNextMove = isHumanPlayer(gameStatusGeneric.playerToMove) ? 0 : 500
     setTimeout(function () {
         doNextMove(gameStatusGeneric.playerToMove)
     }, waitForNextMove)
 }
+
 
 function showExtras(gameStatusGeneric) {
     clearGeniusSouthValues()
