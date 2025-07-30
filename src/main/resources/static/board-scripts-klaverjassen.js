@@ -37,5 +37,29 @@ function handleScoreCard(scoreModel) {
             bonusEW.innerHTML = ""
         }
     }
+}
 
+function initTrumpCardSelect(cardColor) {
+    let cardPostFix = cardColor[0].toUpperCase() + cardColor.substring(1).toLowerCase()
+    document.getElementById("trump" + cardPostFix).style.cursor = "pointer"
+    document.getElementById("trump" + cardPostFix).onclick=function () {
+        closeModalAndRequestTrumpSetting(cardColor)
+    };
+}
+
+function doSomeTest() {
+    selectTrump()
+}
+
+function selectTrump(){
+    initTrumpCardSelect("CLUBS")
+    initTrumpCardSelect("HEARTS")
+    initTrumpCardSelect("SPADES")
+    initTrumpCardSelect("DIAMONDS")
+    document.getElementById("myModal").style.display = "block";
+}
+
+function closeModalAndRequestTrumpSetting(cardColor) {
+    document.getElementById("myModal").style.display = "none";
+    console.log("trump choosen: " + cardColor)
 }

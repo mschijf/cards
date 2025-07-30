@@ -114,6 +114,10 @@ textarea.info-lines {
     width:100px;
     height:150px;
 }
+.card-size-medium {
+    width:80px;
+    height:120px;
+}
 .card-size-small {
     width:50px;
     height:75px;
@@ -258,28 +262,31 @@ th:first-child, td:first-child {
 
 /*--------------------------------------------------------*/
 
-#modal {
-    position: fixed;
-    top: 0;
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 180px; /* Location of the box */
     left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: rgba(0,0,0,.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-.modal__window {
-    position: relative;
-    background-color: white;
-    padding: 4em 2em;
-}
-
-.modal__close {
-}
-
-#modal:not(:target) {
-    visibility: hidden;
-    opacity: 0;
+/* Modal Content */
+.modal-content {
+    font-family: Chalkduster, fantasy;
+    font-size: 24px;
+    text-align: center;
+    color:white;
+    background-color: green;
+    margin-left: 285px;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 350px;
+    height: 200px;
 }

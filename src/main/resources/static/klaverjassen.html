@@ -6,17 +6,23 @@
     </head>
 
     <body>
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
 
-        <div id="modal">
-            <div class="modal__window">
-                <a id="buttonCloseModal" class="modal__close" href="#">CLOSE</a>
+        <!-- Modal content -->
+        <div class="modal-content">
+            <p>Choose trump color</p>
+            <div class="flexcontainer-player">
+                <div class="player-card"><img id="trumpClubs" src="carddeck/2C.svg" class="card-size-medium"></div>
+                <div class="player-card"><img id="trumpHearts" src="carddeck/2H.svg" class="card-size-medium"></div>
+                <div class="player-card"><img id="trumpSpades" src="carddeck/2S.svg" class="card-size-medium"></div>
+                <div class="player-card"><img id="trumpDiamonds" src="carddeck/2D.svg" class="card-size-medium"></div>
             </div>
         </div>
-        <div>
-            <a href="#modal">Open Modal</a>
-        </div>
+    </div>
 
-        <div class="container">
+
+    <div class="container">
             <div class="grid-signal">
                 <img id="trumpCard" src="carddeck/2C.svg" class="card-size-small">
             </div>
@@ -252,6 +258,7 @@
         <button id="buttonNew" onclick="initGame()">NEW</button>
         <button id="buttonPlay" onclick="requestComputeMove()">PLAY</button>
         <button id="buttonJson" onclick="showJson()">JSON</button>
+        <button id="buttontest" onclick="doSomeTest()">TEST</button>
         <div id="jsonText"></div>
         <!-- Card images by Adrian Kennard - Own work, CC0, <a href="https://commons.wikimedia.org/w/index.php?curid=70667162">https://commons.wikimedia.org/w/index.php?curid=70667162</a>     -->
     </body>
