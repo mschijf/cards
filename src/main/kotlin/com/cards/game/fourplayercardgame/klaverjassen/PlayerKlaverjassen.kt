@@ -23,7 +23,7 @@ class PlayerKlaverjassen(
     }
 
     override fun chooseCard(): Card {
-        val legalCards = game.getCurrentRound().getTrickOnTable().legalPlayableCards(getCardsInHand())
+        val legalCards = game.getCurrentRound().getTrickOnTable().getLegalPlayableCards(getCardsInHand())
         return legalCards.first()
     }
 

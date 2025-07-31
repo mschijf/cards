@@ -30,7 +30,7 @@ abstract class Game() {
     fun trickCompleted() = currentRound.getTrickOnTable().hasNotStarted()
     fun roundCompleted() = currentRound.hasNotStarted()
     fun getCurrentRound() = currentRound
-    fun getPlayerToMove() = currentRound.getTrickOnTable().playerToMove()
+    fun getPlayerToMove() = currentRound.getTrickOnTable().getPlayerToMove()
     fun getLastTrickWinner(): Player? =
         if (currentRound.hasNotStarted())
             completedRoundList.lastOrNull()?.getLastCompletedTrickWinner()
@@ -48,7 +48,7 @@ abstract class Game() {
 
     //deal cards
     private fun dealCards() {
-        val cardDeck = CARDDECK.baseDeckCardsSevenAndHigher.shuffled()
+        val cardDeck = CARDDECK.baseDeckCardsSevenAndHigher//.shuffled()
         val cardPiles = cardDeck.chunked(cardDeck.size/ playerList.size)
         playerList.forEachIndexed { idx, player -> player.setCardsInHand(cardPiles[idx])}
     }
@@ -59,7 +59,7 @@ abstract class Game() {
             throw Exception("Trying to play a card, but the game is already over")
         }
 
-        val playerToMove = currentRound.getTrickOnTable().playerToMove()
+        val playerToMove = currentRound.getTrickOnTable().getPlayerToMove()
         if (isLegalCardToPlay(playerToMove, card)) {
             playerToMove.removeCard(card)
 
@@ -79,11 +79,11 @@ abstract class Game() {
 
     fun isLegalCardToPlay(player: Player, card: Card): Boolean {
         val trickOnTable = getCurrentRound().getTrickOnTable()
-        if (trickOnTable.playerToMove() != player)
+        if (trickOnTable.getPlayerToMove() != player)
             return false
 
         val cardsInHand = player.getCardsInHand()
-        val legalCards = trickOnTable.legalPlayableCards(cardsInHand)
+        val legalCards = trickOnTable.getLegalPlayableCards(cardsInHand)
         return legalCards.contains(card)
     }
 }

@@ -25,7 +25,7 @@ class TrickKlaverjassen(
     }
 
 
-    override fun legalPlayableCards(cardsList: List<Card>): List<Card> {
+    override fun getLegalPlayableCards(cardsList: List<Card>): List<Card> {
         if (hasNotStarted())
             return cardsList
 
@@ -44,8 +44,8 @@ class TrickKlaverjassen(
         return cardsList
     }
 
-    override fun winner(): Player? {
-        val winningCard = winningCard()
+    override fun getWinner(): Player? {
+        val winningCard = getWinningCard()
         return if (!isComplete()) {
             null
         } else {
@@ -53,7 +53,7 @@ class TrickKlaverjassen(
         }
     }
 
-    override fun winningCard(): Card? {
+    override fun getWinningCard(): Card? {
         return if (getCardsPlayed().any { crd -> crd.card.color == round.getTrumpColor() }) {
             getCardsPlayed()
                 .filter { playerPlayedCard -> playerPlayedCard.card.color == round.getTrumpColor() }
@@ -73,7 +73,7 @@ class TrickKlaverjassen(
             ScoreKlaverjassen.ZERO
         } else {
             ScoreKlaverjassen.scoreForPlayer(
-                winner()!!,
+                getWinner()!!,
                 lastTrickPoints + getCardsPlayed().sumOf { playerPlayedCard -> KLAVERJASSEN.cardValue(playerPlayedCard.card, round.getTrumpColor()) },
                 KLAVERJASSEN.bonusValue(getCardsPlayed().map { it.card }, trumpColor = round.getTrumpColor())
             )

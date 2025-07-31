@@ -13,15 +13,15 @@ abstract class Trick(
     fun isLeadPLayer(player: Player) = player == leadPlayer
     fun getLeadColor() = getCardPlayedBy(leadPlayer)?.color
     fun isLeadColor(color: CardColor) = color == getLeadColor()
-    fun playerToMove() = playerToMove
+    fun getPlayerToMove() = playerToMove
     fun getCardsPlayed() = cardsPlayed
     fun isComplete(): Boolean = cardsPlayed.size >= Table.values().size
     fun isLastPlayerToMove() = (getCardsPlayed().size == Table.values().size)
     fun hasNotStarted(): Boolean = cardsPlayed.isEmpty()
 
-    abstract fun legalPlayableCards(cardsList: List<Card>): List<Card>
-    abstract fun winner(): Player?
-    abstract fun winningCard(): Card?
+    abstract fun getLegalPlayableCards(cardsList: List<Card>): List<Card>
+    abstract fun getWinner(): Player?
+    abstract fun getWinningCard(): Card?
 
     fun getCardPlayedBy(player: Player): Card? {
         return cardsPlayed

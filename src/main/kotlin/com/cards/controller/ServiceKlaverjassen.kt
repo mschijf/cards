@@ -8,6 +8,7 @@ import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.PlayerKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
+import com.cards.game.fourplayercardgame.klaverjassen.ScoreType
 import org.springframework.stereotype.Service
 
 @Service
@@ -112,10 +113,28 @@ class ServiceKlaverjassen {
         return ScoreModelKlaverjassen (
             gameKlaverjassen.getAllScoresPerRound()
                 .map { roundScore -> RoundScoreKlaverjassen(
-                    roundScore.getNorthSouthPoints(),
-                    roundScore.getEastWestPoints(),
-                    roundScore.getNorthSouthBonus(),
-                    roundScore.getEastWestBonus())
+                    if (roundScore.getNorthSouthPoints() == 0) {
+                        when (roundScore.scoreType) {
+                            ScoreType.NAT -> "NAT"
+                            ScoreType.PIT -> "PIT"
+                            ScoreType.REGULAR -> "0"
+                        }
+                    } else {
+                        roundScore.getNorthSouthPoints().toString()
+                    },
+
+                    if (roundScore.getEastWestPoints() == 0) {
+                        when (roundScore.scoreType) {
+                            ScoreType.NAT -> "NAT"
+                            ScoreType.PIT -> "PIT"
+                            ScoreType.REGULAR -> "0"
+                        }
+                    } else {
+                        roundScore.getEastWestPoints().toString()
+                    },
+
+                    if (roundScore.getNorthSouthBonus() == 0) "" else roundScore.getNorthSouthBonus().toString(),
+                    if (roundScore.getEastWestBonus() == 0) "" else roundScore.getEastWestBonus().toString())
                 }
         )
     }

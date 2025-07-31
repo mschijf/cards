@@ -6,13 +6,13 @@ import com.cards.game.fourplayercardgame.basic.Trick
 
 class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
 
-    override fun legalPlayableCards(cardsList: List<Card>): List<Card> {
+    override fun getLegalPlayableCards(cardsList: List<Card>): List<Card> {
         return cardsList
             .filter{ card -> isLeadColor(card.color)}
             .ifEmpty { cardsList }
     }
 
-    override fun winner(): Player? {
+    override fun getWinner(): Player? {
         return if (!isComplete()) {
             null
         } else {
@@ -23,7 +23,7 @@ class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
         }
     }
 
-    override fun winningCard(): Card? {
+    override fun getWinningCard(): Card? {
         return getCardsPlayed()
             .filter { playerPlayedCard -> isLeadColor(playerPlayedCard.card.color) }
             .maxByOrNull { playerPlayedCard -> HEARTS.toRankNumber(playerPlayedCard.card) }
@@ -35,7 +35,7 @@ class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
         return if (!isComplete()) {
             ScoreHearts.ZERO
         } else {
-            ScoreHearts.scoreForPlayer(winner()!!, getCardsPlayed().sumOf { playerPlayedCard -> HEARTS.cardValue(playerPlayedCard.card) })
+            ScoreHearts.scoreForPlayer(getWinner()!!, getCardsPlayed().sumOf { playerPlayedCard -> HEARTS.cardValue(playerPlayedCard.card) })
         }
     }
 

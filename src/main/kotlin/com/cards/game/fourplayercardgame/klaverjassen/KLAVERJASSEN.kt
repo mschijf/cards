@@ -11,6 +11,8 @@ object KLAVERJASSEN {
     const val NUMBER_OF_ROUNDS_PER_GAME = 16
     val VERY_FIRST_START_PLAYER = Table.WEST
 
+    const val PIT_BONUS = 100
+
     fun cardValue(card: Card, trump: CardColor): Int {
         return when (card.rank) {
             CardRank.ACE -> 11

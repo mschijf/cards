@@ -13,11 +13,11 @@ class GameKlaverjassen(): Game()  {
     }
 
     override fun createFirstRound(): Round {
-        return RoundKlaverjassen(getCardPlayer(KLAVERJASSEN.VERY_FIRST_START_PLAYER), this)
+        return RoundKlaverjassen(getCardPlayer(KLAVERJASSEN.VERY_FIRST_START_PLAYER))
     }
 
     override fun createNextRound(previousRound: Round): Round {
-        return RoundKlaverjassen(previousRound.getLeadPlayer().nextPlayer(), this)
+        return RoundKlaverjassen(previousRound.getLeadPlayer().nextPlayer())
     }
 
     override fun isFinished(): Boolean {

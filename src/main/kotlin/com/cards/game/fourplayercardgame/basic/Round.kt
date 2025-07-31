@@ -15,13 +15,13 @@ abstract class Round(
     fun completedTricksPlayed() = completedTrickList.size
     fun hasNotStarted(): Boolean = completedTrickList.isEmpty() && currentTrick.hasNotStarted()
     fun getTrickOnTable() = currentTrick
-    fun getLastCompletedTrickWinner(): Player? = completedTrickList.lastOrNull()?.winner()
+    fun getLastCompletedTrickWinner(): Player? = completedTrickList.lastOrNull()?.getWinner()
     fun getCompletedTrickList() = completedTrickList.toList()
 
     fun playCard(card: Card) {
         currentTrick.addCard(card)
         if (currentTrick.isComplete()) {
-            val winner = currentTrick.winner()!!
+            val winner = currentTrick.getWinner()!!
             addTrick(currentTrick)
             currentTrick = createTrick(winner)
         }

@@ -4,7 +4,8 @@ import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Table
 
 data class ScoreKlaverjassen(val westValue: Int, val northValue: Int, val eastValue: Int, val southValue: Int,
-                             val westBonus: Int, val northBonus: Int, val eastBonus: Int, val southBonus: Int) {
+                             val westBonus: Int, val northBonus: Int, val eastBonus: Int, val southBonus: Int,
+                             val scoreType: ScoreType = ScoreType.REGULAR) {
 
     fun plus(score: ScoreKlaverjassen): ScoreKlaverjassen {
         return ScoreKlaverjassen(
@@ -24,6 +25,9 @@ data class ScoreKlaverjassen(val westValue: Int, val northValue: Int, val eastVa
     fun getNorthSouthBonus() = northBonus + southBonus
     fun getEastWestBonus() = eastBonus + westBonus
 
+    fun getNorthSouthTotal() = getNorthSouthPoints() + getNorthSouthBonus()
+    fun getEastWestTotal() = getEastWestPoints() + getEastWestBonus()
+
     companion object {
         val ZERO = ScoreKlaverjassen(0,0,0,0, 0,0,0,0)
 
@@ -40,4 +44,8 @@ data class ScoreKlaverjassen(val westValue: Int, val northValue: Int, val eastVa
             )
         }
     }
+}
+
+enum class ScoreType {
+    REGULAR, NAT, PIT
 }
