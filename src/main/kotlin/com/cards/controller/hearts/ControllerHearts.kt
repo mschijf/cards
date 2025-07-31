@@ -1,9 +1,9 @@
-package com.cards.controller
+package com.cards.controller.hearts
 
-import com.cards.controller.model.CardPlayedModel
-import com.cards.controller.model.CardPlayedResponse
-import com.cards.controller.model.GameStatusModelHearts
-import com.cards.controller.model.ScoreModelHearts
+import com.cards.controller.basic.model.CardPlayedModel
+import com.cards.controller.basic.model.CardPlayedResponse
+import com.cards.controller.hearts.model.GameStatusModelHearts
+import com.cards.controller.hearts.model.ScoreModelHearts
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.tools.Log

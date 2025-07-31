@@ -1,6 +1,14 @@
-package com.cards.controller
+package com.cards.controller.klaverjassen
 
-import com.cards.controller.model.*
+import com.cards.controller.basic.model.CardInHandModel
+import com.cards.controller.basic.model.CardPlayedModel
+import com.cards.controller.basic.model.GameStatusModel
+import com.cards.controller.klaverjassen.model.GameStatusModelKlaverjassen
+import com.cards.controller.klaverjassen.model.RoundScoreKlaverjassen
+import com.cards.controller.klaverjassen.model.ScoreModelKlaverjassen
+import com.cards.controller.basic.model.TableModel
+import com.cards.controller.basic.model.TrickCompletedModel
+import com.cards.controller.klaverjassen.model.TrumpChoiceModel
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
@@ -39,7 +47,7 @@ class ServiceKlaverjassen {
         val gameJsonString = "" //Gson().toJson(gm)
         val nr = gameKlaverjassen.getCurrentRound().hasNotStarted()
         return GameStatusModelKlaverjassen(
-            GameStatusModel (
+            generic = GameStatusModel(
                 onTable,
                 playerToMove.tablePosition,
                 leadPlayer.tablePosition,
@@ -50,8 +58,10 @@ class ServiceKlaverjassen {
                 playerEast,
                 gameJsonString,
             ),
-            (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getTrumpColor(),
-            (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getContractOwner().tablePosition
+            trumpChoice = TrumpChoiceModel(
+                (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getTrumpColor(),
+                (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getContractOwner().tablePosition
+            )
         )
     }
 
@@ -110,31 +120,33 @@ class ServiceKlaverjassen {
     }
 
     fun getScoreCard(): ScoreModelKlaverjassen {
-        return ScoreModelKlaverjassen (
+        return ScoreModelKlaverjassen(
             gameKlaverjassen.getAllScoresPerRound()
-                .map { roundScore -> RoundScoreKlaverjassen(
-                    if (roundScore.northSouthPoints == 0) {
-                        when (roundScore.scoreType) {
-                            ScoreType.NAT -> "NAT"
-                            ScoreType.PIT -> "PIT"
-                            ScoreType.REGULAR -> "0"
-                        }
-                    } else {
-                        roundScore.northSouthPoints.toString()
-                    },
+                .map { roundScore ->
+                    RoundScoreKlaverjassen(
+                        if (roundScore.northSouthPoints == 0) {
+                            when (roundScore.scoreType) {
+                                ScoreType.NAT -> "NAT"
+                                ScoreType.PIT -> "PIT"
+                                ScoreType.REGULAR -> "0"
+                            }
+                        } else {
+                            roundScore.northSouthPoints.toString()
+                        },
 
-                    if (roundScore.eastWestPoints == 0) {
-                        when (roundScore.scoreType) {
-                            ScoreType.NAT -> "NAT"
-                            ScoreType.PIT -> "PIT"
-                            ScoreType.REGULAR -> "0"
-                        }
-                    } else {
-                        roundScore.eastWestPoints.toString()
-                    },
+                        if (roundScore.eastWestPoints == 0) {
+                            when (roundScore.scoreType) {
+                                ScoreType.NAT -> "NAT"
+                                ScoreType.PIT -> "PIT"
+                                ScoreType.REGULAR -> "0"
+                            }
+                        } else {
+                            roundScore.eastWestPoints.toString()
+                        },
 
-                    if (roundScore.northSouthBonus == 0) "" else roundScore.northSouthBonus.toString(),
-                    if (roundScore.eastWestBonus == 0) "" else roundScore.eastWestBonus.toString())
+                        if (roundScore.northSouthBonus == 0) "" else roundScore.northSouthBonus.toString(),
+                        if (roundScore.eastWestBonus == 0) "" else roundScore.eastWestBonus.toString()
+                    )
                 }
         )
     }

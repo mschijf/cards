@@ -1,4 +1,4 @@
-package com.cards.controller.model
+package com.cards.controller.klaverjassen.model
 
 data class ScoreModelKlaverjassen(val scoreList: List<RoundScoreKlaverjassen>)
 

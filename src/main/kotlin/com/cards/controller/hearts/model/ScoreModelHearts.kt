@@ -1,4 +1,4 @@
-package com.cards.controller.model
+package com.cards.controller.hearts.model
 
 data class ScoreModelHearts(val scoreList: List<RoundScoreHearts>)
 

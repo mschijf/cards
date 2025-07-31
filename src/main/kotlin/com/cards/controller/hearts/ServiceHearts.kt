@@ -1,6 +1,13 @@
-package com.cards.controller
+package com.cards.controller.hearts
 
-import com.cards.controller.model.*
+import com.cards.controller.basic.model.CardInHandModel
+import com.cards.controller.basic.model.CardPlayedModel
+import com.cards.controller.basic.model.GameStatusModel
+import com.cards.controller.hearts.model.GameStatusModelHearts
+import com.cards.controller.hearts.model.RoundScoreHearts
+import com.cards.controller.hearts.model.ScoreModelHearts
+import com.cards.controller.basic.model.TableModel
+import com.cards.controller.basic.model.TrickCompletedModel
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
@@ -39,7 +46,7 @@ class ServiceHearts {
         val goingUp = gameHearts.isGoingUp()
 
         return GameStatusModelHearts(
-            GameStatusModel (
+            GameStatusModel(
                 onTable,
                 playerToMove.tablePosition,
                 leadPlayer.tablePosition,
@@ -111,13 +118,15 @@ class ServiceHearts {
     }
 
     fun getScoreCard(): ScoreModelHearts {
-        return ScoreModelHearts (
+        return ScoreModelHearts(
             gameHearts.getCumulativeScorePerRound()
-                .map { spr -> RoundScoreHearts(
-                    spr.southValue,
-                    spr.westValue,
-                    spr.eastValue,
-                    spr.northValue)
+                .map { spr ->
+                    RoundScoreHearts(
+                        spr.southValue,
+                        spr.westValue,
+                        spr.eastValue,
+                        spr.northValue
+                    )
                 }
         )
     }

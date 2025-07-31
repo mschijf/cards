@@ -1,7 +1,7 @@
 let gameType="klaverjassen"
 
 function showGameSpecific(gameStatus) {
-    updateTrumpAndContractOwner(gameStatus.trumpColor, gameStatus.contractOwner)
+    handleTrumpColorSet(gameStatus.trumpChoice)
 }
 
 function handleScoreCard(scoreModel) {
@@ -67,13 +67,9 @@ function closeModalAndRequestTrumpSetting(cardColor, player) {
 }
 
 function handleTrumpColorSet(trumpColorModel) {
-    updateTrumpAndContractOwner(trumpColorModel.trumpColor, trumpColorModel.contractOwner)
-}
-
-function updateTrumpAndContractOwner(trumpColor, contractOwner) {
-    document.getElementById("trumpCard").src = cardColorAndRankToImageURL(trumpColor, "TWO")
+    document.getElementById("trumpCard").src = cardColorAndRankToImageURL(trumpColorModel.trumpColor, "TWO")
     clearContract()
-    document.getElementById("hasContract" + playerModelToElementPostFix(contractOwner)).innerHTML = "plays"
+    document.getElementById("hasContract" + playerModelToElementPostFix(trumpColorModel.contractOwner)).innerHTML = "plays"
 }
 
 function clearContract() {

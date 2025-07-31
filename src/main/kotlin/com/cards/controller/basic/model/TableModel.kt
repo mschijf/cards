@@ -1,4 +1,4 @@
-package com.cards.controller.model
+package com.cards.controller.basic.model
 
 import com.cards.game.card.Card
 
