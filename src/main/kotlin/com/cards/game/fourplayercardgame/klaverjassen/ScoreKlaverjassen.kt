@@ -16,6 +16,37 @@ data class ScoreKlaverjassen(val eastWestPoints: Int, val northSouthPoints: Int,
         )
     }
 
+    fun plusPitBonus(): ScoreKlaverjassen {
+        return ScoreKlaverjassen(
+            eastWestPoints,
+            northSouthPoints,
+            if (eastWestPoints == 0) eastWestBonus else eastWestBonus + KLAVERJASSEN.PIT_BONUS ,
+            if (northSouthPoints == 0) northSouthBonus else northSouthBonus + KLAVERJASSEN.PIT_BONUS,
+            scoreType = ScoreType.PIT
+        )
+    }
+
+    fun changeEastWestToNat(): ScoreKlaverjassen {
+        return ScoreKlaverjassen(
+            0,
+            northSouthPoints+eastWestPoints,
+            0,
+            northSouthBonus+eastWestBonus,
+            scoreType = ScoreType.NAT
+        )
+    }
+
+    fun changeNorthSouthToNat(): ScoreKlaverjassen {
+        return ScoreKlaverjassen(
+            eastWestPoints+northSouthPoints,
+            0,
+            eastWestBonus+northSouthBonus,
+            0,
+            scoreType = ScoreType.NAT
+        )
+    }
+
+
     fun getNorthSouthTotal() = northSouthPoints + northSouthBonus
     fun getEastWestTotal() = eastWestPoints + eastWestBonus
 

@@ -42,17 +42,6 @@ class RoundKlaverjassen(leadPlayer: Player) : Round(leadPlayer) {
         return getCompletedTrickList().all { trick -> trick.getWinner()!!.tablePosition in team }
     }
 
-//    private fun natScore(roundScore: ScoreKlaverjassen, northSouth: Boolean): ScoreKlaverjassen {
-//        return ScoreKlaverjassen(
-//            roundScore.northSouthPoints,0,roundScore.eastWest,0,
-//            roundScore.northSouthBonus, 0, roundScore.eastWestBonus, 0,
-//            scoreType = ScoreType.NAT
-//        )
-//    }
-//
-//    private fun pitScore(roundScore: ScoreKlaverjassen): ScoreKlaverjassen {
-//    }
-//
     fun getScore(): ScoreKlaverjassen {
         if (!isComplete())
             return ScoreKlaverjassen.ZERO
@@ -60,50 +49,20 @@ class RoundKlaverjassen(leadPlayer: Player) : Round(leadPlayer) {
         val roundScore= getCompletedTrickList()
             .fold(ScoreKlaverjassen.ZERO){acc, trick -> acc.plus((trick as TrickKlaverjassen).getScore())}
 
-        if (getContractOwner().tablePosition in setOf(Table.NORTH, Table.SOUTH)) {
-
-            if (roundScore.getNorthSouthTotal() <= roundScore.getEastWestTotal()) //Nat
-                return ScoreKlaverjassen(
-                    roundScore.northSouthPoints + roundScore.eastWestPoints,
-                    0,
-                    roundScore.northSouthBonus + roundScore.eastWestBonus,
-                    0,
-                    scoreType = ScoreType.NAT
-                )
-
-            if (allTricksWonByTeam(setOf(Table.NORTH, Table.SOUTH))) {
-                return ScoreKlaverjassen(
-                    roundScore.eastWestPoints,
-                    roundScore.northSouthPoints,
-                    roundScore.eastWestBonus,
-                    roundScore.northSouthBonus + KLAVERJASSEN.PIT_BONUS,
-                    scoreType = ScoreType.PIT
-                )
-            }
-            return roundScore
-
+        return if (getContractOwner().tablePosition in setOf(Table.NORTH, Table.SOUTH)) {
+            if (roundScore.getNorthSouthTotal() <= roundScore.getEastWestTotal())
+                roundScore.changeNorthSouthToNat()
+            else if (allTricksWonByTeam(setOf(Table.NORTH, Table.SOUTH)))
+                roundScore.plusPitBonus()
+            else
+                roundScore
         } else {
-
-            if (roundScore.getEastWestTotal() <= roundScore.getNorthSouthTotal()) //Nat
-                return ScoreKlaverjassen(
-                    0,
-                    roundScore.northSouthPoints + roundScore.eastWestPoints,
-                    0,
-                    roundScore.northSouthBonus + roundScore.eastWestBonus,
-                    scoreType = ScoreType.NAT
-                )
-
-            if (allTricksWonByTeam(setOf(Table.EAST, Table.WEST))) {
-                return ScoreKlaverjassen(
-                    roundScore.eastWestPoints,
-                    roundScore.northSouthPoints,
-                    roundScore.eastWestBonus + KLAVERJASSEN.PIT_BONUS,
-                    roundScore.northSouthBonus,
-                    scoreType = ScoreType.PIT
-                )
-            }
-
-            return roundScore
+            if (roundScore.getEastWestTotal() <= roundScore.getNorthSouthTotal())
+                roundScore.changeEastWestToNat()
+            else if (allTricksWonByTeam(setOf(Table.EAST, Table.WEST)))
+                roundScore.plusPitBonus()
+            else
+                roundScore
         }
     }
 }
