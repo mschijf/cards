@@ -27,7 +27,7 @@ open class PlayerKlaverjassen(
         return legalCards.first()
     }
 
-    fun chooseTrumpColor(cardColorOptions: List<CardColor> = CardColor.values().toList()): CardColor {
+    open fun chooseTrumpColor(cardColorOptions: List<CardColor> = CardColor.values().toList()): CardColor {
         return cardColorOptions[tablePosition.ordinal % cardColorOptions.size]
     }
 }

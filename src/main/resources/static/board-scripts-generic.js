@@ -129,6 +129,10 @@ function showInfo(info) {
     document.getElementById("scoreInfo").innerHTML = info
 }
 
+function showSeed(seed) {
+    document.getElementById("shuffleSeed").innerHTML = "Seed: " + seed
+}
+
 //-----------------------------------------------------------------------------------------
 
 function showCard(cardId, cardModel, show) {
@@ -198,6 +202,7 @@ function handleGameStatusGeneric(gameStatusGeneric) {
     showExtras(gameStatusGeneric)
     showLeader(gameStatusGeneric.leadPlayer)
     showJson("")
+    showSeed(gameStatusGeneric.seed)
 }
 
 function handleNextMove(gameStatusGeneric) {

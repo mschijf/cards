@@ -4,6 +4,7 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.Table
+import java.security.KeyStore
 
 object KLAVERJASSEN {
 
@@ -62,7 +63,15 @@ object KLAVERJASSEN {
 
     fun bonusValue(cardList: List<Card>, trumpColor: CardColor): Int {
         assert(cardList.size == 4)
-        return CardColor.values().sumOf { color -> bonusValueForColor(cardList, color, trumpColor) }
+        return CardColor.values().sumOf { color -> bonusValueForColor(cardList, color, trumpColor) } +
+                bonusValueForfourEqualRanks(cardList)
+    }
+    private fun bonusValueForfourEqualRanks(cardList: List<Card>): Int {
+        //see for rules: https://www.spelregels.eu/wp-content/uploads/2021/01/spelregels-klaverjassen.pdf
+        return if (cardList.map {it.rank}.distinct().size == 1)
+            100
+        else
+            0
     }
 
     private fun bonusValueForColor(cardList: List<Card>, forCardColor: CardColor, trumpColor: CardColor): Int {
@@ -88,4 +97,17 @@ object KLAVERJASSEN {
         return bonus + stuk
     }
 
+    fun Card.beats(other: Card?, trumpColor: CardColor): Boolean {
+        if (other == null)
+            return true
+        return if (this.color == other.color) {
+            if (this.color == trumpColor) {
+                toRankNumberTrump(this) > toRankNumberTrump(other)
+            } else {
+                toRankNumberNoTrump(this) > toRankNumberNoTrump(other)
+            }
+        } else {
+            (other.color != trumpColor)
+        }
+    }
 }

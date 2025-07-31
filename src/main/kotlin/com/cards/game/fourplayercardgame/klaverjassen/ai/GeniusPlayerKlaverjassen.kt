@@ -2,6 +2,7 @@ package com.cards.game.fourplayercardgame.klaverjassen.ai
 
 import com.cards.game.card.CARDDECK
 import com.cards.game.card.Card
+import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.PlayerKlaverjassen
@@ -10,17 +11,32 @@ class GeniusPlayerKlaverjassen(
     tablePosition: Table,
     game: GameKlaverjassen) : PlayerKlaverjassen(tablePosition, game) {
 
+    private val trumpChoiceAnalyzer = TrumpChoiceAnalyzer(this)
+    private val chooseCardAnalyzer = ChooseCardAnalyzer(this)
+
+    fun getCurrentRound() = game.getCurrentRound()
+    fun getOtherPlayers() = game.getPlayerList() - this
+
     override fun chooseCard(): Card {
+        chooseCardAnalyzer.determinePlayerCanHaveCards().forEach {
+            println("${it.key.tablePosition}: ${it.value}")
+        }
         return super.chooseCard()
+    }
+
+    override fun chooseTrumpColor(cardColorOptions: List<CardColor>): CardColor {
+        return cardColorOptions.maxBy { cardColor ->
+            trumpChoiceAnalyzer.trumpChoiceValue(cardColor)
+        }
     }
 
     private fun getCardsPlayed(): List<Card> {
         val round = game.getCurrentRound()
         return round
             .getCompletedTrickList()
-            .flatMap{ trick -> trick.getCardsPlayed()}
-            .union (round.getTrickOnTable().getCardsPlayed())
-            .map { cardPlayed -> cardPlayed.card}
+            .flatMap { trick -> trick.getCardsPlayed() }
+            .union(round.getTrickOnTable().getCardsPlayed())
+            .map { cardPlayed -> cardPlayed.card }
     }
 
     private fun getCardsStillInPlay(): List<Card> {

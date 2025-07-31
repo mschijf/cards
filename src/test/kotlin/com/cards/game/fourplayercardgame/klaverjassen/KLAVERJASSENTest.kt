@@ -64,4 +64,26 @@ class KLAVERJASSENTest {
         assertEquals(20, KLAVERJASSEN.bonusValue(trick, CardColor.HEARTS))
     }
 
+    @Test
+    fun test100King() {
+        val trick = listOf("KC", "KH", "KD", "KS").map { str -> Card.of(str) }
+        assertEquals(100, KLAVERJASSEN.bonusValue(trick, CardColor.CLUBS))
+        assertEquals(100, KLAVERJASSEN.bonusValue(trick, CardColor.HEARTS))
+    }
+
+    @Test
+    fun test100Seven() {
+        val trick = listOf("7C", "7H", "7D", "7S").map { str -> Card.of(str) }
+        assertEquals(100, KLAVERJASSEN.bonusValue(trick, CardColor.CLUBS))
+        assertEquals(100, KLAVERJASSEN.bonusValue(trick, CardColor.HEARTS))
+    }
+
+    @Test
+    fun test100Jack() {
+        val trick = listOf("JC", "JH", "JD", "JS").map { str -> Card.of(str) }
+        assertEquals(100, KLAVERJASSEN.bonusValue(trick, CardColor.CLUBS))
+        assertEquals(100, KLAVERJASSEN.bonusValue(trick, CardColor.HEARTS))
+    }
+
+
 }

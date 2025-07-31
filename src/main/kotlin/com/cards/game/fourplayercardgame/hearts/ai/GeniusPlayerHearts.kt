@@ -16,7 +16,7 @@ class GeniusPlayerHearts(
     override fun chooseCard(): Card {
         return getMetaCardList()
             .metaCardList
-            .shuffled()
+//            .shuffled()
             .maxByOrNull { metaCard -> metaCard.value }!!
             .card
     }
