@@ -43,11 +43,14 @@ class RoundKlaverjassen(leadPlayer: Player) : Round(leadPlayer) {
     }
 
     fun getScore(): ScoreKlaverjassen {
-        if (!isComplete())
-            return ScoreKlaverjassen.ZERO
+//        if (!isComplete())
+//            return ScoreKlaverjassen.ZERO
 
         val roundScore= getCompletedTrickList()
             .fold(ScoreKlaverjassen.ZERO){acc, trick -> acc.plus((trick as TrickKlaverjassen).getScore())}
+
+        if (!isComplete())
+            return roundScore
 
         return if (getContractOwner().tablePosition in setOf(Table.NORTH, Table.SOUTH)) {
             if (roundScore.getNorthSouthTotal() <= roundScore.getEastWestTotal())

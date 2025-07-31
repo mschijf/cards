@@ -14,6 +14,19 @@ function CardBackImage() {
     return "carddeck/CardBack.SVG"
 }
 
+function cardColorToSymbol(cardColor) {
+    switch (cardColor) {
+        case "SPADES":
+            return "&spades;"
+        case "HEARTS":
+            return "&hearts;"
+        case "CLUBS":
+            return "&clubs;"
+        case "DIAMONDS":
+            return "&diams;"
+    }
+}
+
 function cardColorAndRankToImageURL(cardColor, cardRank) {
     let colorString = ""
     let rankString = ""
@@ -32,6 +45,9 @@ function cardColorAndRankToImageURL(cardColor, cardRank) {
             break;
     }
     switch (cardRank) {
+        case "ONE":
+            rankString = "1";
+            break;
         case "TWO":
             rankString = "2";
             break;
@@ -187,6 +203,7 @@ function showLeader(leader) {
 function handleGameStatus(gameStatus) {
     handleGameStatusGeneric(gameStatus.generic)
     showGameSpecific(gameStatus)
+    requestForScoreCard();
     if (gameStatus.generic.newRoundStarted) {
         handleGameSpecificNewRoundStartActions(gameStatus)
     }

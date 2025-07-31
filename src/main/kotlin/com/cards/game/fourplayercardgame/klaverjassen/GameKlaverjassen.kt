@@ -31,7 +31,7 @@ class GameKlaverjassen(): Game()  {
 
     //score
     fun getAllScoresPerRound(): List<ScoreKlaverjassen> {
-        return getCompleteRoundsPlayed()
+        return (getCompleteRoundsPlayed() + getCurrentRound())
             .map { round ->  (round as RoundKlaverjassen).getScore()}
     }
 }
