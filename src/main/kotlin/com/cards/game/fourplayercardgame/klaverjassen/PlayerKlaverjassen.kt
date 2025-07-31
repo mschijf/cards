@@ -9,7 +9,7 @@ import com.cards.game.fourplayercardgame.basic.Table.NORTH
 import com.cards.game.fourplayercardgame.basic.Table.SOUTH
 import com.cards.game.fourplayercardgame.basic.Table.WEST
 
-class PlayerKlaverjassen(
+open class PlayerKlaverjassen(
     tablePosition: Table,
     protected val game: GameKlaverjassen) : Player(tablePosition) {
 

@@ -5,11 +5,12 @@ import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Round
 import com.cards.game.fourplayercardgame.basic.Table
+import com.cards.game.fourplayercardgame.klaverjassen.ai.GeniusPlayerKlaverjassen
 
 class GameKlaverjassen(): Game()  {
 
     override fun initialPlayerList(): List<Player> {
-        return Table.values().map { p -> PlayerKlaverjassen(p, this) }
+        return Table.values().map { p -> GeniusPlayerKlaverjassen(p, this) }
     }
 
     override fun createFirstRound(): Round {
