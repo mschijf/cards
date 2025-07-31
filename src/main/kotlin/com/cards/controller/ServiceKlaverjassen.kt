@@ -113,28 +113,28 @@ class ServiceKlaverjassen {
         return ScoreModelKlaverjassen (
             gameKlaverjassen.getAllScoresPerRound()
                 .map { roundScore -> RoundScoreKlaverjassen(
-                    if (roundScore.getNorthSouthPoints() == 0) {
+                    if (roundScore.northSouthPoints == 0) {
                         when (roundScore.scoreType) {
                             ScoreType.NAT -> "NAT"
                             ScoreType.PIT -> "PIT"
                             ScoreType.REGULAR -> "0"
                         }
                     } else {
-                        roundScore.getNorthSouthPoints().toString()
+                        roundScore.northSouthPoints.toString()
                     },
 
-                    if (roundScore.getEastWestPoints() == 0) {
+                    if (roundScore.eastWestPoints == 0) {
                         when (roundScore.scoreType) {
                             ScoreType.NAT -> "NAT"
                             ScoreType.PIT -> "PIT"
                             ScoreType.REGULAR -> "0"
                         }
                     } else {
-                        roundScore.getEastWestPoints().toString()
+                        roundScore.eastWestPoints.toString()
                     },
 
-                    if (roundScore.getNorthSouthBonus() == 0) "" else roundScore.getNorthSouthBonus().toString(),
-                    if (roundScore.getEastWestBonus() == 0) "" else roundScore.getEastWestBonus().toString())
+                    if (roundScore.northSouthBonus == 0) "" else roundScore.northSouthBonus.toString(),
+                    if (roundScore.eastWestBonus == 0) "" else roundScore.eastWestBonus.toString())
                 }
         )
     }

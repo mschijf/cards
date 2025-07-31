@@ -99,15 +99,6 @@
     text-align: center;
 }
 
-textarea.info-lines {
-    font-family: courier new, monospace;
-    font-size: 12px;
-    text-align: left;
-    line-height: 1;
-}
-
-
-
 /* ----------------------------------------------------------------------- */
 
 .card-size-normal {
@@ -235,6 +226,7 @@ table {
 
 th {
     text-align: center;
+    color: black;
     padding: 10px;
     font-family: courier, monospace;
     border-bottom: 1px dotted #ccc;
@@ -242,15 +234,26 @@ th {
 
 td {
     font-family: Chalkduster, fantasy;
+    color: blue;
     text-align: center;
     padding: 10px;
     border-bottom: 1px dotted #ccc;
 }
 
 th:first-child, td:first-child {
-    text-align: left;
+    text-align: right;
+    color: black;
     font-family: courier, monospace;
+    padding-right: 20px;
     border-right: 1px dotted #ffaa9f;
+}
+th:last-child, td:last-child {
+    padding-right: 30px;
+}
+th.mid-col, td.mid-col {
+    border-left: 1px dotted #ffaa9f;
+    border-right: 1px dotted #ffaa9f;
+    padding:5px
 }
 
 .info-line {

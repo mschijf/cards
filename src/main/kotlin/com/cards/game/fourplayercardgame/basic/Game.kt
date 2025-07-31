@@ -48,7 +48,7 @@ abstract class Game() {
 
     //deal cards
     private fun dealCards() {
-        val cardDeck = CARDDECK.baseDeckCardsSevenAndHigher//.shuffled()
+        val cardDeck = CARDDECK.baseDeckCardsSevenAndHigher.shuffled()
         val cardPiles = cardDeck.chunked(cardDeck.size/ playerList.size)
         playerList.forEachIndexed { idx, player -> player.setCardsInHand(cardPiles[idx])}
     }

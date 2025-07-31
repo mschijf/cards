@@ -372,13 +372,6 @@ function resetTableCardAnimation(to, from) {
 //-----------------------------------------------------------------------------------------
 
 function handleLog(logLines) {
-    if (document.getElementById("log") !== null) {
-        document.getElementById("log").value = logLines
-        scrollLogToBottom()
-    }
+    //todo: do something with log lines?
 }
 
-function scrollLogToBottom() {
-    let textarea = document.getElementById("log")
-    textarea.scrollTop = textarea.scrollHeight
-}
