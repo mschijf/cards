@@ -9,7 +9,7 @@ import com.cards.controller.klaverjassen.model.ScoreModelKlaverjassen
 import com.cards.controller.basic.model.TableModel
 import com.cards.controller.basic.model.TrickCompletedModel
 import com.cards.controller.klaverjassen.model.TrumpChoiceModel
-import com.cards.game.BASIC
+import com.cards.tools.RANDOMIZER
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
@@ -58,7 +58,7 @@ class ServiceKlaverjassen {
                 playerNorth,
                 playerEast,
                 gameJsonString,
-                BASIC.getLastSeedUsed()
+                RANDOMIZER.getLastSeedUsed()
             ),
             trumpChoice = TrumpChoiceModel(
                 (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getTrumpColor(),

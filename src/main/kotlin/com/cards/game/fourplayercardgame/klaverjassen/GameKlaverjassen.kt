@@ -6,6 +6,7 @@ import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Round
 import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.klaverjassen.ai.GeniusPlayerKlaverjassen
+import com.cards.tools.RANDOMIZER
 
 class GameKlaverjassen(): Game()  {
 
@@ -18,11 +19,29 @@ class GameKlaverjassen(): Game()  {
     }
 
     override fun createNextRound(previousRound: Round): Round {
+        printLastRoundPlayed()
         return RoundKlaverjassen(previousRound.getLeadPlayer().nextPlayer())
     }
 
     override fun isFinished(): Boolean {
         return getCompleteRoundsPlayed().size == KLAVERJASSEN.NUMBER_OF_ROUNDS_PER_GAME
+    }
+
+    private fun printLastRoundPlayed() {
+        print("[Seed: ${RANDOMIZER.getLastSeedUsed()}]  Round: ")
+        getCompleteRoundsPlayed().last().getCompletedTrickList().forEach { trick->
+            print("[")
+            getPlayerList().map { pl -> trick.getCardsPlayed().first{ cp -> cp.player == pl }}.forEach { cardPlayed ->
+                    if (cardPlayed.player == trick.getLeadPlayer())
+                        print("(")
+                    print("${cardPlayed.card}")
+                    if (cardPlayed.player == trick.getLeadPlayer())
+                        print(")")
+                    if (getPlayerList().last() != cardPlayed.player)
+                        print(",")
+                }
+            print("]  ")
+        }
     }
 
     fun setTrumpColorAndContractOwner(trumpColor: CardColor, contractOwner: Player) {

@@ -225,20 +225,27 @@ table {
 }
 
 th {
+    font-family: courier, monospace;
+    font-size: 14px;
     text-align: center;
     color: black;
     padding: 10px;
-    font-family: courier, monospace;
     border-bottom: 1px dotted #ccc;
 }
 
 td {
     font-family: Chalkduster, fantasy;
-    color: blue;
+    font-size: 14px;
     text-align: center;
+    color: blue;
     padding: 10px;
     border-bottom: 1px dotted #ccc;
 }
+td.total {
+    font-weight: bold;
+    color: black;
+}
+
 
 th:first-child, td:first-child {
     text-align: right;
@@ -258,6 +265,7 @@ th.mid-col, td.mid-col {
 
 .info-line {
     font-family: Chalkduster, fantasy;
+    font-size: 14px;
     color: red;
     text-align: center;
     padding: 10px;

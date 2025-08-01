@@ -8,7 +8,7 @@ import com.cards.controller.hearts.model.RoundScoreHearts
 import com.cards.controller.hearts.model.ScoreModelHearts
 import com.cards.controller.basic.model.TableModel
 import com.cards.controller.basic.model.TrickCompletedModel
-import com.cards.game.BASIC
+import com.cards.tools.RANDOMIZER
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
@@ -57,7 +57,7 @@ class ServiceHearts {
                 playerNorth,
                 playerEast,
                 gameJsonString,
-                BASIC.getLastSeedUsed()
+                RANDOMIZER.getLastSeedUsed()
             ),
             goingUp,
         )

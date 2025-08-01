@@ -1,9 +1,8 @@
 package com.cards.game.fourplayercardgame.basic
 
-import com.cards.game.BASIC
+import com.cards.tools.RANDOMIZER
 import com.cards.game.card.CARDDECK
 import com.cards.game.card.Card
-import kotlin.random.Random
 
 abstract class Game() {
 
@@ -50,7 +49,7 @@ abstract class Game() {
 
     //deal cards
     private fun dealCards() {
-        val cardDeck = CARDDECK.baseDeckCardsSevenAndHigher.shuffled(BASIC.getShuffleRandomizer())
+        val cardDeck = CARDDECK.baseDeckCardsSevenAndHigher.shuffled(RANDOMIZER.getShuffleRandomizer())
         val cardPiles = cardDeck.chunked(cardDeck.size/ playerList.size)
         playerList.forEachIndexed { idx, player -> player.setCardsInHand(cardPiles[idx])}
     }

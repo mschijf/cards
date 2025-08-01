@@ -18,9 +18,9 @@ class GeniusPlayerKlaverjassen(
     fun getOtherPlayers() = game.getPlayerList() - this
 
     override fun chooseCard(): Card {
-        chooseCardAnalyzer.determinePlayerCanHaveCards().forEach {
-            println("${it.key.tablePosition}: ${it.value}")
-        }
+//        chooseCardAnalyzer.determinePlayerCanHaveCards().forEach {
+//            println("${it.key.tablePosition}: ${it.value}")
+//        }
         return super.chooseCard()
     }
 
