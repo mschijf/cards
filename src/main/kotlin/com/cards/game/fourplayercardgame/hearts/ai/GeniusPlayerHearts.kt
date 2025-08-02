@@ -6,8 +6,8 @@ import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.hearts.GameHearts
-import com.cards.game.fourplayercardgame.hearts.HEARTS
 import com.cards.game.fourplayercardgame.hearts.PlayerHearts
+import com.cards.game.fourplayercardgame.hearts.cardValue
 
 class GeniusPlayerHearts(
     tablePosition: Table,
@@ -94,7 +94,7 @@ class GeniusPlayerHearts(
                 .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), -200)
         } else {
             if (trick.isLastPlayerToMove() ) {
-                val trickValue = trick.getCardsPlayed().sumOf { cardPlayed -> HEARTS.cardValue(cardPlayed.card) }
+                val trickValue = trick.getCardsPlayed().sumOf { cardPlayed -> cardPlayed.card.cardValue() }
                 if (trickValue == 0 && !analyzer.hasAllCardsOfColor(leadColor) && analyzer.canGetRidOfLeadPosition(leadColor)) {
                     // save to throw the highest card
                     analyzer

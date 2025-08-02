@@ -11,7 +11,7 @@ class RoundHearts(leadPlayer: Player) : Round(leadPlayer) {
     }
 
     override fun isComplete(): Boolean {
-        return completedTricksPlayed() >= HEARTS.NUMBER_OF_TRICKS_PER_ROUND
+        return completedTricksPlayed() >= NUMBER_OF_TRICKS_PER_ROUND
     }
 
     //score

@@ -4,9 +4,6 @@ import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Round
 import com.cards.game.fourplayercardgame.basic.Table
-import com.cards.game.fourplayercardgame.hearts.HEARTS.ALL_POINTS_FOR_PIT
-import com.cards.game.fourplayercardgame.hearts.HEARTS.VALUE_TO_FINISH
-import com.cards.game.fourplayercardgame.hearts.HEARTS.VALUE_TO_GO_DOWN
 import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
 import kotlin.math.max
 
@@ -21,7 +18,7 @@ class GameHearts(): Game() {
 
     //round
     override fun createFirstRound(): Round {
-        return RoundHearts(getCardPlayer(HEARTS.VERY_FIRST_START_PLAYER))
+        return RoundHearts(getCardPlayer(VERY_FIRST_START_PLAYER))
     }
 
     override fun createNextRound(previousRound: Round): Round {

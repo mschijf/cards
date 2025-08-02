@@ -18,7 +18,7 @@ class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
         } else {
             getCardsPlayed()
                 .filter { playerPlayedCard -> isLeadColor(playerPlayedCard.card.color) }
-                .maxByOrNull { playerPlayedCard -> HEARTS.toRankNumber(playerPlayedCard.card) }
+                .maxByOrNull { playerPlayedCard -> playerPlayedCard.card.toRankNumber() }
                 ?.player
         }
     }
@@ -26,7 +26,7 @@ class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
     override fun getWinningCard(): Card? {
         return getCardsPlayed()
             .filter { playerPlayedCard -> isLeadColor(playerPlayedCard.card.color) }
-            .maxByOrNull { playerPlayedCard -> HEARTS.toRankNumber(playerPlayedCard.card) }
+            .maxByOrNull { playerPlayedCard -> playerPlayedCard.card.toRankNumber() }
             ?.card
     }
 
@@ -35,7 +35,7 @@ class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
         return if (!isComplete()) {
             ScoreHearts.ZERO
         } else {
-            ScoreHearts.scoreForPlayer(getWinner()!!, getCardsPlayed().sumOf { playerPlayedCard -> HEARTS.cardValue(playerPlayedCard.card) })
+            ScoreHearts.scoreForPlayer(getWinner()!!, getCardsPlayed().sumOf { playerPlayedCard -> playerPlayedCard.card.cardValue() })
         }
     }
 

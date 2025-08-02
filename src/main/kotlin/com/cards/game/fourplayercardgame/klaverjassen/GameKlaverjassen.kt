@@ -15,7 +15,7 @@ class GameKlaverjassen(): Game()  {
     }
 
     override fun createFirstRound(): Round {
-        return RoundKlaverjassen(getCardPlayer(KLAVERJASSEN.VERY_FIRST_START_PLAYER))
+        return RoundKlaverjassen(getCardPlayer(VERY_FIRST_START_PLAYER))
     }
 
     override fun createNextRound(previousRound: Round): Round {
@@ -24,7 +24,7 @@ class GameKlaverjassen(): Game()  {
     }
 
     override fun isFinished(): Boolean {
-        return getCompleteRoundsPlayed().size == KLAVERJASSEN.NUMBER_OF_ROUNDS_PER_GAME
+        return getCompleteRoundsPlayed().size == NUMBER_OF_ROUNDS_PER_GAME
     }
 
     private fun printLastRoundPlayed() {

@@ -69,7 +69,7 @@ function closeModalAndRequestTrumpSetting(cardColor, player) {
 function handleTrumpColorSet(trumpColorModel) {
     document.getElementById("trumpCard").src = cardColorAndRankToImageURL(trumpColorModel.trumpColor, "ONE")
     clearContract()
-    document.getElementById("hasContract" + playerModelToElementPostFix(trumpColorModel.contractOwner)).innerHTML = "plays " + cardColorToSymbol(trumpColorModel.trumpColor)
+    document.getElementById("hasContract" + playerModelToElementPostFix(trumpColorModel.contractOwner)).innerHTML = "Plays " + cardColorToSymbol(trumpColorModel.trumpColor)
 }
 
 function clearContract() {

@@ -20,8 +20,8 @@ data class ScoreKlaverjassen(val eastWestPoints: Int, val northSouthPoints: Int,
         return ScoreKlaverjassen(
             eastWestPoints,
             northSouthPoints,
-            if (eastWestPoints == 0) eastWestBonus else eastWestBonus + KLAVERJASSEN.PIT_BONUS ,
-            if (northSouthPoints == 0) northSouthBonus else northSouthBonus + KLAVERJASSEN.PIT_BONUS,
+            if (eastWestPoints == 0) eastWestBonus else eastWestBonus + PIT_BONUS ,
+            if (northSouthPoints == 0) northSouthBonus else northSouthBonus + PIT_BONUS,
             scoreType = ScoreType.PIT
         )
     }

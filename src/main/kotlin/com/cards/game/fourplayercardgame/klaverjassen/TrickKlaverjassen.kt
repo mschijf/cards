@@ -11,16 +11,16 @@ class TrickKlaverjassen(
     private fun highestTrumpCard() : Card? {
         return getCardsPlayed()
             .filter{ playerPlayedCard -> playerPlayedCard.card.color == round.getTrumpColor() }
-            .maxByOrNull { playerPlayedCard -> KLAVERJASSEN.toRankNumberTrump(playerPlayedCard.card) }
+            .maxByOrNull { playerPlayedCard -> playerPlayedCard.card.toRankNumberTrump() }
             ?.card
     }
 
     private fun legalTrumpCardsToPlay(cardsList: List<Card>):List<Card> {
         val highestTrumpCard = highestTrumpCard()
-        val maxTrumpCardRank = if (highestTrumpCard != null) KLAVERJASSEN.toRankNumberTrump(highestTrumpCard) else Int.MAX_VALUE
+        val maxTrumpCardRank = if (highestTrumpCard != null) highestTrumpCard.toRankNumberTrump() else Int.MAX_VALUE
 
         return cardsList
-            .filter { card -> (card.color == round.getTrumpColor()) && KLAVERJASSEN.toRankNumberTrump(card) > maxTrumpCardRank }
+            .filter { card -> (card.color == round.getTrumpColor()) && card.toRankNumberTrump() > maxTrumpCardRank }
             .ifEmpty { cardsList.filter { card -> card.color == round.getTrumpColor() } }
     }
 
@@ -57,12 +57,12 @@ class TrickKlaverjassen(
         return if (getCardsPlayed().any { crd -> crd.card.color == round.getTrumpColor() }) {
             getCardsPlayed()
                 .filter { playerPlayedCard -> playerPlayedCard.card.color == round.getTrumpColor() }
-                .maxByOrNull { playerPlayedCard -> KLAVERJASSEN.toRankNumberTrump(playerPlayedCard.card) }
+                .maxByOrNull { playerPlayedCard -> playerPlayedCard.card.toRankNumberTrump() }
                 ?.card
         } else {
             getCardsPlayed()
                 .filter { playerPlayedCard -> isLeadColor(playerPlayedCard.card.color) }
-                .maxByOrNull { playerPlayedCard -> KLAVERJASSEN.toRankNumberNoTrump(playerPlayedCard.card) }
+                .maxByOrNull { playerPlayedCard -> playerPlayedCard.card.toRankNumberNoTrump() }
                 ?.card
         }
     }
@@ -74,8 +74,8 @@ class TrickKlaverjassen(
         } else {
             ScoreKlaverjassen.scoreForPlayer(
                 getWinner()!!,
-                lastTrickPoints + getCardsPlayed().sumOf { playerPlayedCard -> KLAVERJASSEN.cardValue(playerPlayedCard.card, round.getTrumpColor()) },
-                KLAVERJASSEN.bonusValue(getCardsPlayed().map { it.card }, trumpColor = round.getTrumpColor())
+                lastTrickPoints + getCardsPlayed().sumOf { playerPlayedCard -> playerPlayedCard.card.cardValue(round.getTrumpColor()) },
+                getCardsPlayed().map { it.card }.bonusValue(trumpColor = round.getTrumpColor())
             )
         }
     }

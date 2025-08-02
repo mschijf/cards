@@ -3,7 +3,7 @@ package com.cards.game.fourplayercardgame.hearts.ai
 import com.cards.game.card.CARDDECK
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
-import com.cards.game.fourplayercardgame.hearts.HEARTS
+import com.cards.game.fourplayercardgame.hearts.toRankNumber
 
 class HeartsAnalyzer(
     private val cardsInHand : List<Card>,
@@ -12,8 +12,8 @@ class HeartsAnalyzer(
 
     val metaCardList = cardsInHand.map { card -> MetaCardInfo(card, 0) }
 
-    private fun higher (card1: Card, card2: Card) = HEARTS.toRankNumber(card1) > HEARTS.toRankNumber(card2)
-    private fun lower (card1: Card, card2: Card) = HEARTS.toRankNumber(card1) < HEARTS.toRankNumber(card2)
+    private fun higher (card1: Card, card2: Card) = card1.toRankNumber() > card2.toRankNumber()
+    private fun lower (card1: Card, card2: Card) = card1.toRankNumber() < card2.toRankNumber()
 
     fun getCardAnalysisValue(card: Card): Int? = metaCardList.firstOrNull { metacard -> metacard.card == card }?.value
     
@@ -44,7 +44,7 @@ class HeartsAnalyzer(
 
     fun evaluateByRank(rankStepValue: Int): HeartsAnalyzer {
         metaCardList
-            .forEach { metaCardInfo -> metaCardInfo.value += rankStepValue * HEARTS.toRankNumber(metaCardInfo.card) }
+            .forEach { metaCardInfo -> metaCardInfo.value += rankStepValue * metaCardInfo.card.toRankNumber() }
         return this
     }
     
@@ -52,12 +52,8 @@ class HeartsAnalyzer(
     fun evaluateByRankLowerThanOtherCard(otherCard: Card, baseValue: Int, rankStepValue: Int): HeartsAnalyzer {
         metaCardList
             .filter { metaCardInfo -> metaCardInfo.card.color == otherCard.color }
-            .filter { metaCardInfo ->
-                HEARTS.toRankNumber(metaCardInfo.card) < HEARTS.toRankNumber(
-                    otherCard
-                )
-            }
-            .sortedBy { mc -> HEARTS.toRankNumber(mc.card) }
+            .filter { metaCardInfo -> metaCardInfo.card.toRankNumber() < otherCard.toRankNumber() }
+            .sortedBy { mc -> mc.card.toRankNumber() }
             .forEachIndexed { index, metaCardInfo -> metaCardInfo.value += baseValue + (index+1) * rankStepValue }
         return this
     }
@@ -65,12 +61,8 @@ class HeartsAnalyzer(
     fun evaluateByRankHigherThanOtherCard(otherCard: Card, baseValue: Int, rankStepValue: Int): HeartsAnalyzer {
         metaCardList
             .filter { metaCardInfo -> metaCardInfo.card.color == otherCard.color }
-            .filter { metaCardInfo ->
-                HEARTS.toRankNumber(metaCardInfo.card) > HEARTS.toRankNumber(
-                    otherCard
-                )
-            }
-            .sortedBy { mc -> HEARTS.toRankNumber(mc.card) }
+            .filter { metaCardInfo -> metaCardInfo.card.toRankNumber() > otherCard.toRankNumber() }
+            .sortedBy { mc -> mc.card.toRankNumber() }
             .forEachIndexed { index, metaCardInfo -> metaCardInfo.value += baseValue + (index+1) * rankStepValue }
         return this
     }
@@ -79,7 +71,7 @@ class HeartsAnalyzer(
         metaCardList
             .filter { metaCardInfo -> metaCardInfo.card == card }
             .filter { metaCardInfo ->
-                HEARTS.toRankNumber(metaCardInfo.card) < HEARTS.toRankNumber(otherCard)
+                metaCardInfo.card.toRankNumber() < otherCard.toRankNumber()
             }
             .forEach { metaCardInfo -> metaCardInfo.value += value }
         return this
@@ -90,7 +82,7 @@ class HeartsAnalyzer(
         if (cardsInHand.count { c -> c.color == color } == 1) {
             val single = cardsInHand.first { c -> c.color == color }
             if (cardsStillInPlay.contains(higherThanAvailableCard) ){
-                if (HEARTS.toRankNumber(single) > HEARTS.toRankNumber(higherThanAvailableCard)) {
+                if (single.toRankNumber() > higherThanAvailableCard.toRankNumber()) {
                     metaCardList
                         .filter { metaCardInfo -> metaCardInfo.card.color == color }
                         .forEach { metaCardInfo -> metaCardInfo.value += value }
@@ -106,10 +98,10 @@ class HeartsAnalyzer(
 
             val countHigher = cardsStillInPlay
                 .filter { c -> c.color == color }
-                .count { c -> HEARTS.toRankNumber(c) > HEARTS.toRankNumber(single) }
+                .count { c -> c.toRankNumber() > single.toRankNumber() }
             val countLower = cardsStillInPlay
                 .filter { c -> c.color == color }
-                .count { c -> HEARTS.toRankNumber(c) < HEARTS.toRankNumber(single) }
+                .count { c -> c.toRankNumber() < single.toRankNumber() }
             if (countHigher <= 3 && countLower >= 1) {
                 metaCardList
                     .filter { metaCardInfo -> metaCardInfo.card.color == color }
@@ -175,19 +167,19 @@ class HeartsAnalyzer(
         if (cardsOfColorInHand == 2) {
             //todo: better evaluating
             //todo: check queen of spades, jack of clubs
-            val lowestCardInHand = cardsInHand.filter { it.color == color }.minByOrNull{HEARTS.toRankNumber(it)}!!
+            val lowestCardInHand = cardsInHand.filter { it.color == color }.minByOrNull{it.toRankNumber()}!!
             val cardsInPlayHigherLowest = cardsInHand.filter { it.color == color }.count{ higher(it, lowestCardInHand)}
             val cardsInPlayLowerLowest = cardsInHand.filter { it.color == color }.count{ lower(it, lowestCardInHand)}
 
             metaCardList
                 .filter { it.card.color == color }
-                .sortedByDescending { HEARTS.toRankNumber(it.card) }
+                .sortedByDescending { it.card.toRankNumber() }
                 .forEachIndexed { index, it -> it.value += 20 + (index+1) }
 
             if (cardsInPlayLowerLowest <= 2 && cardsInPlayHigherLowest >= 1) {
                 metaCardList
                     .filter { it.card.color == color }
-                    .minByOrNull { HEARTS.toRankNumber(it.card) }!!
+                    .minByOrNull { it.card.toRankNumber() }!!
                     .value += cardsInPlayHigherLowest * 20
             }
             return this
@@ -197,38 +189,38 @@ class HeartsAnalyzer(
             //todo: better evaluating
             //todo: check queen of spades, jack of clubs
 
-            val lowestCardInHand = cardsInHand.filter { it.color == color }.minByOrNull{HEARTS.toRankNumber(it)}!!
+            val lowestCardInHand = cardsInHand.filter { it.color == color }.minByOrNull{it.toRankNumber()}!!
             val cardsInPlayHigherLowest = cardsInHand.filter { it.color == color }.count{ higher(it, lowestCardInHand)}
             val cardsInPlayLowerLowest = cardsInHand.filter { it.color == color }.count{ lower(it, lowestCardInHand)}
 
             metaCardList
                 .filter { it.card.color == color }
-                .sortedByDescending { HEARTS.toRankNumber(it.card) }
+                .sortedByDescending { it.card.toRankNumber() }
                 .forEachIndexed { index, it -> it.value += 30 + (index+1) }
 
             if (cardsInPlayLowerLowest <= 2 && cardsInPlayHigherLowest >= 1) {
                 metaCardList
                     .filter { it.card.color == color }
-                    .minByOrNull { HEARTS.toRankNumber(it.card) }!!
+                    .minByOrNull { it.card.toRankNumber() }!!
                     .value += cardsInPlayHigherLowest * 20
             }
             return this
         }
 
         if (cardsOfColorInHand >= 4) {
-            val lowestCardInHand = cardsInHand.filter { it.color == color }.minByOrNull{HEARTS.toRankNumber(it)}!!
+            val lowestCardInHand = cardsInHand.filter { it.color == color }.minByOrNull{it.toRankNumber()}!!
             val cardsInPlayHigherLowest = cardsInHand.filter { it.color == color }.count{ higher(it, lowestCardInHand)}
             val cardsInPlayLowerLowest = cardsInHand.filter { it.color == color }.count{ lower(it, lowestCardInHand)}
 
             metaCardList
                 .filter { it.card.color == color }
-                .sortedByDescending { HEARTS.toRankNumber(it.card) }
+                .sortedByDescending { it.card.toRankNumber() }
                 .forEachIndexed { index, it -> it.value += 50 + (index+1) }
 
             if (cardsInPlayLowerLowest <= 2 && cardsInPlayHigherLowest >= 1) {
                 metaCardList
                     .filter { it.card.color == color }
-                    .minByOrNull { HEARTS.toRankNumber(it.card) }!!
+                    .minByOrNull { it.card.toRankNumber() }!!
                     .value += cardsInPlayHigherLowest * 20
             }
             return this
@@ -242,13 +234,13 @@ class HeartsAnalyzer(
     private fun higherCardsThen(card: Card): List<Card> {
         return CARDDECK.baseDeckCardsSevenAndHigher
             .filter { crd -> crd.color  ==  card.color }
-            .filter { crd -> HEARTS.toRankNumber(crd) > HEARTS.toRankNumber(card) }
+            .filter { crd -> crd.toRankNumber() > card.toRankNumber() }
     }
 
     private fun isHighestCardOfColor(card: Card): Boolean {
         val nCardsHigherPlayed = (cardsInHand union cardsPlayed)
             .filter { cardPlayed -> cardPlayed.color == card.color }
-            .count { cardPlayed -> HEARTS.toRankNumber(cardPlayed) > HEARTS.toRankNumber(card) }
+            .count { cardPlayed -> cardPlayed.toRankNumber() > card.toRankNumber() }
         val nCardsHigher = higherCardsThen(card).count()
 
         return nCardsHigher == nCardsHigherPlayed
@@ -257,12 +249,12 @@ class HeartsAnalyzer(
     fun hasOnlyLowerCardsThanLeader(winningCard: Card): Boolean {
         return cardsInHand
             .filter{crd -> crd.color == winningCard.color}
-            .all { crd -> HEARTS.toRankNumber(crd) < HEARTS.toRankNumber(winningCard) }
+            .all { crd -> crd.toRankNumber() < winningCard.toRankNumber() }
     }
     fun hasOnlyHigherCardsThanLeader(winningCard: Card): Boolean {
         return cardsInHand
             .filter{crd -> crd.color == winningCard.color}
-            .all { crd -> HEARTS.toRankNumber(crd) > HEARTS.toRankNumber(winningCard) }
+            .all { crd -> crd.toRankNumber() > winningCard.toRankNumber() }
     }
     fun hasAllCardsOfColor(color: CardColor): Boolean {
         return (cardsInHand.count { cp -> cp.color == color } + cardsPlayed.count { cp -> cp.color == color } == 8)
@@ -278,12 +270,12 @@ class HeartsAnalyzer(
         val lowestCardStillInPlay = lowestCardOfColorInCardList(cardsStillInPlay, color)
         if (lowestCardStillInPlay == null || lowestCardInHand == null)
             return false
-        return HEARTS.toRankNumber(lowestCardInHand) < HEARTS.toRankNumber(lowestCardStillInPlay)
+        return lowestCardInHand.toRankNumber() < lowestCardStillInPlay.toRankNumber()
     }
     private fun lowestCardOfColorInCardList(cardList: List<Card>, color: CardColor): Card? {
         return cardList
             .filter { c -> c.color == color}
-            .minByOrNull { c -> HEARTS.toRankNumber(c) }
+            .minByOrNull { c -> c.toRankNumber() }
     }
 
     //------------------------------------------------------------------------------------------------------------------
