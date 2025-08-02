@@ -4,7 +4,7 @@ import com.cards.game.card.CARDDECK
 import com.cards.game.card.Card
 import com.cards.game.card.ofColor
 import com.cards.game.fourplayercardgame.basic.Player
-import com.cards.game.fourplayercardgame.klaverjassen.KLAVERJASSEN.beats
+import com.cards.game.fourplayercardgame.klaverjassen.beats
 import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
 
 class ChooseCardAnalyzer(

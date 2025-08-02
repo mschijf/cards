@@ -2,12 +2,11 @@ package com.cards.game.fourplayercardgame.klaverjassen
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
+import com.cards.game.card.CardRank
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class KLAVERJASSENTest {
-
-
     @Test
     fun test50low() {
         val trick = listOf("7H", "8H", "9H", "10H").map { str -> Card.of(str) }
@@ -85,5 +84,39 @@ class KLAVERJASSENTest {
         assertEquals(100, KLAVERJASSEN.bonusValue(trick, CardColor.HEARTS))
     }
 
-
+    @Test
+    fun beatsTwoNoTrump() {
+        val thisCard = Card(CardColor.CLUBS, CardRank.TEN)
+        val otherCard = Card(CardColor.CLUBS, CardRank.JACK)
+        assertEquals(true, thisCard.beats(otherCard, CardColor.HEARTS))
+        assertEquals(false, otherCard.beats(thisCard, CardColor.HEARTS))
+    }
+    @Test
+    fun beatsTwoBothTrumpJack() {
+        val thisCard = Card(CardColor.CLUBS, CardRank.TEN)
+        val otherCard = Card(CardColor.CLUBS, CardRank.JACK)
+        assertEquals(false, thisCard.beats(otherCard, CardColor.CLUBS))
+        assertEquals(true, otherCard.beats(thisCard, CardColor.CLUBS))
+    }
+    @Test
+    fun beatsTwoBothTrumpNine() {
+        val thisCard = Card(CardColor.CLUBS, CardRank.ACE)
+        val otherCard = Card(CardColor.CLUBS, CardRank.NINE)
+        assertEquals(false, thisCard.beats(otherCard, CardColor.CLUBS))
+        assertEquals(true, otherCard.beats(thisCard, CardColor.CLUBS))
+    }
+    @Test
+    fun trumpBeatsNoTrump() {
+        val thisCard = Card(CardColor.CLUBS, CardRank.SEVEN)
+        val otherCard = Card(CardColor.HEARTS, CardRank.ACE)
+        assertEquals(true, thisCard.beats(otherCard, CardColor.CLUBS))
+        assertEquals(false, otherCard.beats(thisCard, CardColor.CLUBS))
+    }
+    @Test
+    fun firstOfDifferentcolorNoTrumpBeatsOther() {
+        val thisCard = Card(CardColor.CLUBS, CardRank.SEVEN)
+        val otherCard = Card(CardColor.HEARTS, CardRank.ACE)
+        assertEquals(true, thisCard.beats(otherCard, CardColor.DIAMONDS))
+        assertEquals(true, otherCard.beats(thisCard, CardColor.DIAMONDS))
+    }
 }

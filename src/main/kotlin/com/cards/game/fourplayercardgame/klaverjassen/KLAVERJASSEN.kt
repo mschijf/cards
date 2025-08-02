@@ -4,7 +4,22 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.Table
-import java.security.KeyStore
+import com.cards.game.fourplayercardgame.klaverjassen.KLAVERJASSEN.toRankNumberNoTrump
+import com.cards.game.fourplayercardgame.klaverjassen.KLAVERJASSEN.toRankNumberTrump
+
+fun Card.beats(other: Card?, trumpColor: CardColor): Boolean {
+    if (other == null)
+        return true
+    return if (this.color == other.color) {
+        if (this.color == trumpColor) {
+            toRankNumberTrump(this) > toRankNumberTrump(other)
+        } else {
+            toRankNumberNoTrump(this) > toRankNumberNoTrump(other)
+        }
+    } else {
+        (other.color != trumpColor)
+    }
+}
 
 object KLAVERJASSEN {
 
@@ -95,19 +110,5 @@ object KLAVERJASSEN {
             else -> 0
         }
         return bonus + stuk
-    }
-
-    fun Card.beats(other: Card?, trumpColor: CardColor): Boolean {
-        if (other == null)
-            return true
-        return if (this.color == other.color) {
-            if (this.color == trumpColor) {
-                toRankNumberTrump(this) > toRankNumberTrump(other)
-            } else {
-                toRankNumberNoTrump(this) > toRankNumberNoTrump(other)
-            }
-        } else {
-            (other.color != trumpColor)
-        }
     }
 }
