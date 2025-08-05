@@ -18,6 +18,7 @@ import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.PlayerKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.ScoreType
+import com.cards.game.fourplayercardgame.klaverjassen.ai.GeniusPlayerKlaverjassen
 import org.springframework.stereotype.Service
 
 @Service
@@ -46,13 +47,18 @@ class ServiceKlaverjassen {
         val playerEast = makePlayerCardListModel(Table.EAST)
 
         val gameJsonString = "" //Gson().toJson(gm)
-        val nr = gameKlaverjassen.getCurrentRound().hasNotStarted()
+        val newRoundStarted = gameKlaverjassen.getCurrentRound().hasNotStarted()
+
+        if (playerToMove.tablePosition == Table.SOUTH) {
+            (playerToMove as GeniusPlayerKlaverjassen).printAnalyzer()
+        }
+
         return GameStatusModelKlaverjassen(
             generic = GameStatusModel(
                 onTable,
                 playerToMove.tablePosition,
                 leadPlayer.tablePosition,
-                nr,
+                newRoundStarted,
                 playerSouth,
                 playerWest,
                 playerNorth,

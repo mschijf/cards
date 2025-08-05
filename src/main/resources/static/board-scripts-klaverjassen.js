@@ -73,10 +73,10 @@ function handleTrumpColorSet(trumpColorModel) {
 }
 
 function clearContract() {
-    document.getElementById("hasContractWest").innerHTML = ""
-    document.getElementById("hasContractNorth").innerHTML = ""
-    document.getElementById("hasContractEast").innerHTML = ""
-    document.getElementById("hasContractSouth").innerHTML = ""
+    document.getElementById("hasContractWest").innerHTML = "-"
+    document.getElementById("hasContractNorth").innerHTML = "-"
+    document.getElementById("hasContractEast").innerHTML = "-"
+    document.getElementById("hasContractSouth").innerHTML = "-"
 }
 
 //----------------------------------------------------------------------------------------------------------------

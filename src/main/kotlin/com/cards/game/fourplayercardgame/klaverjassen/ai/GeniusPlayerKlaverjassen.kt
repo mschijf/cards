@@ -1,26 +1,77 @@
 package com.cards.game.fourplayercardgame.klaverjassen.ai
 
-import com.cards.game.card.CARDDECK
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
+import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.PlayerKlaverjassen
+import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
+import java.util.Locale
+import java.util.Locale.getDefault
 
 class GeniusPlayerKlaverjassen(
     tablePosition: Table,
     game: GameKlaverjassen) : PlayerKlaverjassen(tablePosition, game) {
 
     private val trumpChoiceAnalyzer = TrumpChoiceAnalyzer(this)
-    private val chooseCardAnalyzer = ChooseCardAnalyzer(this)
 
     fun getCurrentRound() = game.getCurrentRound()
     fun getOtherPlayers() = game.getPlayerList() - this
 
+    fun printAnalyzer() {
+        val chooseCardAnalyzer = ChooseCardAnalyzer.forPlayer(this)
+        println()
+        game.getPlayerList().forEach {
+            val playerCanHaveCards = chooseCardAnalyzer.playerCanHaveCards(it)
+            print(String.format("%-5s ", it.tablePosition.toString().lowercase()))
+            print(String.format("(%2d): ", playerCanHaveCards.size))
+            CardColor.values().forEach { color ->
+                print(String.format("%-7s: %-25s  ", color, playerCanHaveCards.filter{it.color == color}.map { it.rank.rankString }))
+            }
+//            print ("SPADES: ${playerCanHaveCards.filter{it.color == CardColor.SPADES}} , ")
+//            print ("HEARTS: ${playerCanHaveCards.filter{it.color == CardColor.HEARTS}} , ")
+//            print ("CLUBS: ${playerCanHaveCards.filter{it.color == CardColor.CLUBS}} , ")
+//            print ("DIAMONDS: ${playerCanHaveCards.filter{it.color == CardColor.DIAMONDS}} , ")
+            println()
+        }
+    }
+
     override fun chooseCard(): Card {
-//        chooseCardAnalyzer.determinePlayerCanHaveCards().forEach {
-//            println("${it.key.tablePosition}: ${it.value}")
-//        }
+        val chooseCardAnalyzer = ChooseCardAnalyzer.forPlayer(this)
+        val currentRound = (getCurrentRound() as RoundKlaverjassen)
+        val trumpJack = Card(currentRound.getTrumpColor(), CardRank.JACK)
+        val firstTrick = currentRound.completedTricksPlayed() == 0
+        if (firstTrick && this == currentRound.getContractOwner() && this == currentRound.getTrickOnTable().getLeadPlayer()){
+            if (trumpJack in this.getCardsInHand()) {
+                return trumpJack
+            }
+        }
+
+        // ALS IK SLAG LEADER BEN
+        //  REGELS MAKEN PER 1e ronde, 2e ronde, etc.
+        //     wil ik troef trekken?
+        //     en kan ik troef trekken?
+        //     of wil ik troef voor laatste slag bewaren?
+
+        //ALS IK TWEEDE SPELER BEN
+        //  kan follow no-trump color
+        //  kan follow trump color
+        //  cannot follow no-trump color but have trumps
+        //  cannot follow no-trump color and have no trumps
+
+        //ALS IK DERDE SPELER BEN
+        //  kan follow no-trump color
+        //  kan follow trump color
+        //  cannot follow no-trump color but have trumps
+        //  cannot follow no-trump color and have no trumps
+
+        //ALS IK VIERDE SPELER BEN
+        //  kan follow no-trump color
+        //  kan follow trump color
+        //  cannot follow no-trump color but have trumps
+        //  cannot follow no-trump color and have no trumps
+
         return super.chooseCard()
     }
 
@@ -28,22 +79,6 @@ class GeniusPlayerKlaverjassen(
         return cardColorOptions.maxBy { cardColor ->
             trumpChoiceAnalyzer.trumpChoiceValue(cardColor)
         }
-    }
-
-    private fun getCardsPlayed(): List<Card> {
-        val round = game.getCurrentRound()
-        return round
-            .getCompletedTrickList()
-            .flatMap { trick -> trick.getCardsPlayed() }
-            .union(round.getTrickOnTable().getCardsPlayed())
-            .map { cardPlayed -> cardPlayed.card }
-    }
-
-    private fun getCardsStillInPlay(): List<Card> {
-        return CARDDECK
-            .baseDeckCardsSevenAndHigher
-            .minus(getCardsPlayed().toSet())
-            .minus(getCardsInHand().toSet())
     }
 
 //    fun getMetaCardList(): HeartsAnalyzer {
