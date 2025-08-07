@@ -30,4 +30,7 @@ open class PlayerKlaverjassen(
     open fun chooseTrumpColor(cardColorOptions: List<CardColor> = CardColor.values().toList()): CardColor {
         return cardColorOptions[tablePosition.ordinal % cardColorOptions.size]
     }
+
+    fun getPartner() = nextPlayer().nextPlayer() as PlayerKlaverjassen
+    fun isPartner(otherPlayer: Player?) = getPartner() == otherPlayer
 }

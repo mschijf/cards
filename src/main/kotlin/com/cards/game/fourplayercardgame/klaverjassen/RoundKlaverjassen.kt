@@ -14,6 +14,7 @@ class RoundKlaverjassen(leadPlayer: Player) : Round(leadPlayer) {
 
     fun getTrumpColor() = trumpColor
     fun getContractOwner() = contractOwner
+    fun isContractOwner(player: Player) = (contractOwner == player)
 
     fun setTrumpColorAndContractOwner(trumpColor: CardColor, contractOwner: Player) {
         this.trumpColor= trumpColor
