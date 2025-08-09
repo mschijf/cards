@@ -68,9 +68,6 @@ abstract class Game() {
             if (currentRound.isComplete()) {
                 addRound(currentRound)
                 currentRound = createNextRound(currentRound)
-            }
-
-            if (roundCompleted()) {
                 dealCards()
             }
         } else {

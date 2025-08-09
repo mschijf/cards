@@ -1,15 +1,10 @@
 package com.cards.controller.klaverjassen
 
-import com.cards.controller.basic.model.CardInHandModel
-import com.cards.controller.basic.model.CardPlayedModel
-import com.cards.controller.basic.model.GameStatusModel
+import com.cards.controller.basic.model.*
 import com.cards.controller.klaverjassen.model.GameStatusModelKlaverjassen
 import com.cards.controller.klaverjassen.model.RoundScoreKlaverjassen
 import com.cards.controller.klaverjassen.model.ScoreModelKlaverjassen
-import com.cards.controller.basic.model.TableModel
-import com.cards.controller.basic.model.TrickCompletedModel
 import com.cards.controller.klaverjassen.model.TrumpChoiceModel
-import com.cards.tools.RANDOMIZER
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
@@ -19,6 +14,7 @@ import com.cards.game.fourplayercardgame.klaverjassen.PlayerKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.ScoreType
 import com.cards.game.fourplayercardgame.klaverjassen.ai.GeniusPlayerKlaverjassen
+import com.cards.tools.RANDOMIZER
 import org.springframework.stereotype.Service
 
 @Service
@@ -170,5 +166,4 @@ class ServiceKlaverjassen {
         gameKlaverjassen.setTrumpColorAndContractOwner(trumpColor, choosingPlayer)
         return TrumpChoiceModel(trumpColor, choosingPlayer.tablePosition)
     }
-
 }

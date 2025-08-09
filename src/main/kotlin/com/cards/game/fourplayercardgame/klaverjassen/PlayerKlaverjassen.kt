@@ -13,6 +13,9 @@ open class PlayerKlaverjassen(
     tablePosition: Table,
     protected val game: GameKlaverjassen) : Player(tablePosition) {
 
+    fun getCurrentRound() = game.getCurrentRound()
+    fun getOtherPlayers() = game.getPlayerList() - this
+
     override fun nextPlayer(): Player {
         return when(this.tablePosition) {
             SOUTH -> game.getCardPlayer(WEST)

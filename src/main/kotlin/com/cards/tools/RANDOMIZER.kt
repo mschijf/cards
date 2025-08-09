@@ -3,11 +3,20 @@ package com.cards.tools
 import kotlin.random.Random
 
 object RANDOMIZER {
-    private var seedList = mutableListOf<Int>()
-    fun getShuffleRandomizer(): Random {
-//        seedList.add(Random.nextInt(0, Int.MAX_VALUE))
-        seedList.add(858700147)
-        return kotlin.random.Random(seedList.last())
+    private var fixedSeed : Int? = null
+    private var lastSeedUsed = 0
+
+    fun setSeed(seed: Int) {
+        fixedSeed = seed
     }
-    fun getLastSeedUsed() = seedList.last()
+    fun unsetSeed() {
+        fixedSeed = 0
+    }
+
+    fun getShuffleRandomizer(): Random {
+        lastSeedUsed =  if (fixedSeed != null) fixedSeed!! else Random.nextInt(0, Int.MAX_VALUE)
+        return kotlin.random.Random(lastSeedUsed)
+    }
+
+    fun getLastSeedUsed() = lastSeedUsed
 }
