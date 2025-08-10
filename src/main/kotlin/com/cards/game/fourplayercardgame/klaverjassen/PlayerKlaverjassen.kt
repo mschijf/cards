@@ -4,38 +4,15 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Table
-import com.cards.game.fourplayercardgame.basic.Table.EAST
-import com.cards.game.fourplayercardgame.basic.Table.NORTH
-import com.cards.game.fourplayercardgame.basic.Table.SOUTH
-import com.cards.game.fourplayercardgame.basic.Table.WEST
 
 open class PlayerKlaverjassen(
     tablePosition: Table,
-    protected val game: GameKlaverjassen) : Player(tablePosition) {
+    game: GameKlaverjassen) : Player(tablePosition, game) {
 
     fun getCurrentRound() = game.getCurrentRound() as RoundKlaverjassen
-    fun getOtherPlayers() = game.getPlayerList() - this
-
-    override fun nextPlayer(): Player {
-        return when(this.tablePosition) {
-            SOUTH -> game.getCardPlayer(WEST)
-            WEST -> game.getCardPlayer(NORTH)
-            NORTH -> game.getCardPlayer(EAST)
-            EAST -> game.getCardPlayer(SOUTH)
-        }
-    }
-
-    override fun previousPlayer(): Player {
-        return when(this.tablePosition) {
-            SOUTH -> game.getCardPlayer(EAST)
-            WEST -> game.getCardPlayer(SOUTH)
-            NORTH -> game.getCardPlayer(WEST)
-            EAST -> game.getCardPlayer(NORTH)
-        }
-    }
 
     override fun chooseCard(): Card {
-        val legalCards = game.getCurrentRound().getTrickOnTable().getLegalPlayableCards(getCardsInHand())
+        val legalCards = getCurrentRound().getTrickOnTable().getLegalPlayableCards(getCardsInHand())
         return legalCards.first()
     }
 

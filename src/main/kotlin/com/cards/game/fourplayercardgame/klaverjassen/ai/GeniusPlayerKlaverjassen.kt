@@ -90,7 +90,7 @@ class GeniusPlayerKlaverjassen(
         }
 
         val legalCards = if (player == this) {
-            trickSoFar.getLegalPlayableCards(player.getCardsInHand())
+            trickSoFar.getLegalPlayableCards(getCardsInHand())
         } else {
             val possibleCards = (
                     chooseCardAnalyzer.playerCanHaveCards(player) +

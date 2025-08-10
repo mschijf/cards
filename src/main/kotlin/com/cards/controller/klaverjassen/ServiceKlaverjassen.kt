@@ -99,7 +99,7 @@ class ServiceKlaverjassen {
         if (!gameKlaverjassen.isLegalCardToPlay(playerToMove, suggestedCardToPlay))
             return null
 
-        val cardsStillInHand = playerToMove.getCardsInHand().size
+        val cardsStillInHand = playerToMove.getNumberOfCardsInHand()
 
         gameKlaverjassen.playCard(suggestedCardToPlay)
 

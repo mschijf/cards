@@ -95,7 +95,7 @@ class ServiceHearts {
         if (!gameHearts.isLegalCardToPlay(playerToMove, suggestedCardToPlay))
             return null
 
-        val cardsStillInHand = playerToMove.getCardsInHand().size
+        val cardsStillInHand = playerToMove.getNumberOfCardsInHand()
 
         gameHearts.playCard(suggestedCardToPlay)
 

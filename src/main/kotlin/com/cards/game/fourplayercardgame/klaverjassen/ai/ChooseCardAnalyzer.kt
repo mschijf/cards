@@ -84,9 +84,9 @@ class ChooseCardAnalyzer(
 
             //if number of canHave + SureHas == number of cardsInHand
             playerForWhichWeAnalyse.getOtherPlayers().forEach { otherPlayer ->
-                if (playerSureHas[otherPlayer]!!.size == otherPlayer.getCardsInHand().size) {
+                if (playerSureHas[otherPlayer]!!.size == otherPlayer.getNumberOfCardsInHand()) {
                     playerCanHave[otherPlayer]!!.clear()
-                } else if ((playerSureHas[otherPlayer]!! + playerCanHave[otherPlayer]!!).size == otherPlayer.getCardsInHand().size) {
+                } else if ((playerSureHas[otherPlayer]!! + playerCanHave[otherPlayer]!!).size == otherPlayer.getNumberOfCardsInHand()) {
                     playerSureHas[otherPlayer]!! += playerCanHave[otherPlayer]!!
                     playerCanHave[otherPlayer]!!.clear()
                 }
@@ -307,10 +307,6 @@ class ChooseCardAnalyzer(
     private fun addProbablyHasNot(player: Player, card: Card) {
         playerProbablyHas[player]!! -= card
         playerProbablyHasNot[player]!! += card
-    }
-    private fun addProbablyHas(player: Player, cardList: List<Card>) {
-        playerProbablyHas[player]!! += cardList
-        playerProbablyHasNot[player]!! -= cardList
     }
     private fun addProbablyHasNot(player: Player, cardList: List<Card>) {
         playerProbablyHas[player]!! -= cardList

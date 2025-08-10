@@ -4,11 +4,11 @@ import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 
 class TrumpChoiceAnalyzer(
-    private val player: GeniusPlayerKlaverjassen) {
+    private val playerForWhichWeAnalyze: GeniusPlayerKlaverjassen) {
 
     fun trumpChoiceValue(cardColor: CardColor): Int {
         var value = 0
-        val trumpCardRanks = player.getCardsInHand().filter { it.color == cardColor }.map { it.rank }
+        val trumpCardRanks = playerForWhichWeAnalyze.getCardsInHand().filter { it.color == cardColor }.map { it.rank }
         value += if (CardRank.JACK in trumpCardRanks) 80 else 0
         value +=
             if (CardRank.NINE in trumpCardRanks)
@@ -38,7 +38,7 @@ class TrumpChoiceAnalyzer(
         }
 
         (CardColor.values().toSet() - cardColor).forEach { noTrumpColor ->
-            val noTrumpCardRanks = player.getCardsInHand().filter { it.color == noTrumpColor }.map { it.rank }
+            val noTrumpCardRanks = playerForWhichWeAnalyze.getCardsInHand().filter { it.color == noTrumpColor }.map { it.rank }
             value += if (CardRank.ACE in noTrumpCardRanks) 20 else 0
             value += if (CardRank.TEN in noTrumpCardRanks && CardRank.ACE in noTrumpCardRanks) 10 else 0
             value += if (CardRank.TEN in noTrumpCardRanks && noTrumpCardRanks.size == 2) 5 else 0
