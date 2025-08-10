@@ -14,7 +14,6 @@ abstract class Player(
 
     fun getCardsInHand() = cardsInHand.toList()
     fun getNumberOfCardsInHand() = getCardsInHand().size
-    fun hasColorInHand(color: CardColor) = cardsInHand.any { card -> card.color == color }
 
     fun setCardsInHand(cardsFromDealer: List<Card>) {
         cardsInHand = cardsFromDealer.toMutableList()

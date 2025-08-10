@@ -142,4 +142,7 @@ class GeniusPlayerHearts(
     }
 
     //------------------------------------------------------------------------------------------------------------------
+
+    fun hasColorInHand(color: CardColor) = getCardsInHand().any { card -> card.color == color }
+
 }
