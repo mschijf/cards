@@ -50,6 +50,12 @@ data class ScoreKlaverjassen(val eastWestPoints: Int, val northSouthPoints: Int,
     fun getNorthSouthTotal() = northSouthPoints + northSouthBonus
     fun getEastWestTotal() = eastWestPoints + eastWestBonus
 
+    fun getPointsForPLayer(player: Player) = if (player.tablePosition in setOf(Table.WEST, Table.EAST)) eastWestPoints else northSouthPoints
+    fun getBonusForPlayer(player: Player) = if (player.tablePosition in setOf(Table.WEST, Table.EAST)) eastWestBonus else  northSouthBonus
+    fun getTotalForPlayer(player: Player) = getPointsForPLayer(player) + getBonusForPlayer(player)
+
+    fun getDeltaForPlayer(player: Player) = getTotalForPlayer(player) - getTotalForPlayer(player.nextPlayer())
+
     companion object {
         val ZERO = ScoreKlaverjassen(0,0,0,0)
 

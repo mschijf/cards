@@ -36,4 +36,11 @@ abstract class Trick(
         cardsPlayed.add(PlayerPlayedCard(playerToMove, aCard))
         playerToMove = playerToMove.nextPlayer()
     }
+
+    fun removeLastCard() {
+        if (hasNotStarted())
+            throw Exception("Removing a card from a not started trick")
+        cardsPlayed.removeLast()
+        playerToMove = playerToMove.previousPlayer()
+    }
 }

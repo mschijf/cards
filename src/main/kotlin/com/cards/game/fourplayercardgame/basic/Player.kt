@@ -10,6 +10,7 @@ abstract class Player(
 
     abstract fun chooseCard(): Card
     abstract fun nextPlayer(): Player
+    abstract fun previousPlayer(): Player
 
     fun getCardsInHand() = cardsInHand.toList()
     fun hasColorInHand(color: CardColor) = cardsInHand.any { card -> card.color == color }
@@ -24,4 +25,5 @@ abstract class Player(
         }
     }
 
+    override fun toString() = "pl-$tablePosition"
 }

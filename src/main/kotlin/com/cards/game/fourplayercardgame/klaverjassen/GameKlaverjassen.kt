@@ -11,7 +11,13 @@ import com.cards.tools.RANDOMIZER
 class GameKlaverjassen(): Game()  {
 
     override fun initialPlayerList(): List<Player> {
-        return Table.values().map { p -> GeniusPlayerKlaverjassen(p, this) }
+//        return Table.values().map { p -> GeniusPlayerKlaverjassen(p, this) }
+        return listOf(
+            PlayerKlaverjassen(Table.WEST, this),
+            GeniusPlayerKlaverjassen(Table.NORTH, this),
+            PlayerKlaverjassen(Table.EAST, this),
+            GeniusPlayerKlaverjassen(Table.SOUTH, this),
+        )
     }
 
     override fun createFirstRound(): Round {
@@ -19,7 +25,7 @@ class GameKlaverjassen(): Game()  {
     }
 
     override fun createNextRound(previousRound: Round): Round {
-        printLastRoundPlayed()
+//        printLastRoundPlayed()
         return RoundKlaverjassen(previousRound.getLeadPlayer().nextPlayer())
     }
 
@@ -42,6 +48,7 @@ class GameKlaverjassen(): Game()  {
                 }
             print("]  ")
         }
+        println()
     }
 
     fun setTrumpColorAndContractOwner(trumpColor: CardColor, contractOwner: Player) {

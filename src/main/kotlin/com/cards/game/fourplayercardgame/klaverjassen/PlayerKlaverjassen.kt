@@ -13,7 +13,7 @@ open class PlayerKlaverjassen(
     tablePosition: Table,
     protected val game: GameKlaverjassen) : Player(tablePosition) {
 
-    fun getCurrentRound() = game.getCurrentRound()
+    fun getCurrentRound() = game.getCurrentRound() as RoundKlaverjassen
     fun getOtherPlayers() = game.getPlayerList() - this
 
     override fun nextPlayer(): Player {
@@ -22,6 +22,15 @@ open class PlayerKlaverjassen(
             WEST -> game.getCardPlayer(NORTH)
             NORTH -> game.getCardPlayer(EAST)
             EAST -> game.getCardPlayer(SOUTH)
+        }
+    }
+
+    override fun previousPlayer(): Player {
+        return when(this.tablePosition) {
+            SOUTH -> game.getCardPlayer(EAST)
+            WEST -> game.getCardPlayer(SOUTH)
+            NORTH -> game.getCardPlayer(WEST)
+            EAST -> game.getCardPlayer(NORTH)
         }
     }
 

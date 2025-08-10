@@ -21,6 +21,15 @@ open class PlayerHearts (
         }
     }
 
+    override fun previousPlayer(): Player {
+        return when(this.tablePosition) {
+            SOUTH -> game.getCardPlayer(EAST)
+            WEST -> game.getCardPlayer(SOUTH)
+            NORTH -> game.getCardPlayer(WEST)
+            EAST -> game.getCardPlayer(NORTH)
+        }
+    }
+
     override fun chooseCard(): Card {
         val legalCards = game.getCurrentRound().getTrickOnTable().getLegalPlayableCards(getCardsInHand())
         return legalCards.first()

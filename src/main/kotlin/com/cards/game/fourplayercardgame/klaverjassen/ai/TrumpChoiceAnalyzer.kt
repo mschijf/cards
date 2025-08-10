@@ -1,6 +1,5 @@
 package com.cards.game.fourplayercardgame.klaverjassen.ai
 
-import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 
@@ -44,7 +43,6 @@ class TrumpChoiceAnalyzer(
             value += if (CardRank.TEN in noTrumpCardRanks && CardRank.ACE in noTrumpCardRanks) 10 else 0
             value += if (CardRank.TEN in noTrumpCardRanks && noTrumpCardRanks.size == 2) 5 else 0
         }
-//        println("$tablePosition: $cardColor --> $value ")
         return value
     }
 }

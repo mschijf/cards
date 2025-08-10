@@ -3,24 +3,22 @@ package com.cards.game.fourplayercardgame.klaverjassen.ai
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
+import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Table
 import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.PlayerKlaverjassen
-import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
-import java.util.Locale
-import java.util.Locale.getDefault
+import com.cards.game.fourplayercardgame.klaverjassen.TrickKlaverjassen
 
 class GeniusPlayerKlaverjassen(
     tablePosition: Table,
-    game: GameKlaverjassen) : PlayerKlaverjassen(tablePosition, game) {
+    game: GameKlaverjassen
+) : PlayerKlaverjassen(tablePosition, game) {
 
-    private val trumpChoiceAnalyzer = TrumpChoiceAnalyzer(this)
-
-    fun getCurrentRound() = game.getCurrentRound()
-    fun getOtherPlayers() = game.getPlayerList() - this
+    private val chooseCardAnalyzer = ChooseCardAnalyzer(this)
 
     fun printAnalyzer() {
-        val chooseCardAnalyzer = ChooseCardAnalyzer.forPlayer(this)
+        chooseCardAnalyzer.refreshAnalysis()
+
         println()
         game.getPlayerList().forEach {
             val playerCanHaveCards = chooseCardAnalyzer.playerCanHaveCards(it)
@@ -29,23 +27,24 @@ class GeniusPlayerKlaverjassen(
             CardColor.values().forEach { color ->
                 print(String.format("%-7s: %-25s  ", color, playerCanHaveCards.filter{it.color == color}.map { it.rank.rankString }))
             }
-//            print ("SPADES: ${playerCanHaveCards.filter{it.color == CardColor.SPADES}} , ")
-//            print ("HEARTS: ${playerCanHaveCards.filter{it.color == CardColor.HEARTS}} , ")
-//            print ("CLUBS: ${playerCanHaveCards.filter{it.color == CardColor.CLUBS}} , ")
-//            print ("DIAMONDS: ${playerCanHaveCards.filter{it.color == CardColor.DIAMONDS}} , ")
             println()
         }
     }
 
     override fun chooseCard(): Card {
-        val chooseCardAnalyzer = ChooseCardAnalyzer.forPlayer(this)
-        val currentRound = (getCurrentRound() as RoundKlaverjassen)
-        val trumpJack = Card(currentRound.getTrumpColor(), CardRank.JACK)
-        val firstTrick = currentRound.completedTricksPlayed() == 0
-        if (firstTrick && this == currentRound.getContractOwner() && this == currentRound.getTrickOnTable().getLeadPlayer()){
-            if (trumpJack in this.getCardsInHand()) {
-                return trumpJack
-            }
+        val legalCards = game.getCurrentRound().getTrickOnTable().getLegalPlayableCards(getCardsInHand())
+        if (legalCards.size == 1)
+            return legalCards.first()
+
+        chooseCardAnalyzer.refreshAnalysis()
+
+        if (firstTrick() && isContractOwner() && isLeadPlayer() && hasTrumpJack()) {
+            return trumpJack()
+        }
+
+        if (!firstPlayer() && canFollow()) {
+            val (card, _) = tryPlay(getCurrentRound().getTrickOnTable() as TrickKlaverjassen, this, true)
+            return card?:throw Exception("Null value calculated by tryPlay")
         }
 
         // ALS IK SLAG LEADER BEN
@@ -76,114 +75,76 @@ class GeniusPlayerKlaverjassen(
     }
 
     override fun chooseTrumpColor(cardColorOptions: List<CardColor>): CardColor {
+        val trumpChoiceAnalyzer = TrumpChoiceAnalyzer(this)
+
         return cardColorOptions.maxBy { cardColor ->
             trumpChoiceAnalyzer.trumpChoiceValue(cardColor)
         }
     }
 
-//    fun getMetaCardList(): HeartsAnalyzer {
-//        val trick = game.getCurrentRound().getTrickOnTable()
-//        val leadColor = trick.getLeadColor()
-//
-//        if ( trick.getPlayerToMove() != this )
-//            return zeroValued()
-//
-//        if (trick.isLeadPLayer(this))
-//            return evaluateLeadPLayer()
-//
-//        if (hasColorInHand(leadColor!!))
-//            return evaluateFollowerAndCanFollowLeadColor()
-//
-//        return evaluateFollowerButCannotFollowLeadColor()
-//    }
-//
-//    private fun zeroValued(): HeartsAnalyzer {
-//        return HeartsAnalyzer(getCardsInHand())
-//    }
-//
-//    private fun evaluateLeadPLayer(): HeartsAnalyzer {
-//        val analyzer = HeartsAnalyzer(getCardsInHand(), getCardsPlayed(), getCardsStillInPlay())
-//
-//        analyzer
-//            .evaluateLeadPlayerByColor(CardColor.HEARTS)
-//            .evaluateLeadPlayerByColor(CardColor.DIAMONDS)
-//            .evaluateLeadPlayerByColor(CardColor.SPADES)
-//            .evaluateLeadPlayerByColor(CardColor.CLUBS)
-//        return analyzer
-//    }
-//
-//    private fun evaluateFollowerAndCanFollowLeadColor(): HeartsAnalyzer {
-//        val trick = game.getCurrentRound().getTrickOnTable()
-//        val leadColor = trick.getLeadColor() ?: throw Exception("Trick on table does not have a lead color")
-//        val winningCard = trick.getWinningCard()!!
-//        val legalCards = trick.getLegalPlayableCards(getCardsInHand())
-//        val analyzer = HeartsAnalyzer(legalCards, getCardsPlayed(), getCardsStillInPlay())
-//        if (analyzer.hasOnlyLowerCardsThanLeader(winningCard)) {
-//            //throw highest card, especially QS or JC
-//            analyzer
-//                .evaluateByRank(1)
-//                .evaluateSpecificCard(Card(CardColor.SPADES, CardRank.QUEEN), 200)
-//                .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), 200)
-//        } else if (analyzer.hasOnlyHigherCardsThanLeader(winningCard)) {
-//            if (trick.isLastPlayerToMove() ) { //or 100% sure that players after you will not beat you
-//                //throw highest
-//                analyzer.evaluateByRank(1)
-//            } else {
-//                //throw lowest
-//                analyzer.evaluateByRank(-1)
-//            }
-//            //do not throw QS or JC, unless you're sure that player after you must have only higher
-//            analyzer
-//                .evaluateSpecificCard(Card(CardColor.SPADES, CardRank.QUEEN), -200)
-//                .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), -200)
-//        } else {
-//            if (trick.isLastPlayerToMove() ) {
-//                val trickValue = trick.getCardsPlayed().sumOf { cardPlayed -> HEARTS.cardValue(cardPlayed.card) }
-//                if (trickValue == 0 && !analyzer.hasAllCardsOfColor(leadColor) && analyzer.canGetRidOfLeadPosition(leadColor)) {
-//                    // save to throw the highest card
-//                    analyzer
-//                        .evaluateByRankHigherThanOtherCard(winningCard, 0, 1)
-//                        .evaluateSpecificCard(Card(CardColor.SPADES, CardRank.QUEEN), -200)
-//                        .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), -200)
-//                } else {
-//                    //throw the highest card that is lower
-//                    analyzer
-//                        .evaluateByRankLowerThanOtherCard(winningCard, 0, 1)
-//                        .evaluateSpecificCardLowerThanOtherCard(Card(CardColor.SPADES, CardRank.QUEEN), 200, winningCard)
-//                        .evaluateSpecificCardLowerThanOtherCard(Card(CardColor.CLUBS, CardRank.JACK), 200, winningCard)
-//                }
-//            } else {
-//                //throw the highest card that is lower
-//                analyzer
-//                    .evaluateByRankLowerThanOtherCard(winningCard, 0, 1)
-//                    .evaluateSpecificCardLowerThanOtherCard(Card(CardColor.SPADES, CardRank.QUEEN), 200, winningCard)
-//                    .evaluateSpecificCardLowerThanOtherCard(Card(CardColor.CLUBS, CardRank.JACK), 200, winningCard)
-//            }
-//            //todo: laagste of een-na-laagste kaart, en ruiten en nog voldoende ruiten in omloop en nog niet eerder gespeeld dan hoge kaart opgooien
-//            //todo: kaarten die nooit een slag kunnen halen lager waarderen - bijv. 7,8,9 in hand, dan zijn die weinig waard (vooal bij harten)
-//        }
-//        return analyzer
-//    }
-//
-//    private fun evaluateFollowerButCannotFollowLeadColor(): HeartsAnalyzer {
-//        val trick = game.getCurrentRound().getTrickOnTable()
-//        val legalCards = trick.getLegalPlayableCards(getCardsInHand())
-//        val analyzer = HeartsAnalyzer(legalCards, getCardsPlayed(), getCardsStillInPlay())
-//        analyzer
-//            .evaluateByRank(rankStepValue = 1)
-//            .evaluateHighestCardsInColor(50)
-//            .evaluateSingleCardOfColor(100, CardColor.DIAMONDS)
-//            .evaluateSingleCardOfColor(200, CardColor.HEARTS)
-//            .evaluateSingleCardOfColor(200, Card(CardColor.SPADES, CardRank.QUEEN))
-//            .evaluateSingleCardOfColor(100, CardColor.SPADES)
-//            .evaluateSingleCardOfColor(200, Card(CardColor.CLUBS, CardRank.JACK))
-//            .evaluateSingleCardOfColor(100, CardColor.CLUBS)
-//            .evaluateFreeCards(-300)
-//            .evaluateSpecificColor(CardColor.HEARTS, 30)
-//            .evaluateSpecificCard(Card(CardColor.SPADES, CardRank.QUEEN), 100)
-//            .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), 100)
-//        return analyzer
-//    }
+    //------------------------------------------------------------------------------------------------------------------
+
+    private fun tryPlay(trickSoFar: TrickKlaverjassen, player: Player, maxNode: Boolean): CardPlayedValue {
+        if (trickSoFar.isComplete()) {
+            return CardPlayedValue(null, trickSoFar.getScore().getDeltaForPlayer(this))
+        }
+
+        val legalCards = if (player == this) {
+            trickSoFar.getLegalPlayableCards(player.getCardsInHand())
+        } else {
+            val possibleCards = (
+                    chooseCardAnalyzer.playerCanHaveCards(player) +
+                    chooseCardAnalyzer.playerSureHasCards(player) -
+                    trickSoFar.getCardsPlayed().map { it.card }
+                    ).toList()
+            val legalPossibilities = trickSoFar.getLegalPlayableCards(possibleCards)
+            assert (legalPossibilities.isNotEmpty())
+            legalPossibilities
+        }
+
+        var best = CardPlayedValue(null, if (maxNode) Int.MIN_VALUE else Int.MAX_VALUE)
+        legalCards.forEach { card ->
+            trickSoFar.addCard(card)
+            val v = tryPlay(trickSoFar, player.nextPlayer(), !maxNode)
+            if (maxNode && v.isBetter(best)) {
+                best = CardPlayedValue(card, v.value)
+            } else if (!maxNode && v.isWorse(best)) {
+                best = CardPlayedValue(card, v.value)
+            }
+            trickSoFar.removeLastCard()
+        }
+        return best
+    }
 
     //------------------------------------------------------------------------------------------------------------------
+
+    private fun firstPlayer() = getCurrentRound().getTrickOnTable().hasNotStarted()
+    private fun secondPlayer() = getCurrentRound().getTrickOnTable().getCardsPlayed().size == 1
+    private fun thirdPlayer() = getCurrentRound().getTrickOnTable().getCardsPlayed().size == 2
+    private fun lastPlayer() = getCurrentRound().getTrickOnTable().getCardsPlayed().size == 3
+
+    private fun canFollow() = getCardsInHand().any{getCurrentRound().getTrickOnTable().isLeadColor(it.color)}
+    private fun hasTroef() = hasColor(trump())
+    private fun mustTroeven() = !canFollow() && hasTroef()
+
+    private fun hasColor(cardColor: CardColor) = getCardsInHand().any{it.color == cardColor}
+    private fun hasCard(card: Card) = card in getCardsInHand()
+
+    private fun firstTrick() = getCurrentRound().completedTricksPlayed() == 0
+
+    private fun isLeadPlayer() = getCurrentRound().getTrickOnTable().isLeadPLayer(this)
+    private fun isContractOwner() = getCurrentRound().isContractOwner(this)
+    private fun isContractOwnersPartner() = getCurrentRound().isContractOwner(this.getPartner())
+
+    private fun trump() = getCurrentRound().getTrumpColor()
+
+    private fun hasTrumpCard(rank: CardRank) = hasCard(Card(trump(), rank))
+    private fun hasTrumpJack() = hasCard(trumpJack())
+    private fun trumpJack() = Card(trump(), CardRank.JACK)
+    private fun trumpNine() = Card(trump(), CardRank.NINE)
+}
+
+data class CardPlayedValue(val card: Card?, val value: Int) {
+    fun isBetter(other: CardPlayedValue): Boolean = this.value > other.value
+    fun isWorse(other: CardPlayedValue): Boolean = this.value < other.value
 }
