@@ -1,25 +1,19 @@
 package com.cards.game.fourplayercardgame.hearts
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.basic.Player
+import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.basic.Trick
 
-class TrickHearts(leadPlayer: Player): Trick(leadPlayer) {
+class TrickHearts(leadPosition: TablePosition): Trick(leadPosition) {
 
-    override fun getLegalPlayableCards(cardsList: List<Card>): List<Card> {
-        return cardsList
-            .filter{ card -> isLeadColor(card.color)}
-            .ifEmpty { cardsList }
-    }
-
-    override fun getWinner(): Player? {
+    override fun getWinner(): TablePosition? {
         return if (!isComplete()) {
             null
         } else {
             getCardsPlayed()
                 .filter { playerPlayedCard -> isLeadColor(playerPlayedCard.card.color) }
                 .maxByOrNull { playerPlayedCard -> playerPlayedCard.card.toRankNumber() }
-                ?.player
+                ?.tablePosition
         }
     }
 

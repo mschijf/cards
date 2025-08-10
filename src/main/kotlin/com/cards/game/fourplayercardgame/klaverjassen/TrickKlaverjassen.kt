@@ -1,55 +1,23 @@
 package com.cards.game.fourplayercardgame.klaverjassen
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.basic.Player
+import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.basic.Trick
 
+//todo: heb ik round nodig? Kan het ook anders?
+//todo: round ook op basic nivo meegeven?
+
 class TrickKlaverjassen(
-    leadPlayer: Player,
-    private val round: RoundKlaverjassen): Trick(leadPlayer) {
-
-    private fun highestTrumpCard() : Card? {
-        return getCardsPlayed()
-            .filter{ playerPlayedCard -> playerPlayedCard.card.color == round.getTrumpColor() }
-            .maxByOrNull { playerPlayedCard -> playerPlayedCard.card.toRankNumberTrump() }
-            ?.card
-    }
-
-    private fun legalTrumpCardsToPlay(cardsList: List<Card>):List<Card> {
-        val highestTrumpCard = highestTrumpCard()
-        val maxTrumpCardRank = if (highestTrumpCard != null) highestTrumpCard.toRankNumberTrump() else Int.MAX_VALUE
-
-        return cardsList
-            .filter { card -> (card.color == round.getTrumpColor()) && card.toRankNumberTrump() > maxTrumpCardRank }
-            .ifEmpty { cardsList.filter { card -> card.color == round.getTrumpColor() } }
-    }
+    leadPosition: TablePosition,
+    private val round: RoundKlaverjassen): Trick(leadPosition) {
 
 
-    override fun getLegalPlayableCards(cardsList: List<Card>): List<Card> {
-        if (hasNotStarted())
-            return cardsList
-
-        if (cardsList.any {card -> isLeadColor(card.color)}) {
-            if (isLeadColor(round.getTrumpColor())) {
-                return legalTrumpCardsToPlay(cardsList).ifEmpty { cardsList }
-            } else {
-                return cardsList.filter { card -> isLeadColor(card.color) }.ifEmpty { cardsList }
-            }
-        }
-
-        if (cardsList.any {card -> card.color == round.getTrumpColor()}) {
-            return legalTrumpCardsToPlay(cardsList)
-        }
-
-        return cardsList
-    }
-
-    override fun getWinner(): Player? {
+    override fun getWinner(): TablePosition? {
         val winningCard = getWinningCard()
         return if (!isComplete()) {
             null
         } else {
-            getCardsPlayed().firstOrNull{ playerPlayedCard -> playerPlayedCard.card == winningCard }?.player
+            getCardsPlayed().firstOrNull{ playerPlayedCard -> playerPlayedCard.card == winningCard }?.tablePosition
         }
     }
 

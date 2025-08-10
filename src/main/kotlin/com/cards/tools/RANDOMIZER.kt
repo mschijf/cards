@@ -10,7 +10,7 @@ object RANDOMIZER {
         fixedSeed = seed
     }
     fun unsetSeed() {
-        fixedSeed = 0
+        fixedSeed = null
     }
 
     fun getShuffleRandomizer(): Random {

@@ -1,28 +1,21 @@
 package com.cards.game.fourplayercardgame.hearts
 
 import com.cards.game.fourplayercardgame.basic.Game
-import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.Round
-import com.cards.game.fourplayercardgame.basic.Table
-import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
+import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.Trick
 import kotlin.math.max
 
 class GameHearts(): Game() {
 
-    fun isGoingUp() = getCompleteRoundsPlayed().size < goingDownFromRoundNumber()
+    fun isGoingUp() = getRounds().size < goingDownFromRoundNumber()
 
-    //player
-    override fun initialPlayerList(): List<Player> {
-        return Table.values().map { p -> GeniusPlayerHearts(p, this) }
+    override fun createTrick(leadPosition: TablePosition): Trick {
+        return TrickHearts(leadPosition)
     }
 
-    //round
-    override fun createFirstRound(): Round {
-        return RoundHearts(getCardPlayer(VERY_FIRST_START_PLAYER))
-    }
-
-    override fun createNextRound(previousRound: Round): Round {
-        return RoundHearts(previousRound.getLeadPlayer().nextPlayer())
+    override fun createRound(): Round {
+        return RoundHearts()
     }
 
     //game
@@ -30,7 +23,8 @@ class GameHearts(): Game() {
 
     //score
     fun getCumulativeScorePerRound(): List<ScoreHearts> {
-        return getCompleteRoundsPlayed()
+        return getRounds()
+            .filter { it.isComplete() }
             .mapIndexed { index, round ->  getGameScoreForRound(round)}
             .runningFold(ScoreHearts.ZERO) { acc, sc -> acc.plus(sc) }.drop(1)
     }
@@ -45,7 +39,7 @@ class GameHearts(): Game() {
             return goingDownRoundNumber!!
 
         var score = ScoreHearts.ZERO
-        getCompleteRoundsPlayed().forEachIndexed { idx, round ->
+        getRounds().forEachIndexed { idx, round ->
             score = score.plus((round as RoundHearts).getScore())
             if (score.maxValue() >= VALUE_TO_GO_DOWN) {
                 goingDownRoundNumber = idx+1
@@ -57,7 +51,7 @@ class GameHearts(): Game() {
 
     private fun getGameScoreForRound(round: Round): ScoreHearts {
         val score = (round as RoundHearts).getScore()
-        val roundNumber = max(0, getCompleteRoundsPlayed().indexOf(round))
+        val roundNumber = max(0, getRounds().indexOf(round))
 
         val goingUp = roundNumber < goingDownFromRoundNumber()
         return if (goingUp) {

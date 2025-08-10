@@ -1,11 +1,13 @@
 package com.cards.game.fourplayercardgame.klaverjassen
 
+import com.cards.tools.RANDOMIZER
 import org.junit.jupiter.api.Test
 
 class GeniusPlayerQualityTest {
     @Test
     fun runTest() {
-        val numberOfTests = 100
+        RANDOMIZER.unsetSeed()
+        val numberOfTests = 10000
         val serie = (1..numberOfTests).map { testOneGame() }
         println()
         println("----------------------------------------------------------------")
@@ -18,13 +20,14 @@ class GeniusPlayerQualityTest {
     }
 
     private fun testOneGame(): ScoreKlaverjassen {
-        val testGame = GameKlaverjassen()
+        val gameMaster = GameMasterKlaverjassen()
+        val testGame = gameMaster.startNewGame() as GameKlaverjassen
 
         while (!testGame.isFinished()) {
-            val playerToMove = testGame.getPlayerToMove() as PlayerKlaverjassen
+            val playerToMove = gameMaster.getCardPlayer(testGame.getPositionToMove()) as PlayerKlaverjassen
             if (testGame.getCurrentRound().hasNotStarted()) {
                 val trumpColor = playerToMove.chooseTrumpColor()
-                testGame.setTrumpColorAndContractOwner(trumpColor, playerToMove)
+                testGame.setTrumpColorAndContractOwner(trumpColor, playerToMove.tablePosition)
             }
             val suggestedCardToPlay = playerToMove.chooseCard()
             testGame.playCard(suggestedCardToPlay)

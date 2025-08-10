@@ -4,43 +4,41 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 
 abstract class Trick(
-    private val leadPlayer: Player) {
+    private val leadPosition: TablePosition) {
 
-    private var playerToMove = leadPlayer
     private val cardsPlayed = mutableListOf<PlayerPlayedCard>()
 
-    fun getLeadPlayer() = leadPlayer
-    fun isLeadPLayer(player: Player) = player == leadPlayer
-    fun getLeadColor() = getCardPlayedBy(leadPlayer)?.color
+    fun getLeadPosition() = leadPosition
+    fun isLeadPosition(position: TablePosition) = getLeadPosition() == position
+    fun getLeadColor() = cardsPlayed.firstOrNull()?.card?.color
     fun isLeadColor(color: CardColor) = color == getLeadColor()
-    fun getPlayerToMove() = playerToMove
     fun getCardsPlayed() = cardsPlayed
-    fun isComplete(): Boolean = cardsPlayed.size >= Table.values().size
-    fun isLastPlayerToMove() = (getCardsPlayed().size == Table.values().size)
-    fun hasNotStarted(): Boolean = cardsPlayed.isEmpty()
+    fun hasNotStarted() = cardsPlayed.isEmpty()
+    fun isActive(): Boolean = !isComplete()
+    fun isComplete(): Boolean = cardsPlayed.size >= TablePosition.values().size
+    fun isLastPlayerToMove() = (getCardsPlayed().size == TablePosition.values().size)
+    fun getPositionToMove() = getCardsPlayed().lastOrNull()?.tablePosition?.clockwiseNext()?:leadPosition
+    //todo: teveel spelkennis? ^^^
 
-    abstract fun getLegalPlayableCards(cardsList: List<Card>): List<Card>
-    abstract fun getWinner(): Player?
+    abstract fun getWinner(): TablePosition?
     abstract fun getWinningCard(): Card?
 
-    fun getCardPlayedBy(player: Player): Card? {
+    fun getCardPlayedBy(tablePosition: TablePosition): Card? {
         return cardsPlayed
-            .firstOrNull { p -> p.player == player }
+            .firstOrNull { p -> p.tablePosition == tablePosition }
             ?.card
     }
 
-    fun addCard(aCard: Card) {
+    fun addCard(tablePosition: TablePosition, aCard: Card) {
         if (isComplete())
             throw Exception("Adding a card to a completed trick")
 
-        cardsPlayed.add(PlayerPlayedCard(playerToMove, aCard))
-        playerToMove = playerToMove.nextPlayer()
+        cardsPlayed.add(PlayerPlayedCard(tablePosition, aCard))
     }
 
     fun removeLastCard() {
         if (hasNotStarted())
             throw Exception("Removing a card from a not started trick")
         cardsPlayed.removeLast()
-        playerToMove = playerToMove.previousPlayer()
     }
 }

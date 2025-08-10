@@ -4,13 +4,14 @@ import com.cards.game.card.CARDDECK
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.basic.Table
+import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.hearts.GameHearts
 import com.cards.game.fourplayercardgame.hearts.PlayerHearts
 import com.cards.game.fourplayercardgame.hearts.cardValue
+import com.cards.game.fourplayercardgame.hearts.legalPlayable
 
 class GeniusPlayerHearts(
-    tablePosition: Table,
+    tablePosition: TablePosition,
     game: GameHearts) : PlayerHearts(tablePosition, game) {
 
     override fun chooseCard(): Card {
@@ -24,7 +25,7 @@ class GeniusPlayerHearts(
     private fun getCardsPlayed(): List<Card> {
         val round = game.getCurrentRound()
         return round
-            .getCompletedTrickList()
+            .getTrickList()
             .flatMap{ trick -> trick.getCardsPlayed()}
             .union (round.getTrickOnTable().getCardsPlayed())
             .map { cardPlayed -> cardPlayed.card}
@@ -41,10 +42,10 @@ class GeniusPlayerHearts(
         val trick = game.getCurrentRound().getTrickOnTable()
         val leadColor = trick.getLeadColor()
 
-        if ( trick.getPlayerToMove() != this )
+        if (trick.getCardsPlayed().lastOrNull()?.tablePosition?.clockwiseNext() != this.tablePosition)
             return zeroValued()
 
-        if (trick.isLeadPLayer(this))
+        if (trick.isLeadPosition(this.tablePosition))
             return evaluateLeadPLayer()
 
         if (hasColorInHand(leadColor!!))
@@ -72,7 +73,7 @@ class GeniusPlayerHearts(
         val trick = game.getCurrentRound().getTrickOnTable()
         val leadColor = trick.getLeadColor() ?: throw Exception("Trick on table does not have a lead color")
         val winningCard = trick.getWinningCard()!!
-        val legalCards = trick.getLegalPlayableCards(getCardsInHand())
+        val legalCards = getCardsInHand().legalPlayable(trick)
         val analyzer = HeartsAnalyzer(legalCards, getCardsPlayed(), getCardsStillInPlay())
         if (analyzer.hasOnlyLowerCardsThanLeader(winningCard)) {
             //throw highest card, especially QS or JC
@@ -123,7 +124,7 @@ class GeniusPlayerHearts(
 
     private fun evaluateFollowerButCannotFollowLeadColor(): HeartsAnalyzer {
         val trick = game.getCurrentRound().getTrickOnTable()
-        val legalCards = trick.getLegalPlayableCards(getCardsInHand())
+        val legalCards = getCardsInHand().legalPlayable(trick)
         val analyzer = HeartsAnalyzer(legalCards, getCardsPlayed(), getCardsStillInPlay())
         analyzer
             .evaluateByRank(rankStepValue = 1)

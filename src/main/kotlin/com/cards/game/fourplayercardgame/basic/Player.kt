@@ -1,11 +1,9 @@
 package com.cards.game.fourplayercardgame.basic
 
 import com.cards.game.card.Card
-import com.cards.game.card.CardColor
-import com.cards.game.fourplayercardgame.basic.Table.*
 
 abstract class Player(
-    val tablePosition: Table,
+    val tablePosition: TablePosition,
     protected val game: Game) {
 
     private var cardsInHand: MutableList<Card> = mutableListOf()
@@ -24,26 +22,5 @@ abstract class Player(
             throw Exception("cannot remove card $card from hand of player $tablePosition ")
         }
     }
-
-    fun getOtherPlayers() = game.getPlayerList() - this
-
-    fun nextPlayer(): Player {
-        return when(this.tablePosition) {
-            SOUTH -> game.getCardPlayer(WEST)
-            WEST -> game.getCardPlayer(NORTH)
-            NORTH -> game.getCardPlayer(EAST)
-            EAST -> game.getCardPlayer(SOUTH)
-        }
-    }
-
-    fun previousPlayer(): Player {
-        return when(this.tablePosition) {
-            SOUTH -> game.getCardPlayer(EAST)
-            WEST -> game.getCardPlayer(SOUTH)
-            NORTH -> game.getCardPlayer(WEST)
-            EAST -> game.getCardPlayer(NORTH)
-        }
-    }
-
     override fun toString() = "pl-$tablePosition"
 }

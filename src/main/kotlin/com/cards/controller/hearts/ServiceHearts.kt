@@ -1,46 +1,44 @@
 package com.cards.controller.hearts
 
-import com.cards.controller.basic.model.CardInHandModel
-import com.cards.controller.basic.model.CardPlayedModel
-import com.cards.controller.basic.model.GameStatusModel
+import com.cards.controller.basic.model.*
 import com.cards.controller.hearts.model.GameStatusModelHearts
 import com.cards.controller.hearts.model.RoundScoreHearts
 import com.cards.controller.hearts.model.ScoreModelHearts
-import com.cards.controller.basic.model.TableModel
-import com.cards.controller.basic.model.TrickCompletedModel
-import com.cards.tools.RANDOMIZER
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.basic.Table
+import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.hearts.GameHearts
+import com.cards.game.fourplayercardgame.hearts.GameMasterHearts
 import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
+import com.cards.tools.RANDOMIZER
 import org.springframework.stereotype.Service
 
 @Service
 class ServiceHearts {
-    private var gameHearts = GameHearts()
+    private val gameMasterHearts = GameMasterHearts()
+    private var gameHearts = gameMasterHearts.startNewGame() as GameHearts
 
     fun newGame(): GameStatusModelHearts {
-        gameHearts = GameHearts()
+        gameHearts = gameMasterHearts.startNewGame() as GameHearts
         return getGameStatus()
     }
 
     fun getGameStatus(): GameStatusModelHearts {
         val trickOnTable = gameHearts.getCurrentRound().getTrickOnTable()
-        val onTable = TableModel(
-            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.SOUTH)),
-            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.WEST)),
-            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.NORTH)),
-            trickOnTable.getCardPlayedBy(gameHearts.getCardPlayer(Table.EAST))
+        val onTablePosition = TableModel(
+            trickOnTable.getCardPlayedBy(TablePosition.SOUTH),
+            trickOnTable.getCardPlayedBy(TablePosition.WEST),
+            trickOnTable.getCardPlayedBy(TablePosition.NORTH),
+            trickOnTable.getCardPlayedBy(TablePosition.EAST)
         )
-        val playerToMove = gameHearts.getPlayerToMove()
-        val leadPlayer = trickOnTable.getLeadPlayer()
+        val positionToMove = gameHearts.getPositionToMove()
+        val leadPosition = trickOnTable.getLeadPosition()
 
-        val playerSouth = makePlayerCardListModel(Table.SOUTH)
-        val playerNorth = makePlayerCardListModel(Table.NORTH)
-        val playerWest = makePlayerCardListModel(Table.WEST)
-        val playerEast = makePlayerCardListModel(Table.EAST)
+        val playerSouth = makePlayerCardListModel(TablePosition.SOUTH)
+        val playerNorth = makePlayerCardListModel(TablePosition.NORTH)
+        val playerWest = makePlayerCardListModel(TablePosition.WEST)
+        val playerEast = makePlayerCardListModel(TablePosition.EAST)
 
         val gameJsonString = "" //Gson().toJson(gm)
 
@@ -48,9 +46,9 @@ class ServiceHearts {
 
         return GameStatusModelHearts(
             GameStatusModel(
-                onTable,
-                playerToMove.tablePosition,
-                leadPlayer.tablePosition,
+                onTablePosition,
+                positionToMove,
+                leadPosition,
                 gameHearts.getCurrentRound().hasNotStarted(),
                 playerSouth,
                 playerWest,
@@ -63,15 +61,15 @@ class ServiceHearts {
         )
     }
 
-    private fun makePlayerCardListModel(tablePosition: Table): List<CardInHandModel> {
-        val player = gameHearts.getCardPlayer(tablePosition)
+    private fun makePlayerCardListModel(tablePosition: TablePosition): List<CardInHandModel> {
+        val player = gameMasterHearts.getCardPlayer(tablePosition)
         return player
             .getCardsInHand()
             .sortedBy { card -> 100 * card.color.ordinal + card.rank.ordinal }
             .map { card ->
                 CardInHandModel(
                     card,
-                    gameHearts.isLegalCardToPlay(player, card),
+                    gameMasterHearts.isLegalCardToPlay(player, card),
                     getGeniusCardValue(player as GeniusPlayerHearts, card)
                 )
             }
@@ -84,36 +82,37 @@ class ServiceHearts {
     }
 
     fun computeMove(): CardPlayedModel? {
-        val playerToMove = gameHearts.getPlayerToMove()
+        val playerToMove = gameMasterHearts.getCardPlayer(gameHearts.getPositionToMove())
         val suggestedCardToPlay = playerToMove.chooseCard()
         return executeMove(suggestedCardToPlay.color, suggestedCardToPlay.rank)
     }
 
     fun executeMove(color: CardColor, rank: CardRank): CardPlayedModel? {
-        val playerToMove = gameHearts.getPlayerToMove()
+        val positionToMove = gameHearts.getPositionToMove()
+        val playerToMove = gameMasterHearts.getCardPlayer(positionToMove)
         val suggestedCardToPlay = Card(color, rank)
-        if (!gameHearts.isLegalCardToPlay(playerToMove, suggestedCardToPlay))
+        if (!gameMasterHearts.isLegalCardToPlay(playerToMove, suggestedCardToPlay))
             return null
 
         val cardsStillInHand = playerToMove.getNumberOfCardsInHand()
 
-        gameHearts.playCard(suggestedCardToPlay)
+        gameMasterHearts.playCard(suggestedCardToPlay)
 
         val trickCompleted = if (gameHearts.trickCompleted())
             TrickCompletedModel(
-                gameHearts.getLastTrickWinner()!!.tablePosition,
+                gameHearts.getLastTrickWinner()!!,
                 gameHearts.roundCompleted(),
                 gameHearts.isFinished(),
             )
         else
             null
 
-        val nextPlayer = gameHearts.getPlayerToMove()
+        val nextPlayer = gameHearts.getPositionToMove()
 
         return CardPlayedModel(
-            playerToMove.tablePosition,
+            positionToMove,
             suggestedCardToPlay,
-            nextPlayer.tablePosition,
+            nextPlayer,
             cardsStillInHand,
             trickCompleted,
         )

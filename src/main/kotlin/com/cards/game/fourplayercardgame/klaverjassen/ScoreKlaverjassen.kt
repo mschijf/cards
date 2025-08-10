@@ -1,7 +1,6 @@
 package com.cards.game.fourplayercardgame.klaverjassen
 
-import com.cards.game.fourplayercardgame.basic.Player
-import com.cards.game.fourplayercardgame.basic.Table
+import com.cards.game.fourplayercardgame.basic.TablePosition
 
 data class ScoreKlaverjassen(val eastWestPoints: Int, val northSouthPoints: Int,
                              val eastWestBonus: Int, val northSouthBonus: Int,
@@ -50,21 +49,21 @@ data class ScoreKlaverjassen(val eastWestPoints: Int, val northSouthPoints: Int,
     fun getNorthSouthTotal() = northSouthPoints + northSouthBonus
     fun getEastWestTotal() = eastWestPoints + eastWestBonus
 
-    fun getPointsForPLayer(player: Player) = if (player.tablePosition in setOf(Table.WEST, Table.EAST)) eastWestPoints else northSouthPoints
-    fun getBonusForPlayer(player: Player) = if (player.tablePosition in setOf(Table.WEST, Table.EAST)) eastWestBonus else  northSouthBonus
-    fun getTotalForPlayer(player: Player) = getPointsForPLayer(player) + getBonusForPlayer(player)
+    fun getPointsForPLayer(tablePosition: TablePosition) = if (tablePosition in setOf(TablePosition.WEST, TablePosition.EAST)) eastWestPoints else northSouthPoints
+    fun getBonusForPlayer(tablePosition: TablePosition) = if (tablePosition in setOf(TablePosition.WEST, TablePosition.EAST)) eastWestBonus else  northSouthBonus
+    fun getTotalForPlayer(tablePosition: TablePosition) = getPointsForPLayer(tablePosition) + getBonusForPlayer(tablePosition)
 
-    fun getDeltaForPlayer(player: Player) = getTotalForPlayer(player) - getTotalForPlayer(player.nextPlayer())
+    fun getDeltaForPlayer(tablePosition: TablePosition) = getTotalForPlayer(tablePosition) - getTotalForPlayer(tablePosition.clockwiseNext())
 
     companion object {
         val ZERO = ScoreKlaverjassen(0,0,0,0)
 
-        fun scoreForPlayer(player: Player, value: Int, bonus: Int): ScoreKlaverjassen {
+        fun scoreForPlayer(tablePosition: TablePosition, value: Int, bonus: Int): ScoreKlaverjassen {
             return ScoreKlaverjassen(
-                if (player.tablePosition in setOf(Table.WEST, Table.EAST)) value else 0,
-                if (player.tablePosition in setOf(Table.NORTH, Table.SOUTH)) value else 0,
-                if (player.tablePosition in setOf(Table.WEST, Table.EAST)) bonus else 0,
-                if (player.tablePosition in setOf(Table.NORTH, Table.SOUTH)) bonus else 0,
+                if (tablePosition in setOf(TablePosition.WEST, TablePosition.EAST)) value else 0,
+                if (tablePosition in setOf(TablePosition.NORTH, TablePosition.SOUTH)) value else 0,
+                if (tablePosition in setOf(TablePosition.WEST, TablePosition.EAST)) bonus else 0,
+                if (tablePosition in setOf(TablePosition.NORTH, TablePosition.SOUTH)) bonus else 0,
             )
         }
     }
