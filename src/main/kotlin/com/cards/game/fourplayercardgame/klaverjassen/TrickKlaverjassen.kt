@@ -4,13 +4,9 @@ import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.basic.Trick
 
-//todo: heb ik round nodig? Kan het ook anders?
-//todo: round ook op basic nivo meegeven?
-
 class TrickKlaverjassen(
     leadPosition: TablePosition,
     private val round: RoundKlaverjassen): Trick(leadPosition) {
-
 
     override fun getWinner(): TablePosition? {
         val winningCard = getWinningCard()

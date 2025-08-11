@@ -4,16 +4,17 @@ import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.basic.Round
 import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.basic.Trick
+import java.lang.Exception
 
 
 class RoundKlaverjassen() : Round() {
 
-    private var trumpColor: CardColor = CardColor.CLUBS
-    private var contractOwner: TablePosition = TablePosition.WEST
-    //todo: zet bovenstaande op null, maar geef met de getters altijd een non-null terug (check dus of het gezet is)
+    private var trumpColor: CardColor? = null
+    private var contractOwner: TablePosition? = null
 
-    fun getTrumpColor() = trumpColor
-    fun getContractOwner() = contractOwner
+    fun trumpColorAndContractOwnerSet() = (trumpColor != null && contractOwner != null)
+    fun getTrumpColor() = trumpColor?:throw Exception("TrumpColor not set")
+    fun getContractOwner() = contractOwner?:throw Exception("ContractOwner not set")
     fun isContractOwner(tablePosition: TablePosition) = (contractOwner == tablePosition)
 
     fun setTrumpColorAndContractOwner(trumpColor: CardColor, contractOwner: TablePosition) {

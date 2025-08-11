@@ -12,6 +12,7 @@ class GameMasterKlaverjassen: GameMaster() {
     override fun getGame() = super.getGame() as GameKlaverjassen
 
     override fun initialPlayerList(): List<Player> {
+//        RANDOMIZER.setSeed(1611283605)
         return listOf(
             PlayerKlaverjassen(TablePosition.WEST, getGame()),
             GeniusPlayerKlaverjassen(TablePosition.NORTH, getGame()),
@@ -33,7 +34,7 @@ class GameMasterKlaverjassen: GameMaster() {
     }
 
     fun isNewTrumpNeeded(): Boolean {
-        return getGame().getCurrentRound().hasNotStarted()
+        return !(getGame().getCurrentRound() as RoundKlaverjassen).trumpColorAndContractOwnerSet()
     }
 
     fun determineNewTrump() {

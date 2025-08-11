@@ -24,12 +24,11 @@ class TrickHearts(leadPosition: TablePosition): Trick(leadPosition) {
             ?.card
     }
 
-    //score
     fun getScore(): ScoreHearts {
         return if (!isComplete()) {
             ScoreHearts.ZERO
         } else {
-            ScoreHearts.scoreForPlayer(getWinner()!!, getCardsPlayed().sumOf { playerPlayedCard -> playerPlayedCard.card.cardValue() })
+            ScoreHearts.scoreForPlayer(getWinner()!!, getCardsPlayed().sumOf { cp -> cp.card.cardValue() })
         }
     }
 
