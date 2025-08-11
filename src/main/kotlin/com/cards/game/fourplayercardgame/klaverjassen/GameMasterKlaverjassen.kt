@@ -8,15 +8,15 @@ import com.cards.game.fourplayercardgame.klaverjassen.ai.GeniusPlayerKlaverjasse
 
 class GameMasterKlaverjassen: GameMaster() {
 
-
     override fun createGame() = GameKlaverjassen()
+    override fun getGame() = super.getGame() as GameKlaverjassen
 
     override fun initialPlayerList(): List<Player> {
         return listOf(
-            PlayerKlaverjassen(TablePosition.WEST, getGame() as GameKlaverjassen),
-            GeniusPlayerKlaverjassen(TablePosition.NORTH, getGame() as GameKlaverjassen),
-            PlayerKlaverjassen(TablePosition.EAST, getGame() as GameKlaverjassen),
-            GeniusPlayerKlaverjassen(TablePosition.SOUTH, getGame() as GameKlaverjassen),
+            PlayerKlaverjassen(TablePosition.WEST, getGame()),
+            GeniusPlayerKlaverjassen(TablePosition.NORTH, getGame()),
+            PlayerKlaverjassen(TablePosition.EAST, getGame()),
+            GeniusPlayerKlaverjassen(TablePosition.SOUTH, getGame()),
         )
     }
 
@@ -31,4 +31,16 @@ class GameMasterKlaverjassen: GameMaster() {
             )
         return legalCards.contains(card)
     }
+
+    fun isNewTrumpNeeded(): Boolean {
+        return getGame().getCurrentRound().hasNotStarted()
+    }
+
+    fun determineNewTrump() {
+        val playerToMove = getCardPlayer(getGame().getPositionToMove()) as PlayerKlaverjassen
+        val trumpColor = playerToMove.chooseTrumpColor()
+        (getGame().getCurrentRound() as RoundKlaverjassen).setTrumpColorAndContractOwner(trumpColor, playerToMove.tablePosition)
+    }
+
+
 }

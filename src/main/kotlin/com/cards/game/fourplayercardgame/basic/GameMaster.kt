@@ -12,18 +12,18 @@ abstract class GameMaster {
     abstract fun isLegalCardToPlay(player: Player, card: Card): Boolean
 
     private var game = createGame()
-    protected fun getGame(): Game = game
+    open fun getGame(): Game = game
 
-    fun startNewGame(): Game {
+    fun startNewGame() {
         game = createGame()
         playerList = initialPlayerList()
         dealCards()
         getGame().start()
-        return getGame()
     }
 
     fun getPlayerList() = playerList
     fun getCardPlayer(tablePosition: TablePosition) = getPlayerList().first { cardPlayer -> cardPlayer.tablePosition == tablePosition }
+    fun getPlayerToMove(): Player = getCardPlayer(getGame().getPositionToMove())
 
     private fun allPlayersHaveNoCards() = playerList.all { it.getCardsInHand().isEmpty()}
 
@@ -50,20 +50,22 @@ abstract class GameMaster {
         }
     }
 
+    fun isGameFinished() = getGame().isFinished()
+
     //==================================================================================================================
 
     private fun printLastRoundPlayed() {
         print("[Seed: ${RANDOMIZER.getLastSeedUsed()}]  Round: ")
         getGame().getRounds().last().getTrickList().forEach { trick->
             print("[")
-            val leadPosition = trick.getCardsPlayed().first().tablePosition
-            getPlayerList().map { pl -> trick.getCardsPlayed().first{ cp -> cp.tablePosition == pl.tablePosition }}.forEach { cardPlayed ->
-                if (cardPlayed.tablePosition == leadPosition)
+            val leadPosition = trick.getCardsPlayed().first().position
+            getPlayerList().map { pl -> trick.getCardsPlayed().first{ cp -> cp.position == pl.tablePosition }}.forEach { cardPlayed ->
+                if (cardPlayed.position == leadPosition)
                     print("(")
                 print("${cardPlayed.card}")
-                if (cardPlayed.tablePosition == leadPosition)
+                if (cardPlayed.position == leadPosition)
                     print(")")
-                if (getPlayerList().last().tablePosition != cardPlayed.tablePosition)
+                if (getPlayerList().last().tablePosition != cardPlayed.position)
                     print(",")
             }
             print("]  ")

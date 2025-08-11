@@ -6,7 +6,7 @@ import com.cards.game.card.CardColor
 abstract class Trick(
     private val leadPosition: TablePosition) {
 
-    private val cardsPlayed = mutableListOf<PlayerPlayedCard>()
+    private val cardsPlayed = mutableListOf<CardPlayedAtPosition>()
 
     fun getLeadPosition() = leadPosition
     fun isLeadPosition(position: TablePosition) = getLeadPosition() == position
@@ -17,7 +17,7 @@ abstract class Trick(
     fun isActive(): Boolean = !isComplete()
     fun isComplete(): Boolean = cardsPlayed.size >= TablePosition.values().size
     fun isLastPlayerToMove() = (getCardsPlayed().size == TablePosition.values().size)
-    fun getPositionToMove() = getCardsPlayed().lastOrNull()?.tablePosition?.clockwiseNext()?:leadPosition
+    fun getPositionToMove() = getCardsPlayed().lastOrNull()?.position?.clockwiseNext()?:leadPosition
     //todo: teveel spelkennis? ^^^
 
     abstract fun getWinner(): TablePosition?
@@ -25,7 +25,7 @@ abstract class Trick(
 
     fun getCardPlayedBy(tablePosition: TablePosition): Card? {
         return cardsPlayed
-            .firstOrNull { p -> p.tablePosition == tablePosition }
+            .firstOrNull { p -> p.position == tablePosition }
             ?.card
     }
 
@@ -33,7 +33,7 @@ abstract class Trick(
         if (isComplete())
             throw Exception("Adding a card to a completed trick")
 
-        cardsPlayed.add(PlayerPlayedCard(tablePosition, aCard))
+        cardsPlayed.add(CardPlayedAtPosition(tablePosition, aCard))
     }
 
     fun removeLastCard() {

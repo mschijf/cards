@@ -10,6 +10,7 @@ class RoundKlaverjassen() : Round() {
 
     private var trumpColor: CardColor = CardColor.CLUBS
     private var contractOwner: TablePosition = TablePosition.WEST
+    //todo: zet bovenstaande op null, maar geef met de getters altijd een non-null terug (check dus of het gezet is)
 
     fun getTrumpColor() = trumpColor
     fun getContractOwner() = contractOwner

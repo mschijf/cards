@@ -17,7 +17,7 @@ class TrickKlaverjassen(
         return if (!isComplete()) {
             null
         } else {
-            getCardsPlayed().firstOrNull{ playerPlayedCard -> playerPlayedCard.card == winningCard }?.tablePosition
+            getCardsPlayed().firstOrNull{ playerPlayedCard -> playerPlayedCard.card == winningCard }?.position
         }
     }
 

@@ -42,7 +42,7 @@ class GeniusPlayerHearts(
         val trick = game.getCurrentRound().getTrickOnTable()
         val leadColor = trick.getLeadColor()
 
-        if (trick.getCardsPlayed().lastOrNull()?.tablePosition?.clockwiseNext() != this.tablePosition)
+        if (trick.getCardsPlayed().lastOrNull()?.position?.clockwiseNext() != this.tablePosition)
             return zeroValued()
 
         if (trick.isLeadPosition(this.tablePosition))

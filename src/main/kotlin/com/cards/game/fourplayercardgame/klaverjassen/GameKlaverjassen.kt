@@ -8,21 +8,15 @@ import com.cards.game.fourplayercardgame.basic.Trick
 
 class GameKlaverjassen(): Game()  {
 
-    override fun createTrick(leadPosition: TablePosition): Trick {
-        return TrickKlaverjassen(leadPosition, getCurrentRound() as RoundKlaverjassen)
-    }
-
-    override fun createRound(): Round {
-        return RoundKlaverjassen()
-    }
+    override fun createTrick(leadPosition: TablePosition) =
+        TrickKlaverjassen(
+            leadPosition,
+            getCurrentRound() as RoundKlaverjassen
+        )
+    override fun createRound() = RoundKlaverjassen()
 
     override fun isFinished(): Boolean {
         return getRounds().size == NUMBER_OF_ROUNDS_PER_GAME && getRounds().last().isComplete()
-    }
-
-
-    fun setTrumpColorAndContractOwner(trumpColor: CardColor, contractOwner: TablePosition) {
-        (getCurrentRound() as RoundKlaverjassen).setTrumpColorAndContractOwner(trumpColor, contractOwner)
     }
 
     //score

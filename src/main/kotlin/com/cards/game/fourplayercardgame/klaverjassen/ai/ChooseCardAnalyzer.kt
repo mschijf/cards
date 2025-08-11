@@ -85,7 +85,7 @@ class ChooseCardAnalyzer(
             val sumSureHas1 = playerSureHas.values.fold(emptySet<Card>()) { acc, sureHasCards -> acc + sureHasCards }
             allPositions.forEach { player -> playerCanHave[player]!!.removeAll(sumSureHas1) }
 
-            val playersPlayedInLastTrick = currentRound.getTrickOnTable().getCardsPlayed().map{ it.tablePosition}
+            val playersPlayedInLastTrick = currentRound.getTrickOnTable().getCardsPlayed().map{ it.position}
             //if number of canHave + SureHas == number of cardsInHand
             otherPositions.forEach { otherPlayer ->
                 val numberOfCardsInHandOtherPlayer = playerForWhichWeAnalyse.getCardsInHand().size - if (otherPlayer in playersPlayedInLastTrick) 1 else 0
@@ -124,7 +124,7 @@ class ChooseCardAnalyzer(
         val allTricks = playerForWhichWeAnalyse.getCurrentRound().getTrickList()
         allTricks.filterNot { trick -> trick.hasNotStarted() }.forEach { trick ->
             val firstCard = trick.getCardsPlayed().first().card
-            val firstPosition = trick.getCardsPlayed().first().tablePosition
+            val firstPosition = trick.getCardsPlayed().first().position
             otherPositions.forEach {
                 otherPosition -> playerCanHave[otherPosition]!! -= firstCard
             }
@@ -142,25 +142,25 @@ class ChooseCardAnalyzer(
                 }
 
                 if (playerPlayedCard.card.color != firstCard.color) {
-                    playerCanHave[playerPlayedCard.tablePosition]!! -= allCards.ofColor(firstCard.color)
+                    playerCanHave[playerPlayedCard.position]!! -= allCards.ofColor(firstCard.color)
                     if (playerPlayedCard.card.color != trumpColor) {
-                        playerCanHave[playerPlayedCard.tablePosition]!! -= allCards.ofColor(trumpColor)
+                        playerCanHave[playerPlayedCard.position]!! -= allCards.ofColor(trumpColor)
                     } else {
                         if (!playerPlayedCard.card.beats(highestTrumpUpTillNow, trumpColor)) {
-                            playerCanHave[playerPlayedCard.tablePosition]!! -= allCards.filter {
+                            playerCanHave[playerPlayedCard.position]!! -= allCards.filter {
                                 it.beats(highestTrumpUpTillNow, trumpColor)
                             }
                         }
                     }
                 } else if (playerPlayedCard.card.color == trumpColor && highestTrumpUpTillNow!!.beats(playerPlayedCard.card, trumpColor)) {
-                    playerCanHave[playerPlayedCard.tablePosition]!! -= allCards.filter {
+                    playerCanHave[playerPlayedCard.position]!! -= allCards.filter {
                         it.beats(highestTrumpUpTillNow, trumpColor)
                     }
                 } else {
                     //player just follows, we can not conclude anything yet
                 }
 
-                newTrick.addCard(playerPlayedCard.tablePosition, playerPlayedCard.card)
+                newTrick.addCard(playerPlayedCard.position, playerPlayedCard.card)
                 determineAssumptions(newTrick)
                 cardsPlayedDuringAnalysis.add(playerPlayedCard.card)
 
@@ -172,7 +172,7 @@ class ChooseCardAnalyzer(
     }
 
     private fun determineAssumptions(trickSoFar: TrickKlaverjassen) {
-        val playerJustMoved = trickSoFar.getCardsPlayed().last().tablePosition
+        val playerJustMoved = trickSoFar.getCardsPlayed().last().position
         val cardJustPlayed = trickSoFar.getCardsPlayed().last().card
 
         if (trickSoFar.isLeadPosition(playerJustMoved) && currentRound.isContractOwner(playerJustMoved)) {
@@ -255,7 +255,7 @@ class ChooseCardAnalyzer(
     }
 
     private fun roemWeggegevenDoorLastPlayer(trickSoFar: TrickKlaverjassen): Boolean {
-        val playerJustMoved = trickSoFar.getCardsPlayed().last().tablePosition
+        val playerJustMoved = trickSoFar.getCardsPlayed().last().position
         val cardJustPlayed = trickSoFar.getCardsPlayed().last().card
         val bonusAfter = trickSoFar.getScore().getBonusForPlayer(playerJustMoved.clockwiseNext())
         trickSoFar.removeLastCard()
@@ -265,7 +265,7 @@ class ChooseCardAnalyzer(
     }
 
     private fun roemOntwekenDoorLastPlayer(trickSoFar: TrickKlaverjassen): Boolean {
-        val playerJustMoved = trickSoFar.getCardsPlayed().last().tablePosition
+        val playerJustMoved = trickSoFar.getCardsPlayed().last().position
         val cardJustPlayed = trickSoFar.getCardsPlayed().last().card
         val bonusAfter = trickSoFar.getScore().getBonusForPlayer(playerJustMoved)
         trickSoFar.removeLastCard()

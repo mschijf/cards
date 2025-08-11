@@ -9,13 +9,14 @@ import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
 class GameMasterHearts: GameMaster() {
 
     override fun createGame() = GameHearts()
+    override fun getGame() = super.getGame() as GameHearts
 
     override fun initialPlayerList(): List<Player> {
         return listOf(
-            GeniusPlayerHearts(TablePosition.WEST, getGame() as GameHearts),
-            GeniusPlayerHearts(TablePosition.NORTH, getGame() as GameHearts),
-            GeniusPlayerHearts(TablePosition.EAST, getGame() as GameHearts),
-            GeniusPlayerHearts(TablePosition.SOUTH, getGame() as GameHearts),
+            GeniusPlayerHearts(TablePosition.WEST, getGame()),
+            GeniusPlayerHearts(TablePosition.NORTH, getGame()),
+            GeniusPlayerHearts(TablePosition.EAST, getGame()),
+            GeniusPlayerHearts(TablePosition.SOUTH, getGame()),
         )
     }
 

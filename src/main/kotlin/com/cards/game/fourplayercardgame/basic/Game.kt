@@ -18,6 +18,8 @@ abstract class Game() {
 
     fun trickCompleted() = getCurrentRound().getTrickOnTable().hasNotStarted()
     fun roundCompleted() = getCurrentRound().hasNotStarted()
+    //todo: ^^^ beide functies niet echt mooi, omdat ze eigenlijk zeggen of een nieuwe ronde begonenn is.
+
     fun getLastTrickWinner(): TablePosition?  =
         if (getCurrentRound().hasNotStarted())
             getPreviousRound()?.getLastCompletedTrickWinner()

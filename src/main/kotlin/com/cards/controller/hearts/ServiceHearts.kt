@@ -16,11 +16,12 @@ import org.springframework.stereotype.Service
 
 @Service
 class ServiceHearts {
-    private val gameMasterHearts = GameMasterHearts()
-    private var gameHearts = gameMasterHearts.startNewGame() as GameHearts
+    private val gameMasterHearts = GameMasterHearts().also { it.createGame() }
+    private var gameHearts = gameMasterHearts.getGame()
 
     fun newGame(): GameStatusModelHearts {
-        gameHearts = gameMasterHearts.startNewGame() as GameHearts
+        gameMasterHearts.startNewGame()
+        gameHearts = gameMasterHearts.getGame()
         return getGameStatus()
     }
 

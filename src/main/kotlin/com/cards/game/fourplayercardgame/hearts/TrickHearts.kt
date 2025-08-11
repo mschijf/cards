@@ -13,7 +13,7 @@ class TrickHearts(leadPosition: TablePosition): Trick(leadPosition) {
             getCardsPlayed()
                 .filter { playerPlayedCard -> isLeadColor(playerPlayedCard.card.color) }
                 .maxByOrNull { playerPlayedCard -> playerPlayedCard.card.toRankNumber() }
-                ?.tablePosition
+                ?.position
         }
     }
 
