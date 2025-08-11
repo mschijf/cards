@@ -15,9 +15,10 @@ class ChooseCardAnalyzer(
     private lateinit var playerProbablyHas: Map<TablePosition, MutableSet<Card>>
     private lateinit var playerProbablyHasNot: Map<TablePosition, MutableSet<Card>>
 
-    private lateinit var otherPositions: Set<TablePosition>
+
     private val allPositions = TablePosition.values().toSet()
     private val ownPosition = playerForWhichWeAnalyse.tablePosition
+    private val otherPositions = allPositions - ownPosition
 
     private val cardsPlayedDuringAnalysis = mutableListOf<Card>()
 
@@ -35,8 +36,6 @@ class ChooseCardAnalyzer(
         playerSureHas = allPositions.associateWith { mutableSetOf() }
         playerProbablyHas = allPositions.associateWith { mutableSetOf() }
         playerProbablyHasNot = allPositions.associateWith { mutableSetOf() }
-
-        otherPositions = allPositions - ownPosition
 
         cardsPlayedDuringAnalysis.clear()
     }
@@ -149,19 +148,13 @@ class ChooseCardAnalyzer(
                     } else {
                         if (!playerPlayedCard.card.beats(highestTrumpUpTillNow, trumpColor)) {
                             playerCanHave[playerPlayedCard.tablePosition]!! -= allCards.filter {
-                                it.beats(
-                                    highestTrumpUpTillNow,
-                                    trumpColor
-                                )
+                                it.beats(highestTrumpUpTillNow, trumpColor)
                             }
                         }
                     }
                 } else if (playerPlayedCard.card.color == trumpColor && highestTrumpUpTillNow!!.beats(playerPlayedCard.card, trumpColor)) {
                     playerCanHave[playerPlayedCard.tablePosition]!! -= allCards.filter {
-                        it.beats(
-                            highestTrumpUpTillNow,
-                            trumpColor
-                        )
+                        it.beats(highestTrumpUpTillNow, trumpColor)
                     }
                 } else {
                     //player just follows, we can not conclude anything yet

@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test
 class GeniusPlayerQualityTest {
     @Test
     fun runTest() {
-        RANDOMIZER.unsetSeed()
-        val numberOfTests = 10000
-        val serie = (1..numberOfTests).map { testOneGame() }
+        RANDOMIZER.setSeed(1)
+        val numberOfTests = 1000
+        val serie = (1..numberOfTests).map { testOneGame(it) }
         println()
         println("----------------------------------------------------------------")
         println("                       WIJ        ZIJ")
@@ -19,7 +19,8 @@ class GeniusPlayerQualityTest {
         println("Points          %10d %10d".format(total.getNorthSouthTotal(), total.getEastWestTotal()))
     }
 
-    private fun testOneGame(): ScoreKlaverjassen {
+    private fun testOneGame(index: Int): ScoreKlaverjassen {
+//        println(index)
         val gameMaster = GameMasterKlaverjassen()
         val testGame = gameMaster.startNewGame() as GameKlaverjassen
 
@@ -30,7 +31,7 @@ class GeniusPlayerQualityTest {
                 testGame.setTrumpColorAndContractOwner(trumpColor, playerToMove.tablePosition)
             }
             val suggestedCardToPlay = playerToMove.chooseCard()
-            testGame.playCard(suggestedCardToPlay)
+            gameMaster.playCard(suggestedCardToPlay)
         }
         return testGame.getAllScoresPerRound().reduce { acc, roundScore -> acc.plus(roundScore) }
     }

@@ -14,10 +14,6 @@ abstract class GameMaster {
     private var game = createGame()
     protected fun getGame(): Game = game
 
-    init {
-        startNewGame()
-    }
-
     fun startNewGame(): Game {
         game = createGame()
         playerList = initialPlayerList()

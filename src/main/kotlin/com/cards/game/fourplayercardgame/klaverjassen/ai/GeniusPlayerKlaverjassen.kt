@@ -5,6 +5,7 @@ import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.klaverjassen.*
+import com.cards.tools.RANDOMIZER
 
 class GeniusPlayerKlaverjassen(
     tablePosition: TablePosition,
@@ -12,6 +13,9 @@ class GeniusPlayerKlaverjassen(
 ) : PlayerKlaverjassen(tablePosition, game) {
 
     private val chooseCardAnalyzer = ChooseCardAnalyzer(this)
+
+    private var gameMaster: GameMasterKlaverjassen? = null
+    fun setGameMaster(gameMaster: GameMasterKlaverjassen) { this.gameMaster = gameMaster }
 
     fun printAnalyzer() {
 //        chooseCardAnalyzer.refreshAnalysis()
@@ -100,7 +104,7 @@ class GeniusPlayerKlaverjassen(
                 val x= chooseCardAnalyzer.playerCanHaveCards(position)
                 val y = chooseCardAnalyzer.playerSureHasCards(position)
                 val z = trickSoFar.getCardsPlayed().map { it.card }
-                println(x+y+z)
+                println(RANDOMIZER.getLastSeedUsed())
             }
             assert (legalPossibilities.isNotEmpty())
             legalPossibilities
