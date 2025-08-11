@@ -3,11 +3,10 @@ package com.cards.game.fourplayercardgame.klaverjassen
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.basic.Table
+import com.cards.game.fourplayercardgame.basic.Trick
 
 const val NUMBER_OF_TRICKS_PER_ROUND = 8
 const val NUMBER_OF_ROUNDS_PER_GAME = 16
-val VERY_FIRST_START_PLAYER = Table.WEST
 const val PIT_BONUS = 100
 
 fun Card.beats(other: Card?, trumpColor: CardColor): Boolean {
@@ -106,3 +105,42 @@ private fun bonusValueForColor(cardList: List<Card>, forCardColor: CardColor, tr
     }
     return bonus + stuk
 }
+
+fun List<Card>.legalPlayable(trick: Trick, trumpColor: CardColor) =
+    this.legalPlayable(trick.getCardsPlayed().map{it.card}, trumpColor)
+
+fun List<Card>.legalPlayable(cardsPlayed: List<Card>, trumpColor: CardColor) : List<Card> {
+    if (cardsPlayed.isEmpty())
+        return this
+
+    val leadColor = cardsPlayed.first().color
+    if (this.any {card -> card.color == leadColor}) {
+        if (trumpColor == leadColor) {
+            return this.legalTrumpCardsToPlay(cardsPlayed, trumpColor).ifEmpty { this }
+        } else {
+            return this.filter { card -> card.color == leadColor }.ifEmpty { this }
+        }
+    }
+
+    if (this.any {card -> card.color == trumpColor}) {
+        return this.legalTrumpCardsToPlay(cardsPlayed, trumpColor)
+    }
+
+    return this
+}
+
+private fun highestTrumpCard(cardsPlayed: List<Card>, trumpColor: CardColor) : Card? {
+    return cardsPlayed
+        .filter{ cardPlayed -> cardPlayed.color == trumpColor }
+        .maxByOrNull { cardPlayed -> cardPlayed.toRankNumberTrump() }
+}
+
+private fun List<Card>.legalTrumpCardsToPlay(cardsPlayed: List<Card>, trumpColor: CardColor):List<Card> {
+    val highestTrumpCard = highestTrumpCard(cardsPlayed, trumpColor)
+    val maxTrumpCardRank = highestTrumpCard?.toRankNumberTrump() ?: Int.MAX_VALUE
+
+    return this
+        .filter { card -> (card.color == trumpColor) && card.toRankNumberTrump() > maxTrumpCardRank }
+        .ifEmpty { this.filter { card -> card.color == trumpColor } }
+}
+

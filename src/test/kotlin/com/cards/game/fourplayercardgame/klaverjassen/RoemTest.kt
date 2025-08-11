@@ -6,7 +6,7 @@ import com.cards.game.card.CardRank
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class KLAVERJASSENTest {
+class RoemTest {
     @Test
     fun test50low() {
         val trick = listOf("7H", "8H", "9H", "10H").map { str -> Card.of(str) }

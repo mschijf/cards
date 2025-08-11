@@ -8,8 +8,9 @@ import com.cards.controller.klaverjassen.model.TrumpChoiceModel
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.basic.Table
+import com.cards.game.fourplayercardgame.basic.TablePosition
 import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
+import com.cards.game.fourplayercardgame.klaverjassen.GameMasterKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.PlayerKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.ScoreType
@@ -19,41 +20,43 @@ import org.springframework.stereotype.Service
 
 @Service
 class ServiceKlaverjassen {
-    private var gameKlaverjassen = GameKlaverjassen()
+    private val gameMasterKlaverjassen = GameMasterKlaverjassen().also { it.startNewGame() }
+    private var gameKlaverjassen = gameMasterKlaverjassen.getGame()
 
     fun newGame(): GameStatusModelKlaverjassen {
-        gameKlaverjassen = GameKlaverjassen()
+        gameMasterKlaverjassen.startNewGame()
+        gameKlaverjassen = gameMasterKlaverjassen.getGame()
         return getGameStatus()
     }
 
     fun getGameStatus(): GameStatusModelKlaverjassen {
         val trickOnTable = gameKlaverjassen.getCurrentRound().getTrickOnTable()
-        val onTable = TableModel(
-            trickOnTable.getCardPlayedBy(gameKlaverjassen.getCardPlayer(Table.SOUTH)),
-            trickOnTable.getCardPlayedBy(gameKlaverjassen.getCardPlayer(Table.WEST)),
-            trickOnTable.getCardPlayedBy(gameKlaverjassen.getCardPlayer(Table.NORTH)),
-            trickOnTable.getCardPlayedBy(gameKlaverjassen.getCardPlayer(Table.EAST))
+        val onTablePosition = TableModel(
+            trickOnTable.getCardPlayedBy(TablePosition.SOUTH),
+            trickOnTable.getCardPlayedBy(TablePosition.WEST),
+            trickOnTable.getCardPlayedBy(TablePosition.NORTH),
+            trickOnTable.getCardPlayedBy(TablePosition.EAST)
         )
-        val playerToMove = gameKlaverjassen.getPlayerToMove()
-        val leadPlayer = trickOnTable.getLeadPlayer()
+        val positionToMove = gameMasterKlaverjassen.getPlayerToMove().tablePosition
+        val leadPosition = trickOnTable.getLeadPosition()
 
-        val playerSouth = makePlayerCardListModel(Table.SOUTH)
-        val playerNorth = makePlayerCardListModel(Table.NORTH)
-        val playerWest = makePlayerCardListModel(Table.WEST)
-        val playerEast = makePlayerCardListModel(Table.EAST)
+        val playerSouth = makePlayerCardListModel(TablePosition.SOUTH)
+        val playerNorth = makePlayerCardListModel(TablePosition.NORTH)
+        val playerWest = makePlayerCardListModel(TablePosition.WEST)
+        val playerEast = makePlayerCardListModel(TablePosition.EAST)
 
         val gameJsonString = "" //Gson().toJson(gm)
         val newRoundStarted = gameKlaverjassen.getCurrentRound().hasNotStarted()
 
-        if (playerToMove.tablePosition == Table.SOUTH) {
-            (playerToMove as GeniusPlayerKlaverjassen).printAnalyzer()
+        if (positionToMove == TablePosition.SOUTH) {
+            (gameMasterKlaverjassen.getCardPlayer(TablePosition.SOUTH) as GeniusPlayerKlaverjassen).printAnalyzer()
         }
 
         return GameStatusModelKlaverjassen(
             generic = GameStatusModel(
-                onTable,
-                playerToMove.tablePosition,
-                leadPlayer.tablePosition,
+                onTablePosition,
+                positionToMove,
+                leadPosition,
                 newRoundStarted,
                 playerSouth,
                 playerWest,
@@ -64,20 +67,20 @@ class ServiceKlaverjassen {
             ),
             trumpChoice = TrumpChoiceModel(
                 (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getTrumpColor(),
-                (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getContractOwner().tablePosition
+                (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getContractOwner()
             )
         )
     }
 
-    private fun makePlayerCardListModel(tablePosition: Table): List<CardInHandModel> {
-        val player = gameKlaverjassen.getCardPlayer(tablePosition)
+    private fun makePlayerCardListModel(tablePosition: TablePosition): List<CardInHandModel> {
+        val player = gameMasterKlaverjassen.getCardPlayer(tablePosition)
         return player
             .getCardsInHand()
             .sortedBy { card -> 100 * card.color.ordinal + card.rank.ordinal }
             .map { card ->
                 CardInHandModel(
                     card,
-                    gameKlaverjassen.isLegalCardToPlay(player, card),
+                    gameMasterKlaverjassen.isLegalCardToPlay(player, card),
                     getGeniusCardValue(player as PlayerKlaverjassen, card)
                 )
             }
@@ -88,36 +91,36 @@ class ServiceKlaverjassen {
     }
 
     fun computeMove(): CardPlayedModel? {
-        val playerToMove = gameKlaverjassen.getPlayerToMove()
+        val playerToMove = gameMasterKlaverjassen.getPlayerToMove()
         val suggestedCardToPlay = playerToMove.chooseCard()
         return executeMove(suggestedCardToPlay.color, suggestedCardToPlay.rank)
     }
 
     fun executeMove(color: CardColor, rank: CardRank): CardPlayedModel? {
-        val playerToMove = gameKlaverjassen.getPlayerToMove()
+        val playerToMove = gameMasterKlaverjassen.getPlayerToMove()
         val suggestedCardToPlay = Card(color, rank)
-        if (!gameKlaverjassen.isLegalCardToPlay(playerToMove, suggestedCardToPlay))
+        if (!gameMasterKlaverjassen.isLegalCardToPlay(playerToMove, suggestedCardToPlay))
             return null
 
         val cardsStillInHand = playerToMove.getNumberOfCardsInHand()
 
-        gameKlaverjassen.playCard(suggestedCardToPlay)
+        gameMasterKlaverjassen.playCard(suggestedCardToPlay)
 
         val trickCompleted = if (gameKlaverjassen.trickCompleted())
             TrickCompletedModel(
-                gameKlaverjassen.getLastTrickWinner()!!.tablePosition,
+                gameKlaverjassen.getLastTrickWinner()!!,
                 gameKlaverjassen.roundCompleted(),
                 gameKlaverjassen.isFinished(),
             )
         else
             null
 
-        val nextPlayer = gameKlaverjassen.getPlayerToMove()
+        val nextPositionToPlay = gameKlaverjassen.getPositionToMove()
 
         return CardPlayedModel(
             playerToMove.tablePosition,
             suggestedCardToPlay,
-            nextPlayer.tablePosition,
+            nextPositionToPlay,
             cardsStillInHand,
             trickCompleted,
         )
@@ -155,15 +158,14 @@ class ServiceKlaverjassen {
         )
     }
 
-    fun computeTrumpCardChoice(tablePosition: Table): TrumpChoiceModel {
-        val choosingPlayer = (gameKlaverjassen.getCardPlayer(tablePosition) as PlayerKlaverjassen)
+    fun computeTrumpCardChoice(tablePosition: TablePosition): TrumpChoiceModel {
+        val choosingPlayer = (gameMasterKlaverjassen.getCardPlayer(tablePosition) as PlayerKlaverjassen)
         val trumpColor = choosingPlayer.chooseTrumpColor()
         return executeTrumpCardChoice(trumpColor, tablePosition)
     }
 
-    fun executeTrumpCardChoice(trumpColor: CardColor, tablePosition: Table): TrumpChoiceModel {
-        val choosingPlayer = (gameKlaverjassen.getCardPlayer(tablePosition) as PlayerKlaverjassen)
-        gameKlaverjassen.setTrumpColorAndContractOwner(trumpColor, choosingPlayer)
-        return TrumpChoiceModel(trumpColor, choosingPlayer.tablePosition)
+    fun executeTrumpCardChoice(trumpColor: CardColor, tablePosition: TablePosition): TrumpChoiceModel {
+        (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).setTrumpColorAndContractOwner(trumpColor, tablePosition)
+        return TrumpChoiceModel(trumpColor, tablePosition)
     }
 }

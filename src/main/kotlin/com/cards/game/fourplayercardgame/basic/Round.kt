@@ -1,36 +1,30 @@
 package com.cards.game.fourplayercardgame.basic
 
-import com.cards.game.card.Card
+abstract class Round() {
 
-abstract class Round(
-    private val leadPlayer: Player) {
+    private val trickList = mutableListOf<Trick>()
 
-    private val completedTrickList = mutableListOf<Trick>()
-    private var currentTrick: Trick = createTrick(leadPlayer)
-
-    abstract fun createTrick(leadPlayer: Player): Trick
     abstract fun isComplete(): Boolean
 
-    fun getLeadPlayer() = leadPlayer
-    fun completedTricksPlayed() = completedTrickList.size
-    fun hasNotStarted(): Boolean = completedTrickList.isEmpty() && currentTrick.hasNotStarted()
-    fun getTrickOnTable() = currentTrick
-    fun getLastCompletedTrickWinner(): Player? = completedTrickList.lastOrNull()?.getWinner()
-    fun getCompletedTrickList() = completedTrickList.toList()
+    private fun getLastTrick() = trickList.lastOrNull()?:throw Exception("We do not have a last trick")
+    fun hasNotStarted(): Boolean = trickList.size == 1 && trickList.first().hasNotStarted()
+    fun getTrickOnTable() = if (getLastTrick().isActive()) getLastTrick() else throw Exception("We do not have a current trick on table")
+    fun getLastCompletedTrickWinner(): TablePosition? = getLastCompletedTrick()?.getWinner()
+    fun getTrickList() = trickList.toList()
 
-    fun playCard(card: Card) {
-        currentTrick.addCard(card)
-        if (currentTrick.isComplete()) {
-            val winner = currentTrick.getWinner()!!
-            addTrick(currentTrick)
-            currentTrick = createTrick(winner)
-        }
+    private fun getLastCompletedTrick(): Trick? {
+        if (trickList.isEmpty())
+            return null
+        if (!trickList.last().isActive())
+            return trickList.last()
+        if (trickList.size <= 1)
+            return null
+        return trickList[trickList.size - 2]
     }
 
-    private fun addTrick(trick: Trick) {
-        if (!isComplete())
-            completedTrickList.add(trick)
-        else
-            throw Exception("Trying to add more tricks to a Deal than the maximum allowed")
+    fun addTrick(trick: Trick) {
+        if (isComplete())
+            throw Exception("Trying to add more tricks to a round than the maximum allowed")
+        trickList.add(trick)
     }
 }
