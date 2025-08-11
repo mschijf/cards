@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 class GeniusPlayerQualityTest {
     @Test
     fun runTest() {
-        RANDOMIZER.setSeed(1)
+        RANDOMIZER.setFixedSequence(true)
         val numberOfTests = 1000
         val serie = (1..numberOfTests).map { testOneGame(it) }
         println()
@@ -20,7 +20,6 @@ class GeniusPlayerQualityTest {
     }
 
     private fun testOneGame(index: Int): ScoreKlaverjassen {
-//        println(index)
         val gameMaster = GameMasterKlaverjassen()
         val testGame = gameMaster.startNewGame() as GameKlaverjassen
 

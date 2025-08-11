@@ -12,15 +12,12 @@ class GameMasterKlaverjassen: GameMaster() {
     override fun createGame() = GameKlaverjassen()
 
     override fun initialPlayerList(): List<Player> {
-        val x = listOf(
+        return listOf(
             PlayerKlaverjassen(TablePosition.WEST, getGame() as GameKlaverjassen),
             GeniusPlayerKlaverjassen(TablePosition.NORTH, getGame() as GameKlaverjassen),
             PlayerKlaverjassen(TablePosition.EAST, getGame() as GameKlaverjassen),
             GeniusPlayerKlaverjassen(TablePosition.SOUTH, getGame() as GameKlaverjassen),
         )
-        (x[3] as GeniusPlayerKlaverjassen).setGameMaster(this)
-        (x[1] as GeniusPlayerKlaverjassen).setGameMaster(this)
-        return x
     }
 
     override fun isLegalCardToPlay(player: Player, card: Card): Boolean {

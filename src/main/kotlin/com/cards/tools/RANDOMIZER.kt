@@ -5,7 +5,7 @@ import kotlin.random.Random
 object RANDOMIZER {
     private var fixedSeed : Int? = null
     private var lastSeedUsed = 0
-    private var fixedSequence = true
+    private var fixedSequence = false
 
     fun setSeed(seed: Int) {
         fixedSeed = seed
@@ -13,12 +13,17 @@ object RANDOMIZER {
     fun unsetSeed() {
         fixedSeed = null
     }
+    fun setFixedSequence(fixed: Boolean) {
+        fixedSequence = fixed
+    }
 
     fun getShuffleRandomizer(): Random {
-        lastSeedUsed =  if (fixedSequence) {
+        lastSeedUsed =  if (fixedSeed != null) {
+            fixedSeed!!
+        } else if (fixedSequence) {
             Random(lastSeedUsed).nextInt(0, Int.MAX_VALUE)
         } else {
-            if (fixedSeed != null) fixedSeed!! else Random.nextInt(0, Int.MAX_VALUE)
+            Random.nextInt(0, Int.MAX_VALUE)
         }
         return kotlin.random.Random(lastSeedUsed)
     }
