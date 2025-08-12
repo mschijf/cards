@@ -1,16 +1,18 @@
 package com.cards.game.fourplayercardgame.basic
 
+import com.cards.game.fourplayercardgame.klaverjassen.NUMBER_OF_TRICKS_PER_ROUND
+
 abstract class Round() {
 
     private val trickList = mutableListOf<Trick>()
-
-    abstract fun isComplete(): Boolean
 
     private fun getLastTrick() = trickList.lastOrNull()?:throw Exception("We do not have a last trick")
     fun hasNotStarted(): Boolean = trickList.size == 1 && trickList.first().hasNotStarted()
     fun getTrickOnTable() = if (getLastTrick().isActive()) getLastTrick() else throw Exception("We do not have a current trick on table")
     fun getLastCompletedTrickWinner(): TablePosition? = getLastCompletedTrick()?.getWinner()
     fun getTrickList() = trickList.toList()
+    fun isComplete() = getTrickList().size == NUMBER_OF_TRICKS_PER_ROUND && getTrickList().last().isComplete()
+    fun isLastTrick(trick: Trick) = getTrickList().size == NUMBER_OF_TRICKS_PER_ROUND && getTrickList().last() == trick
 
     private fun getLastCompletedTrick(): Trick? {
         if (trickList.isEmpty())

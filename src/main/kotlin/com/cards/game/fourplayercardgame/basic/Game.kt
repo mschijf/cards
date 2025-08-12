@@ -36,8 +36,7 @@ abstract class Game() {
             throw Exception("Trying to add a round to a finished game")
         val round = createRound()
         roundList.add(round)
-        val trick = createTrick(leadPosition)
-        round.addTrick(trick)
+        createNewTrick(leadPosition)
     }
 
     private fun createNewTrick(leadPosition: TablePosition): Trick {
@@ -59,14 +58,12 @@ abstract class Game() {
         if (isFinished()) {
             //nothing to do right now
         } else if (currentRound.isComplete()) {
-            createNewRoundAndTrick(currentRound.getTrickList().first().getLeadPosition().clockwiseNext())
-            //todo: teveel spelkennis ^^^ ??
-            //en hoe maken we duidelijk aan de master dat er opnieuw gedeeld moet worden? vvvv
+            val previousLeadStart = currentRound.getTrickList().first().getLeadPosition()
+            createNewRoundAndTrick(previousLeadStart.clockwiseNext())
         } else if (trickOnTable.isComplete()) {
             createNewTrick(trickOnTable.getWinner()!!)
-            //todo: teveel spelkennis ^^^ ??
         } else {
-            //nothing to do, next player is known by trick
+            //nothing to do
         }
     }
 }

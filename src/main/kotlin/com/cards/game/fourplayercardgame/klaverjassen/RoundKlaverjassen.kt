@@ -3,8 +3,6 @@ package com.cards.game.fourplayercardgame.klaverjassen
 import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.basic.Round
 import com.cards.game.fourplayercardgame.basic.TablePosition
-import com.cards.game.fourplayercardgame.basic.Trick
-import java.lang.Exception
 
 
 class RoundKlaverjassen() : Round() {
@@ -20,18 +18,6 @@ class RoundKlaverjassen() : Round() {
     fun setTrumpColorAndContractOwner(trumpColor: CardColor, contractOwner: TablePosition) {
         this.trumpColor= trumpColor
         this.contractOwner = contractOwner
-    }
-
-    override fun isComplete(): Boolean {
-        return getTrickList().size == NUMBER_OF_TRICKS_PER_ROUND && getTrickList().last().isComplete()
-    }
-
-    fun isLastTrick(trick: Trick): Boolean {
-        return if (getTrickList().size == NUMBER_OF_TRICKS_PER_ROUND && getTrickList().last() == trick) {
-            true
-        } else {
-            false
-        }
     }
 
     private fun allTricksWonByTeam(team: Set<TablePosition>): Boolean {
