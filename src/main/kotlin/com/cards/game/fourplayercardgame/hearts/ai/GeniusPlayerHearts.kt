@@ -27,8 +27,6 @@ class GeniusPlayerHearts(
         return round
             .getTrickList()
             .flatMap{ trick -> trick.getCardsPlayed()}
-            .union (round.getTrickOnTable().getCardsPlayed())
-            .map { cardPlayed -> cardPlayed.card}
     }
 
     private fun getCardsStillInPlay(): List<Card> {
@@ -42,7 +40,7 @@ class GeniusPlayerHearts(
         val trick = game.getCurrentRound().getTrickOnTable()
         val leadColor = trick.getLeadColor()
 
-        if (trick.getCardsPlayed().lastOrNull()?.position?.clockwiseNext() != this.tablePosition)
+        if (trick.getPositionToMove() != this.tablePosition)
             return zeroValued()
 
         if (trick.isLeadPosition(this.tablePosition))
@@ -95,7 +93,7 @@ class GeniusPlayerHearts(
                 .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), -200)
         } else {
             if (trick.isLastPlayerToMove() ) {
-                val trickValue = trick.getCardsPlayed().sumOf { cardPlayed -> cardPlayed.card.cardValue() }
+                val trickValue = trick.getCardsPlayed().sumOf { cardPlayed -> cardPlayed.cardValue() }
                 if (trickValue == 0 && !analyzer.hasAllCardsOfColor(leadColor) && analyzer.canGetRidOfLeadPosition(leadColor)) {
                     // save to throw the highest card
                     analyzer

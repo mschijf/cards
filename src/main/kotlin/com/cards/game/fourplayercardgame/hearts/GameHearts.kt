@@ -25,7 +25,7 @@ class GameHearts(): Game() {
     fun getCumulativeScorePerRound(): List<ScoreHearts> {
         return getRounds()
             .filter { it.isComplete() }
-            .mapIndexed { index, round ->  getGameScoreForRound(round)}
+            .map { round ->  getGameScoreForRound(round)}
             .runningFold(ScoreHearts.ZERO) { acc, sc -> acc.plus(sc) }.drop(1)
     }
 

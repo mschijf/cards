@@ -107,7 +107,7 @@ private fun bonusValueForColor(cardList: List<Card>, forCardColor: CardColor, tr
 }
 
 fun List<Card>.legalPlayable(trick: Trick, trumpColor: CardColor) =
-    this.legalPlayable(trick.getCardsPlayed().map{it.card}, trumpColor)
+    this.legalPlayable(trick.getCardsPlayed(), trumpColor)
 
 fun List<Card>.legalPlayable(cardsPlayed: List<Card>, trumpColor: CardColor) : List<Card> {
     if (cardsPlayed.isEmpty())

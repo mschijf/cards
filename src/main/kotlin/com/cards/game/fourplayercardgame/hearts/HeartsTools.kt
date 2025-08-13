@@ -22,7 +22,7 @@ fun Card.cardValue(): Int {
 fun Card.toRankNumber() : Int = this.rank.rankNumber - 7
 
 fun List<Card>.legalPlayable(trick: Trick) =
-    this.legalPlayable(trick.getCardsPlayed().map{it.card})
+    this.legalPlayable(trick.getCardsPlayed())
 
 fun List<Card>.legalPlayable(cardsPlayed: List<Card>) : List<Card> {
     return this

@@ -12,7 +12,7 @@ open class PlayerKlaverjassen(tablePosition: TablePosition, game: GameKlaverjass
     override fun chooseCard(): Card {
         return getCardsInHand()
             .legalPlayable(
-                getCurrentRound().getTrickOnTable().getCardsPlayed().map { it.card },
+                getCurrentRound().getTrickOnTable().getCardsPlayed(),
                 getCurrentRound().getTrumpColor())
             .first()
     }

@@ -7,28 +7,20 @@ import com.cards.game.fourplayercardgame.basic.Trick
 class TrickHearts(leadPosition: TablePosition): Trick(leadPosition) {
 
     override fun getWinner(): TablePosition? {
-        return if (!isComplete()) {
-            null
-        } else {
-            getCardsPlayed()
-                .filter { playerPlayedCard -> isLeadColor(playerPlayedCard.card.color) }
-                .maxByOrNull { playerPlayedCard -> playerPlayedCard.card.toRankNumber() }
-                ?.position
-        }
+        return getPositionByCardPlayed(getWinningCard())
     }
 
     override fun getWinningCard(): Card? {
         return getCardsPlayed()
-            .filter { playerPlayedCard -> isLeadColor(playerPlayedCard.card.color) }
-            .maxByOrNull { playerPlayedCard -> playerPlayedCard.card.toRankNumber() }
-            ?.card
+            .filter { card -> isLeadColor(card.color) }
+            .maxByOrNull { card -> card.toRankNumber() }
     }
 
     fun getScore(): ScoreHearts {
         return if (!isComplete()) {
             ScoreHearts.ZERO
         } else {
-            ScoreHearts.scoreForPlayer(getWinner()!!, getCardsPlayed().sumOf { cp -> cp.card.cardValue() })
+            ScoreHearts.scoreForPlayer(getWinner()!!, getCardsPlayed().sumOf { card -> card.cardValue() })
         }
     }
 

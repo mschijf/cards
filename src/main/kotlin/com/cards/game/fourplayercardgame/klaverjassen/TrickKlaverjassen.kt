@@ -9,25 +9,18 @@ class TrickKlaverjassen(
     private val round: RoundKlaverjassen): Trick(leadPosition) {
 
     override fun getWinner(): TablePosition? {
-        val winningCard = getWinningCard()
-        return if (!isComplete()) {
-            null
-        } else {
-            getCardsPlayed().firstOrNull{ playerPlayedCard -> playerPlayedCard.card == winningCard }?.position
-        }
+        return getPositionByCardPlayed(getWinningCard())
     }
 
     override fun getWinningCard(): Card? {
-        return if (getCardsPlayed().any { crd -> crd.card.color == round.getTrumpColor() }) {
+        return if (getCardsPlayed().any { card -> card.color == round.getTrumpColor() }) {
             getCardsPlayed()
-                .filter { playerPlayedCard -> playerPlayedCard.card.color == round.getTrumpColor() }
-                .maxByOrNull { playerPlayedCard -> playerPlayedCard.card.toRankNumberTrump() }
-                ?.card
+                .filter { card -> card.color == round.getTrumpColor() }
+                .maxByOrNull { card -> card.toRankNumberTrump() }
         } else {
             getCardsPlayed()
-                .filter { playerPlayedCard -> isLeadColor(playerPlayedCard.card.color) }
-                .maxByOrNull { playerPlayedCard -> playerPlayedCard.card.toRankNumberNoTrump() }
-                ?.card
+                .filter { card -> isLeadColor(card.color) }
+                .maxByOrNull { card -> card.toRankNumberNoTrump() }
         }
     }
 
@@ -38,8 +31,8 @@ class TrickKlaverjassen(
         } else {
             ScoreKlaverjassen.scoreForPlayer(
                 getWinner()!!,
-                lastTrickPoints + getCardsPlayed().sumOf { playerPlayedCard -> playerPlayedCard.card.cardValue(round.getTrumpColor()) },
-                getCardsPlayed().map { it.card }.bonusValue(trumpColor = round.getTrumpColor())
+                lastTrickPoints + getCardsPlayed().sumOf { card -> card.cardValue(round.getTrumpColor()) },
+                getCardsPlayed().bonusValue(trumpColor = round.getTrumpColor())
             )
         }
     }

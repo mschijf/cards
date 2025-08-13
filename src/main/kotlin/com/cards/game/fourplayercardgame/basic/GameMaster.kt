@@ -54,24 +54,24 @@ abstract class GameMaster {
 
     //==================================================================================================================
 
-    private fun printLastRoundPlayed() {
-        print("[Seed: ${RANDOMIZER.getLastSeedUsed()}]  Round: ")
-        getGame().getRounds().last().getTrickList().forEach { trick->
-            print("[")
-            val leadPosition = trick.getCardsPlayed().first().position
-            getPlayerList().map { pl -> trick.getCardsPlayed().first{ cp -> cp.position == pl.tablePosition }}.forEach { cardPlayed ->
-                if (cardPlayed.position == leadPosition)
-                    print("(")
-                print("${cardPlayed.card}")
-                if (cardPlayed.position == leadPosition)
-                    print(")")
-                if (getPlayerList().last().tablePosition != cardPlayed.position)
-                    print(",")
-            }
-            print("]  ")
-        }
-        println()
-    }
+//    private fun printLastRoundPlayed() {
+//        print("[Seed: ${RANDOMIZER.getLastSeedUsed()}]  Round: ")
+//        getGame().getRounds().last().getTrickList().forEach { trick->
+//            print("[")
+//            val leadPosition = trick.getLeadPosition()
+//            getPlayerList().map { player -> trick.getCardsPlayed().first{ cp -> cp.position == player.tablePosition }}.forEach { cardPlayed ->
+//                if (cardPlayed.position == leadPosition)
+//                    print("(")
+//                print("${cardPlayed.card}")
+//                if (cardPlayed.position == leadPosition)
+//                    print(")")
+//                if (getPlayerList().last().tablePosition != cardPlayed.position)
+//                    print(",")
+//            }
+//            print("]  ")
+//        }
+//        println()
+//    }
 
 
 }

@@ -85,7 +85,8 @@ class ChooseCardAnalyzer(
             val sumSureHas1 = playerSureHas.values.fold(emptySet<Card>()) { acc, sureHasCards -> acc + sureHasCards }
             allPositions.forEach { player -> playerCanHave[player]!!.removeAll(sumSureHas1) }
 
-            val playersPlayedInLastTrick = currentRound.getTrickOnTable().getCardsPlayed().map{ it.position}
+            val playersPlayedInLastTrick = currentRound.getTrickOnTable().getPlayersPlayed()
+
             //if number of canHave + SureHas == number of cardsInHand
             otherPositions.forEach { otherPlayer ->
                 val numberOfCardsInHandOtherPlayer = playerForWhichWeAnalyse.getCardsInHand().size - if (otherPlayer in playersPlayedInLastTrick) 1 else 0
@@ -123,8 +124,8 @@ class ChooseCardAnalyzer(
 
         val allTricks = playerForWhichWeAnalyse.getCurrentRound().getTrickList()
         allTricks.filterNot { trick -> trick.hasNotStarted() }.forEach { trick ->
-            val firstCard = trick.getCardsPlayed().first().card
-            val firstPosition = trick.getCardsPlayed().first().position
+            val firstCard = trick.getCardsPlayed().first()
+            val firstPosition = trick.getLeadPosition()
             otherPositions.forEach {
                 otherPosition -> playerCanHave[otherPosition]!! -= firstCard
             }
@@ -135,45 +136,45 @@ class ChooseCardAnalyzer(
             cardsPlayedDuringAnalysis.add(firstCard)
 
             var highestTrumpUpTillNow = if (firstCard.color == trumpColor) firstCard else null
-            trick.getCardsPlayed().drop(1).forEach { playerPlayedCard ->
-
+            trick.getCardsPlayed().drop(1).forEach { cardPlayed ->
+                val position = trick.getPositionByCardPlayed(cardPlayed)!!
                 otherPositions.forEach { otherPosition ->
-                    playerCanHave[otherPosition]!! -= playerPlayedCard.card
+                    playerCanHave[otherPosition]!! -= cardPlayed
                 }
 
-                if (playerPlayedCard.card.color != firstCard.color) {
-                    playerCanHave[playerPlayedCard.position]!! -= allCards.ofColor(firstCard.color)
-                    if (playerPlayedCard.card.color != trumpColor) {
-                        playerCanHave[playerPlayedCard.position]!! -= allCards.ofColor(trumpColor)
+                if (cardPlayed.color != firstCard.color) {
+                    playerCanHave[position]!! -= allCards.ofColor(firstCard.color)
+                    if (cardPlayed.color != trumpColor) {
+                        playerCanHave[position]!! -= allCards.ofColor(trumpColor)
                     } else {
-                        if (!playerPlayedCard.card.beats(highestTrumpUpTillNow, trumpColor)) {
-                            playerCanHave[playerPlayedCard.position]!! -= allCards.filter {
+                        if (!cardPlayed.beats(highestTrumpUpTillNow, trumpColor)) {
+                            playerCanHave[position]!! -= allCards.filter {
                                 it.beats(highestTrumpUpTillNow, trumpColor)
                             }
                         }
                     }
-                } else if (playerPlayedCard.card.color == trumpColor && highestTrumpUpTillNow!!.beats(playerPlayedCard.card, trumpColor)) {
-                    playerCanHave[playerPlayedCard.position]!! -= allCards.filter {
+                } else if (cardPlayed.color == trumpColor && highestTrumpUpTillNow!!.beats(cardPlayed, trumpColor)) {
+                    playerCanHave[position]!! -= allCards.filter {
                         it.beats(highestTrumpUpTillNow, trumpColor)
                     }
                 } else {
                     //player just follows, we can not conclude anything yet
                 }
 
-                newTrick.addCard(playerPlayedCard.position, playerPlayedCard.card)
+                newTrick.addCard(position, cardPlayed)
                 determineAssumptions(newTrick)
-                cardsPlayedDuringAnalysis.add(playerPlayedCard.card)
+                cardsPlayedDuringAnalysis.add(cardPlayed)
 
-                if (playerPlayedCard.card.color == trumpColor && playerPlayedCard.card.beats(highestTrumpUpTillNow, trumpColor))
-                    highestTrumpUpTillNow = playerPlayedCard.card
+                if (cardPlayed.color == trumpColor && cardPlayed.beats(highestTrumpUpTillNow, trumpColor))
+                    highestTrumpUpTillNow = cardPlayed
 
             }
         }
     }
 
     private fun determineAssumptions(trickSoFar: TrickKlaverjassen) {
-        val playerJustMoved = trickSoFar.getCardsPlayed().last().position
-        val cardJustPlayed = trickSoFar.getCardsPlayed().last().card
+        val cardJustPlayed = trickSoFar.getCardsPlayed().last()
+        val playerJustMoved = trickSoFar.getPositionByCardPlayed(cardJustPlayed)!!
 
         if (trickSoFar.isLeadPosition(playerJustMoved) && currentRound.isContractOwner(playerJustMoved)) {
             if (noRealTrumpsPlayed()) {
@@ -255,8 +256,9 @@ class ChooseCardAnalyzer(
     }
 
     private fun roemWeggegevenDoorLastPlayer(trickSoFar: TrickKlaverjassen): Boolean {
-        val playerJustMoved = trickSoFar.getCardsPlayed().last().position
-        val cardJustPlayed = trickSoFar.getCardsPlayed().last().card
+        val cardJustPlayed = trickSoFar.getCardsPlayed().last()
+        val playerJustMoved = trickSoFar.getPositionByCardPlayed(cardJustPlayed)!!
+
         val bonusAfter = trickSoFar.getScore().getBonusForPlayer(playerJustMoved.clockwiseNext())
         trickSoFar.removeLastCard()
         val bonusBefore = trickSoFar.getScore().getBonusForPlayer(playerJustMoved.clockwiseNext())
@@ -265,8 +267,9 @@ class ChooseCardAnalyzer(
     }
 
     private fun roemOntwekenDoorLastPlayer(trickSoFar: TrickKlaverjassen): Boolean {
-        val playerJustMoved = trickSoFar.getCardsPlayed().last().position
-        val cardJustPlayed = trickSoFar.getCardsPlayed().last().card
+        val cardJustPlayed = trickSoFar.getCardsPlayed().last()
+        val playerJustMoved = trickSoFar.getPositionByCardPlayed(cardJustPlayed)!!
+
         val bonusAfter = trickSoFar.getScore().getBonusForPlayer(playerJustMoved)
         trickSoFar.removeLastCard()
         val bonusBefore = trickSoFar.getScore().getBonusForPlayer(playerJustMoved)

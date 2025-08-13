@@ -9,7 +9,7 @@ open class PlayerHearts (tablePosition: TablePosition, game: GameHearts) : Playe
     override fun chooseCard(): Card {
         return getCardsInHand()
             .legalPlayable(
-                game.getCurrentRound().getTrickOnTable().getCardsPlayed().map{it.card}
+                game.getCurrentRound().getTrickOnTable().getCardsPlayed()
             )
         .first()
     }

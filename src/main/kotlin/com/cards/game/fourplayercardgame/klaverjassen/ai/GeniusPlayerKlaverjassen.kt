@@ -93,7 +93,7 @@ class GeniusPlayerKlaverjassen(
             val possibleCards = (
                     chooseCardAnalyzer.playerCanHaveCards(position) +
                     chooseCardAnalyzer.playerSureHasCards(position) -
-                    trickSoFar.getCardsPlayed().map { it.card }
+                    trickSoFar.getCardsPlayed()
                     ).toList()
             val legalPossibilities = possibleCards.legalPlayable(trickSoFar, trump())
             assert (legalPossibilities.isNotEmpty())
