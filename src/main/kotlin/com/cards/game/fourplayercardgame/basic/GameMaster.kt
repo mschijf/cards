@@ -35,19 +35,19 @@ abstract class GameMaster {
         playerList.forEachIndexed { idx, player -> player.setCardsInHand(cardPiles[idx])}
     }
 
-    fun playCard(card: Card) {
+    fun playCard(card: Card): GameStatus {
         if (getGame().isFinished())
             throw Exception("Trying to play a card, but the game is already over")
 
         val playerToMove = getCardPlayer(getGame().getPositionToMove())
-        if (isLegalCardToPlay(playerToMove, card)) {
-            playerToMove.removeCard(card)
-            getGame().playCard(card)
-            if (allPlayersHaveNoCards())
-                dealCards()
-        } else {
+        if (!isLegalCardToPlay(playerToMove, card))
             throw Exception("trying to play an illegal card: Card($card)")
-        }
+
+        playerToMove.removeCard(card)
+        val gameStatus = getGame().playCard(card)
+        if (allPlayersHaveNoCards())
+            dealCards()
+        return gameStatus
     }
 
     fun isGameFinished() = getGame().isFinished()

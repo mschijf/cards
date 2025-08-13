@@ -7,12 +7,11 @@ import com.cards.game.fourplayercardgame.basic.TablePosition
 
 class RoundKlaverjassen() : Round() {
 
-    private var trumpColor: CardColor? = null
-    private var contractOwner: TablePosition? = null
+    private var trumpColor: CardColor = CardColor.CLUBS
+    private var contractOwner: TablePosition = TablePosition.WEST
 
-    fun trumpColorAndContractOwnerSet() = (trumpColor != null && contractOwner != null)
-    fun getTrumpColor() = trumpColor?:throw Exception("TrumpColor not set")
-    fun getContractOwner() = contractOwner?:throw Exception("ContractOwner not set")
+    fun getTrumpColor() = trumpColor
+    fun getContractOwner() = contractOwner
     fun isContractOwner(tablePosition: TablePosition) = (contractOwner == tablePosition)
 
     fun setTrumpColorAndContractOwner(trumpColor: CardColor, contractOwner: TablePosition) {

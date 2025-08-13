@@ -34,7 +34,7 @@ class GameMasterKlaverjassen: GameMaster() {
     }
 
     fun isNewTrumpNeeded(): Boolean {
-        return !(getGame().getCurrentRound() as RoundKlaverjassen).trumpColorAndContractOwnerSet()
+        return getGame().getCurrentRound().hasNotStarted()
     }
 
     fun determineNewTrump() {

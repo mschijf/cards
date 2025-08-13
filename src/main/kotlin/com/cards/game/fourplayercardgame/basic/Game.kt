@@ -8,17 +8,11 @@ abstract class Game() {
 
     abstract fun createTrick(leadPosition: TablePosition): Trick
     abstract fun createRound(): Round
+    abstract fun isFinished(): Boolean
 
     fun start() {
         createNewRoundAndTrick(TablePosition.WEST)
     }
-
-    //abstract game
-    abstract fun isFinished(): Boolean
-
-    fun trickCompleted() = getCurrentRound().getTrickOnTable().hasNotStarted()
-    fun roundCompleted() = getCurrentRound().hasNotStarted()
-    //todo: ^^^ beide functies niet echt mooi, omdat ze eigenlijk zeggen of een nieuwe ronde begonenn is.
 
     fun getLastTrickWinner(): TablePosition?  =
         if (getCurrentRound().hasNotStarted())
@@ -29,24 +23,20 @@ abstract class Game() {
     fun getRounds() = roundList.toList()
     fun getCurrentRound() = roundList.lastOrNull()?:throw Exception("We do not have a current round")
     fun getPreviousRound() = if (roundList.size >= 2) roundList[roundList.size - 2] else null
-    open fun getPositionToMove() = getCurrentRound().getTrickOnTable().getPositionToMove()
+    fun getPositionToMove() = getCurrentRound().getTrickOnTable().getPositionToMove()
 
     private fun createNewRoundAndTrick(leadPosition: TablePosition) {
         if (isFinished())
             throw Exception("Trying to add a round to a finished game")
-        val round = createRound()
-        roundList.add(round)
+        roundList.add(createRound())
         createNewTrick(leadPosition)
     }
 
-    private fun createNewTrick(leadPosition: TablePosition): Trick {
-        val trick = createTrick(leadPosition)
-        getCurrentRound().addTrick(trick)
-        return trick
+    private fun createNewTrick(leadPosition: TablePosition) {
+        getCurrentRound().addTrick(createTrick(leadPosition))
     }
 
-    //play card
-    fun playCard(card: Card) {
+    fun playCard(card: Card): GameStatus {
         if (isFinished())
             throw Exception("Trying to play a card, but the game is already over")
 
@@ -56,15 +46,21 @@ abstract class Game() {
         trickOnTable.addCard(getPositionToMove(), card)
 
         if (isFinished()) {
-            //nothing to do right now
+            return GameStatus(gameFinished = true, roundFinished = true, trickFinished = true)
         } else if (currentRound.isComplete()) {
             val previousLeadStart = currentRound.getTrickList().first().getLeadPosition()
             createNewRoundAndTrick(previousLeadStart.clockwiseNext())
+            return GameStatus(gameFinished = false, roundFinished = true, trickFinished = true)
         } else if (trickOnTable.isComplete()) {
             createNewTrick(trickOnTable.getWinner()!!)
+            return GameStatus(gameFinished = false, roundFinished = false, trickFinished = true)
         } else {
-            //nothing to do
+            return GameStatus(gameFinished = false, roundFinished = false, trickFinished = false)
         }
     }
 }
+
+
+
+
 

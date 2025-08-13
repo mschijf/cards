@@ -8,7 +8,6 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.TablePosition
-import com.cards.game.fourplayercardgame.hearts.GameHearts
 import com.cards.game.fourplayercardgame.hearts.GameMasterHearts
 import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
 import com.cards.tools.RANDOMIZER
@@ -97,13 +96,13 @@ class ServiceHearts {
 
         val cardsStillInHand = playerToMove.getNumberOfCardsInHand()
 
-        gameMasterHearts.playCard(suggestedCardToPlay)
+        val gameStatus = gameMasterHearts.playCard(suggestedCardToPlay)
 
-        val trickCompleted = if (gameHearts.trickCompleted())
+        val trickCompleted = if (gameStatus.trickFinished)
             TrickCompletedModel(
                 gameHearts.getLastTrickWinner()!!,
-                gameHearts.roundCompleted(),
-                gameHearts.isFinished(),
+                gameStatus.roundFinished,
+                gameStatus.gameFinished,
             )
         else
             null

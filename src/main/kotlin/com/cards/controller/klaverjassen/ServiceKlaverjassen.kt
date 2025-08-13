@@ -9,7 +9,6 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.TablePosition
-import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.GameMasterKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.PlayerKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
@@ -66,9 +65,9 @@ class ServiceKlaverjassen {
                 RANDOMIZER.getLastSeedUsed()
             ),
             trumpChoice = TrumpChoiceModel(
-                (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getTrumpColor(),
-                (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getContractOwner()
-            )
+                    (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getTrumpColor(),
+                    (gameKlaverjassen.getCurrentRound() as RoundKlaverjassen).getContractOwner()
+                )
         )
     }
 
@@ -104,13 +103,13 @@ class ServiceKlaverjassen {
 
         val cardsStillInHand = playerToMove.getNumberOfCardsInHand()
 
-        gameMasterKlaverjassen.playCard(suggestedCardToPlay)
+        val gameStatus = gameMasterKlaverjassen.playCard(suggestedCardToPlay)
 
-        val trickCompleted = if (gameKlaverjassen.trickCompleted())
+        val trickCompleted = if (gameStatus.trickFinished)
             TrickCompletedModel(
                 gameKlaverjassen.getLastTrickWinner()!!,
-                gameKlaverjassen.roundCompleted(),
-                gameKlaverjassen.isFinished(),
+                gameStatus.roundFinished,
+                gameStatus.gameFinished,
             )
         else
             null
