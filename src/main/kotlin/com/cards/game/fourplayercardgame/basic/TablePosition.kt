@@ -6,15 +6,7 @@ enum class TablePosition {
     EAST,
     SOUTH;
 
-    fun clockwiseNext() : TablePosition =
-        when (this) {
-            WEST -> NORTH
-            NORTH -> EAST
-            EAST -> SOUTH
-            SOUTH -> WEST
-        }
-
-    fun opposite(): TablePosition = clockwiseNext().clockwiseNext()
-
+    fun clockwiseNext(n: Int=1) = values()[(this.ordinal + n) % values().size]
+    fun opposite(): TablePosition = clockwiseNext(2)
     fun isOppositeOf(other: TablePosition?) = this.opposite() == other
 }
