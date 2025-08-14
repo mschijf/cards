@@ -1,9 +1,12 @@
-package com.cards.game.fourplayercardgame.klaverjassen
+package com.cards.game.fourplayercardgame.klaverjassen.player
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
-import com.cards.game.fourplayercardgame.basic.Player
+import com.cards.game.fourplayercardgame.basic.player.Player
 import com.cards.game.fourplayercardgame.basic.TableSide
+import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
+import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
+import com.cards.game.fourplayercardgame.klaverjassen.legalPlayable
 
 open class PlayerKlaverjassen(tableSide: TableSide, game: GameKlaverjassen) : Player(tableSide, game) {
 

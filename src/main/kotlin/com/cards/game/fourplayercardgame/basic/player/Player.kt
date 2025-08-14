@@ -1,10 +1,13 @@
-package com.cards.game.fourplayercardgame.basic
+package com.cards.game.fourplayercardgame.basic.player
 
 import com.cards.game.card.Card
+import com.cards.game.fourplayercardgame.basic.Game
+import com.cards.game.fourplayercardgame.basic.TableSide
 
 abstract class Player(
     val tableSide: TableSide,
-    protected val game: Game) {
+    protected val game: Game
+) {
 
     private var cardsInHand: MutableList<Card> = mutableListOf()
 

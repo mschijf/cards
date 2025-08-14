@@ -1,10 +1,12 @@
-package com.cards.game.fourplayercardgame.hearts
+package com.cards.controller.hearts
 
+import com.cards.controller.basic.GameMaster
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.basic.GameMaster
-import com.cards.game.fourplayercardgame.basic.Player
 import com.cards.game.fourplayercardgame.basic.TableSide
-import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
+import com.cards.game.fourplayercardgame.basic.player.Player
+import com.cards.game.fourplayercardgame.hearts.GameHearts
+import com.cards.game.fourplayercardgame.hearts.legalPlayable
+import com.cards.game.fourplayercardgame.hearts.player.ai.GeniusPlayerHearts
 
 class GameMasterHearts: GameMaster() {
 

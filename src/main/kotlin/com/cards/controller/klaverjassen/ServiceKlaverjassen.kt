@@ -9,11 +9,11 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.TableSide
-import com.cards.game.fourplayercardgame.klaverjassen.GameMasterKlaverjassen
-import com.cards.game.fourplayercardgame.klaverjassen.PlayerKlaverjassen
+import com.cards.controller.klaverjassen.GameMasterKlaverjassen
+import com.cards.game.fourplayercardgame.klaverjassen.player.PlayerKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.ScoreType
-import com.cards.game.fourplayercardgame.klaverjassen.ai.GeniusPlayerKlaverjassen
+import com.cards.game.fourplayercardgame.klaverjassen.player.ai.GeniusPlayerKlaverjassen
 import com.cards.tools.RANDOMIZER
 import org.springframework.stereotype.Service
 

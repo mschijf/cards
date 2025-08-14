@@ -1,4 +1,4 @@
-package com.cards.game.fourplayercardgame.klaverjassen.ai
+package com.cards.game.fourplayercardgame.klaverjassen.player.ai
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor

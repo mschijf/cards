@@ -1,5 +1,7 @@
 package com.cards.game.fourplayercardgame.klaverjassen
 
+import com.cards.controller.klaverjassen.GameMasterKlaverjassen
+import com.cards.game.fourplayercardgame.klaverjassen.player.PlayerKlaverjassen
 import com.cards.tools.RANDOMIZER
 import org.junit.jupiter.api.Test
 

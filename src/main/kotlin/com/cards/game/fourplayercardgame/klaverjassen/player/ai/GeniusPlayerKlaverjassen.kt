@@ -1,10 +1,11 @@
-package com.cards.game.fourplayercardgame.klaverjassen.ai
+package com.cards.game.fourplayercardgame.klaverjassen.player.ai
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.klaverjassen.*
+import com.cards.game.fourplayercardgame.klaverjassen.player.PlayerKlaverjassen
 
 class GeniusPlayerKlaverjassen(
     tableSide: TableSide,
