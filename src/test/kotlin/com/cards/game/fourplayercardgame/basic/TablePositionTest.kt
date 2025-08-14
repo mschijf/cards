@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test
 class TablePositionTest {
     @Test
     fun clockwiseNext() {
-        assertEquals(TablePosition.WEST, TablePosition.WEST.clockwiseNext(0))
-        assertEquals(TablePosition.NORTH, TablePosition.WEST.clockwiseNext())
-        assertEquals(TablePosition.EAST, TablePosition.WEST.clockwiseNext(2))
-        assertEquals(TablePosition.SOUTH, TablePosition.WEST.clockwiseNext(3))
-        assertEquals(TablePosition.EAST, TablePosition.WEST.clockwiseNext(6))
+        assertEquals(TableSide.WEST, TableSide.WEST.clockwiseNext(0))
+        assertEquals(TableSide.NORTH, TableSide.WEST.clockwiseNext())
+        assertEquals(TableSide.EAST, TableSide.WEST.clockwiseNext(2))
+        assertEquals(TableSide.SOUTH, TableSide.WEST.clockwiseNext(3))
+        assertEquals(TableSide.EAST, TableSide.WEST.clockwiseNext(6))
     }
 
 }

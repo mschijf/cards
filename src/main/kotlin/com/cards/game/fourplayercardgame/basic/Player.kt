@@ -3,7 +3,7 @@ package com.cards.game.fourplayercardgame.basic
 import com.cards.game.card.Card
 
 abstract class Player(
-    val tablePosition: TablePosition,
+    val tableSide: TableSide,
     protected val game: Game) {
 
     private var cardsInHand: MutableList<Card> = mutableListOf()
@@ -19,8 +19,8 @@ abstract class Player(
 
     fun removeCard(card: Card) {
         if (!cardsInHand.remove(card)) {
-            throw Exception("cannot remove card $card from hand of player $tablePosition ")
+            throw Exception("cannot remove card $card from hand of player $tableSide ")
         }
     }
-    override fun toString() = "pl-$tablePosition"
+    override fun toString() = "pl-$tableSide"
 }

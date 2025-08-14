@@ -6,15 +6,15 @@ abstract class Game() {
 
     private val roundList = mutableListOf<Round>()
 
-    abstract fun createTrick(leadPosition: TablePosition): Trick
+    abstract fun createTrick(sideToLead: TableSide): Trick
     abstract fun createRound(): Round
     abstract fun isFinished(): Boolean
 
     fun start() {
-        createNewRoundAndTrick(TablePosition.WEST)
+        createNewRoundAndTrick(TableSide.WEST)
     }
 
-    fun getLastTrickWinner(): TablePosition?  =
+    fun getLastTrickWinner(): TableSide?  =
         if (getCurrentRound().hasNotStarted())
             getPreviousRound()?.getLastCompletedTrickWinner()
         else
@@ -23,17 +23,17 @@ abstract class Game() {
     fun getRounds() = roundList.toList()
     fun getCurrentRound() = roundList.lastOrNull()?:throw Exception("We do not have a current round")
     fun getPreviousRound() = if (roundList.size >= 2) roundList[roundList.size - 2] else null
-    fun getPositionToMove() = getCurrentRound().getTrickOnTable().getPositionToMove()
+    fun getSideToMove() = getCurrentRound().getTrickOnTable().getSideToPlay()
 
-    private fun createNewRoundAndTrick(leadPosition: TablePosition) {
+    private fun createNewRoundAndTrick(sideToLead: TableSide) {
         if (isFinished())
             throw Exception("Trying to add a round to a finished game")
         roundList.add(createRound())
-        createNewTrick(leadPosition)
+        createNewTrick(sideToLead)
     }
 
-    private fun createNewTrick(leadPosition: TablePosition) {
-        getCurrentRound().addTrick(createTrick(leadPosition))
+    private fun createNewTrick(sideToLead: TableSide) {
+        getCurrentRound().addTrick(createTrick(sideToLead))
     }
 
     fun playCard(card: Card): GameStatus {
@@ -43,16 +43,16 @@ abstract class Game() {
         val currentRound = getCurrentRound()
         val trickOnTable = currentRound.getTrickOnTable()
 
-        trickOnTable.addCard(getPositionToMove(), card)
+        trickOnTable.addCard(card)
 
         if (isFinished()) {
             return GameStatus(gameFinished = true, roundFinished = true, trickFinished = true)
         } else if (currentRound.isComplete()) {
-            val previousLeadStart = currentRound.getTrickList().first().getLeadPosition()
+            val previousLeadStart = currentRound.getTrickList().first().getSideToLead()
             createNewRoundAndTrick(previousLeadStart.clockwiseNext())
             return GameStatus(gameFinished = false, roundFinished = true, trickFinished = true)
         } else if (trickOnTable.isComplete()) {
-            createNewTrick(trickOnTable.getWinner()!!)
+            createNewTrick(trickOnTable.getWinningSide()!!)
             return GameStatus(gameFinished = false, roundFinished = false, trickFinished = true)
         } else {
             return GameStatus(gameFinished = false, roundFinished = false, trickFinished = false)

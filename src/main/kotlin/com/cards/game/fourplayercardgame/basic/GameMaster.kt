@@ -22,8 +22,8 @@ abstract class GameMaster {
     }
 
     fun getPlayerList() = playerList
-    fun getCardPlayer(tablePosition: TablePosition) = getPlayerList().first { cardPlayer -> cardPlayer.tablePosition == tablePosition }
-    fun getPlayerToMove(): Player = getCardPlayer(getGame().getPositionToMove())
+    fun getCardPlayer(tableSide: TableSide) = getPlayerList().first { cardPlayer -> cardPlayer.tableSide == tableSide }
+    fun getPlayerToMove(): Player = getCardPlayer(getGame().getSideToMove())
 
     private fun allPlayersHaveNoCards() = playerList.all { it.getCardsInHand().isEmpty()}
 
@@ -39,7 +39,7 @@ abstract class GameMaster {
         if (getGame().isFinished())
             throw Exception("Trying to play a card, but the game is already over")
 
-        val playerToMove = getCardPlayer(getGame().getPositionToMove())
+        val playerToMove = getCardPlayer(getGame().getSideToMove())
         if (!isLegalCardToPlay(playerToMove, card))
             throw Exception("trying to play an illegal card: Card($card)")
 
@@ -54,24 +54,27 @@ abstract class GameMaster {
 
     //==================================================================================================================
 
-//    private fun printLastRoundPlayed() {
-//        print("[Seed: ${RANDOMIZER.getLastSeedUsed()}]  Round: ")
-//        getGame().getRounds().last().getTrickList().forEach { trick->
-//            print("[")
-//            val leadPosition = trick.getLeadPosition()
-//            getPlayerList().map { player -> trick.getCardsPlayed().first{ cp -> cp.position == player.tablePosition }}.forEach { cardPlayed ->
-//                if (cardPlayed.position == leadPosition)
-//                    print("(")
-//                print("${cardPlayed.card}")
-//                if (cardPlayed.position == leadPosition)
-//                    print(")")
-//                if (getPlayerList().last().tablePosition != cardPlayed.position)
-//                    print(",")
-//            }
-//            print("]  ")
-//        }
-//        println()
-//    }
+    private fun printLastRoundPlayed() {
+        print("[Seed: ${RANDOMIZER.getLastSeedUsed()}]  Round: ")
+        getGame().getRounds().last().getTrickList().forEach { trick->
+            print("[")
+            val sideToLead = trick.getSideToLead()
+            TableSide.values().map { side -> Pair(side, trick.getCardPlayedBy(side))}.forEach { (sidePlayed, cardPlayed) ->
+                if (sidePlayed == sideToLead)
+                    print("(")
+
+                print("${cardPlayed}")
+
+                if (sidePlayed == sideToLead)
+                    print(")")
+
+                if (sidePlayed != TableSide.values().last())
+                    print(",")
+            }
+            print("]  ")
+        }
+        println()
+    }
 
 
 }

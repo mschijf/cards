@@ -2,7 +2,7 @@ package com.cards.game.fourplayercardgame.hearts
 
 import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.basic.Round
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.basic.Trick
 import kotlin.math.max
 
@@ -10,8 +10,8 @@ class GameHearts(): Game() {
 
     fun isGoingUp() = getRounds().size < goingDownFromRoundNumber()
 
-    override fun createTrick(leadPosition: TablePosition): Trick {
-        return TrickHearts(leadPosition)
+    override fun createTrick(sideToLead: TableSide): Trick {
+        return TrickHearts(sideToLead)
     }
 
     override fun createRound(): Round {

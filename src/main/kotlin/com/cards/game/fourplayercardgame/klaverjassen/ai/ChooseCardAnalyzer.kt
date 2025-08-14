@@ -1,7 +1,7 @@
 package com.cards.game.fourplayercardgame.klaverjassen.ai
 
 import com.cards.game.card.*
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.klaverjassen.*
 
 class ChooseCardAnalyzer(
@@ -10,15 +10,15 @@ class ChooseCardAnalyzer(
     private lateinit var currentRound: RoundKlaverjassen
     private lateinit var trumpColor: CardColor
 
-    private lateinit var playerCanHave: Map<TablePosition, MutableSet<Card>>
-    private lateinit var playerSureHas: Map<TablePosition, MutableSet<Card>>
-    private lateinit var playerProbablyHas: Map<TablePosition, MutableSet<Card>>
-    private lateinit var playerProbablyHasNot: Map<TablePosition, MutableSet<Card>>
+    private lateinit var playerCanHave: Map<TableSide, MutableSet<Card>>
+    private lateinit var playerSureHas: Map<TableSide, MutableSet<Card>>
+    private lateinit var playerProbablyHas: Map<TableSide, MutableSet<Card>>
+    private lateinit var playerProbablyHasNot: Map<TableSide, MutableSet<Card>>
 
 
-    private val allPositions = TablePosition.values().toSet()
-    private val ownPosition = playerForWhichWeAnalyse.tablePosition
-    private val otherPositions = allPositions - ownPosition
+    private val allSides = TableSide.values().toSet()
+    private val mySide = playerForWhichWeAnalyse.tableSide
+    private val otherSides = allSides - mySide
 
     private val cardsPlayedDuringAnalysis = mutableListOf<Card>()
 
@@ -32,16 +32,16 @@ class ChooseCardAnalyzer(
         currentRound = playerForWhichWeAnalyse.getCurrentRound()
         trumpColor = currentRound.getTrumpColor()
 
-        playerCanHave = allPositions.associateWith { mutableSetOf() }
-        playerSureHas = allPositions.associateWith { mutableSetOf() }
-        playerProbablyHas = allPositions.associateWith { mutableSetOf() }
-        playerProbablyHasNot = allPositions.associateWith { mutableSetOf() }
+        playerCanHave = allSides.associateWith { mutableSetOf() }
+        playerSureHas = allSides.associateWith { mutableSetOf() }
+        playerProbablyHas = allSides.associateWith { mutableSetOf() }
+        playerProbablyHasNot = allSides.associateWith { mutableSetOf() }
 
         cardsPlayedDuringAnalysis.clear()
     }
 
-    fun playerCanHaveCards(position: TablePosition): Set<Card> = playerCanHave[position]!!
-    fun playerSureHasCards(position: TablePosition): Set<Card> = playerSureHas[position]!!
+    fun playerCanHaveCards(side: TableSide): Set<Card> = playerCanHave[side]!!
+    fun playerSureHasCards(side: TableSide): Set<Card> = playerSureHas[side]!!
 
     private fun updateAfterAnalysis() {
 
@@ -56,16 +56,16 @@ class ChooseCardAnalyzer(
         // 2. remove all cards in probablys that are not in canhave/surehas
         // 3. if number of canhaves+surehas == cards in hand, then everything = surehas
 
-        updateOwn()
+        updateMine()
         equalizeSureHasWithCanHave()
         removeImpossibles()
     }
 
-    private fun updateOwn() {
-        playerCanHave[ownPosition]!!.clear()
-        playerSureHas[ownPosition]!!.addAll(playerForWhichWeAnalyse.getCardsInHand())
-        playerProbablyHas[ownPosition]!!.clear()
-        playerProbablyHasNot[ownPosition]!!.clear()
+    private fun updateMine() {
+        playerCanHave[mySide]!!.clear()
+        playerSureHas[mySide]!!.addAll(playerForWhichWeAnalyse.getCardsInHand())
+        playerProbablyHas[mySide]!!.clear()
+        playerProbablyHasNot[mySide]!!.clear()
     }
 
     private fun equalizeSureHasWithCanHave() {
@@ -74,21 +74,21 @@ class ChooseCardAnalyzer(
             val sumSureHas0 = playerSureHas.values.fold(emptySet<Card>()) { acc, sureHasCards -> acc + sureHasCards }
 
             //update sureHas --> if a player has cards in canhave that all other players don't have, then it becomes a sureHas
-            otherPositions.forEach { otherPosition ->
-                val otherCanHave = (allPositions - otherPosition).flatMap { playerCanHave[it]!! + playerSureHas[it]!! }.toSet()
-                val unique = playerCanHave[otherPosition]!!.filterNot{card -> card in otherCanHave}
-                playerSureHas[otherPosition]!! += unique
-                playerCanHave[otherPosition]!! -= unique
+            otherSides.forEach { otherSide ->
+                val otherCanHave = (allSides - otherSide).flatMap { playerCanHave[it]!! + playerSureHas[it]!! }.toSet()
+                val unique = playerCanHave[otherSide]!!.filterNot{card -> card in otherCanHave}
+                playerSureHas[otherSide]!! += unique
+                playerCanHave[otherSide]!! -= unique
             }
 
             //a sureHas can not appear in any other canHaves:
             val sumSureHas1 = playerSureHas.values.fold(emptySet<Card>()) { acc, sureHasCards -> acc + sureHasCards }
-            allPositions.forEach { player -> playerCanHave[player]!!.removeAll(sumSureHas1) }
+            allSides.forEach { player -> playerCanHave[player]!!.removeAll(sumSureHas1) }
 
-            val playersPlayedInLastTrick = currentRound.getTrickOnTable().getPlayersPlayed()
+            val playersPlayedInLastTrick = currentRound.getTrickOnTable().getSidesPlayed()
 
             //if number of canHave + SureHas == number of cardsInHand
-            otherPositions.forEach { otherPlayer ->
+            otherSides.forEach { otherPlayer ->
                 val numberOfCardsInHandOtherPlayer = playerForWhichWeAnalyse.getCardsInHand().size - if (otherPlayer in playersPlayedInLastTrick) 1 else 0
                 if (playerSureHas[otherPlayer]!!.size == numberOfCardsInHandOtherPlayer) {
                     playerCanHave[otherPlayer]!!.clear()
@@ -99,16 +99,15 @@ class ChooseCardAnalyzer(
             }
             //a sureHas can not appear in any other canHaves:
             val sumSureHas2 = playerSureHas.values.fold(emptySet<Card>()) { acc, sureHasCards -> acc + sureHasCards }
-            allPositions.forEach { player -> playerCanHave[player]!!.removeAll(sumSureHas2) }
+            allSides.forEach { player -> playerCanHave[player]!!.removeAll(sumSureHas2) }
         } while (sumSureHas0.size != sumSureHas2.size)
     }
 
     private fun removeImpossibles() {
-        val allPositions = TablePosition.values()
-        allPositions.forEach { position ->
-            val impossibleCards = playerProbablyHasNot[position]!!.filterNot { card -> card in (playerCanHave[position]!! + playerSureHas[position]!!) }
-            playerProbablyHas[position]!! -= impossibleCards
-            playerProbablyHasNot[position]!! -= impossibleCards
+        allSides.forEach { side ->
+            val impossibleCards = playerProbablyHasNot[side]!!.filterNot { card -> card in (playerCanHave[side]!! + playerSureHas[side]!!) }
+            playerProbablyHas[side]!! -= impossibleCards
+            playerProbablyHasNot[side]!! -= impossibleCards
         }
     }
 
@@ -118,50 +117,50 @@ class ChooseCardAnalyzer(
 
         val allCards = CARDDECK.baseDeckCardsSevenAndHigher
 
-        otherPositions.forEach { otherPosition ->
-            playerCanHave[otherPosition]!!.addAll(allCards - playerForWhichWeAnalyse.getCardsInHand())
+        otherSides.forEach { otherSide ->
+            playerCanHave[otherSide]!!.addAll(allCards - playerForWhichWeAnalyse.getCardsInHand())
         }
 
         val allTricks = playerForWhichWeAnalyse.getCurrentRound().getTrickList()
         allTricks.filterNot { trick -> trick.hasNotStarted() }.forEach { trick ->
             val firstCard = trick.getCardsPlayed().first()
-            val firstPosition = trick.getLeadPosition()
-            otherPositions.forEach {
-                otherPosition -> playerCanHave[otherPosition]!! -= firstCard
+            val firstSideThatPlayed = trick.getSideToLead()
+            otherSides.forEach {
+                otherSide -> playerCanHave[otherSide]!! -= firstCard
             }
 
-            val newTrick = TrickKlaverjassen(firstPosition, currentRound)
-            newTrick.addCard(firstPosition, firstCard)
+            val newTrick = TrickKlaverjassen(firstSideThatPlayed, currentRound)
+            newTrick.addCard(firstCard)
             determineAssumptions(newTrick)
             cardsPlayedDuringAnalysis.add(firstCard)
 
             var highestTrumpUpTillNow = if (firstCard.color == trumpColor) firstCard else null
             trick.getCardsPlayed().drop(1).forEach { cardPlayed ->
-                val position = trick.getPositionByCardPlayed(cardPlayed)!!
-                otherPositions.forEach { otherPosition ->
-                    playerCanHave[otherPosition]!! -= cardPlayed
+                val sideThatPlayed = trick.getSideThatPlayedCard(cardPlayed)!!
+                otherSides.forEach { otherSide ->
+                    playerCanHave[otherSide]!! -= cardPlayed
                 }
 
                 if (cardPlayed.color != firstCard.color) {
-                    playerCanHave[position]!! -= allCards.ofColor(firstCard.color)
+                    playerCanHave[sideThatPlayed]!! -= allCards.ofColor(firstCard.color)
                     if (cardPlayed.color != trumpColor) {
-                        playerCanHave[position]!! -= allCards.ofColor(trumpColor)
+                        playerCanHave[sideThatPlayed]!! -= allCards.ofColor(trumpColor)
                     } else {
                         if (!cardPlayed.beats(highestTrumpUpTillNow, trumpColor)) {
-                            playerCanHave[position]!! -= allCards.filter {
+                            playerCanHave[sideThatPlayed]!! -= allCards.filter {
                                 it.beats(highestTrumpUpTillNow, trumpColor)
                             }
                         }
                     }
                 } else if (cardPlayed.color == trumpColor && highestTrumpUpTillNow!!.beats(cardPlayed, trumpColor)) {
-                    playerCanHave[position]!! -= allCards.filter {
+                    playerCanHave[sideThatPlayed]!! -= allCards.filter {
                         it.beats(highestTrumpUpTillNow, trumpColor)
                     }
                 } else {
                     //player just follows, we can not conclude anything yet
                 }
 
-                newTrick.addCard(position, cardPlayed)
+                newTrick.addCard(cardPlayed)
                 determineAssumptions(newTrick)
                 cardsPlayedDuringAnalysis.add(cardPlayed)
 
@@ -174,9 +173,9 @@ class ChooseCardAnalyzer(
 
     private fun determineAssumptions(trickSoFar: TrickKlaverjassen) {
         val cardJustPlayed = trickSoFar.getCardsPlayed().last()
-        val playerJustMoved = trickSoFar.getPositionByCardPlayed(cardJustPlayed)!!
+        val playerJustMoved = trickSoFar.getSideThatPlayedCard(cardJustPlayed)!!
 
-        if (trickSoFar.isLeadPosition(playerJustMoved) && currentRound.isContractOwner(playerJustMoved)) {
+        if (trickSoFar.isSideToLead(playerJustMoved) && currentRound.isContractOwningSide(playerJustMoved)) {
             if (noRealTrumpsPlayed()) {
                 if (cardJustPlayed.color == trumpColor) {
                     if (cardJustPlayed.isJack(trumpColor)) {
@@ -197,7 +196,7 @@ class ChooseCardAnalyzer(
         }
 
         //seinen
-        if (playerJustMoved.isOppositeOf(trickSoFar.getWinner())) {
+        if (playerJustMoved.isOppositeOf(trickSoFar.getWinningSide())) {
             if (cardJustPlayed.color != trickSoFar.getLeadColor() && cardJustPlayed.color != trickSoFar.getWinningCard()!!.color && cardJustPlayed.color != trumpColor) {
                 val highestCard = highestOfColorStillAvailable(cardJustPlayed.color)
                 if (cardJustPlayed.toRankNumberNoTrump() <= Card(cardJustPlayed.color, CardRank.NINE).toRankNumberNoTrump()) {
@@ -211,7 +210,7 @@ class ChooseCardAnalyzer(
             }
         }
 
-        if (!trickSoFar.isLeadColor(trumpColor) && trickSoFar.isLeadColor(cardJustPlayed.color) && !playerJustMoved.isOppositeOf(trickSoFar.getWinner())) {
+        if (!trickSoFar.isLeadColor(trumpColor) && trickSoFar.isLeadColor(cardJustPlayed.color) && !playerJustMoved.isOppositeOf(trickSoFar.getWinningSide())) {
             if (!cardJustPlayed.isTrumpCard() && cardJustPlayed.isTen() )
                 if (playerCanHave[playerJustMoved]!!.count { it.color == cardJustPlayed.color } > 1) {
                     //kale 10 --> dus heeft die kleur verder niet meer (of roem ontwijken ==> nog checken)
@@ -221,20 +220,20 @@ class ChooseCardAnalyzer(
         }
 
         if (trickSoFar.isComplete()) { //playerToMove is last player in this trick that played a card
-            if (trickSoFar.getWinner() != playerJustMoved && trickSoFar.getWinner() != playerJustMoved.opposite()) {
+            if (trickSoFar.getWinningSide() != playerJustMoved && trickSoFar.getWinningSide() != playerJustMoved.opposite()) {
                 if (roemWeggegevenDoorLastPlayer(trickSoFar)) { //roem weggegeven
                     val bonusAfter = trickSoFar.getScore().getBonusForPlayer(playerJustMoved.clockwiseNext())
                     trickSoFar.removeLastCard()
                     playerCanHave[playerJustMoved]!!.filter { it.color == cardJustPlayed.color }.forEach { otherCard ->
                         if (otherCard != cardJustPlayed) {
-                            trickSoFar.addCard(playerJustMoved, otherCard)
+                            trickSoFar.addCard(otherCard)
                             if (trickSoFar.getScore().getBonusForPlayer(playerJustMoved.clockwiseNext()) < bonusAfter) {
                                 addProbablyHasNot(playerJustMoved, otherCard)
                             }
                             trickSoFar.removeLastCard()
                         }
                     }
-                    trickSoFar.addCard(playerJustMoved, cardJustPlayed)
+                    trickSoFar.addCard(cardJustPlayed)
                 }
             } else {
                 if (roemOntwekenDoorLastPlayer(trickSoFar)) { //roem niet gemaakt
@@ -242,14 +241,14 @@ class ChooseCardAnalyzer(
                     trickSoFar.removeLastCard()
                     playerCanHave[playerJustMoved]!!.filter { it.color == cardJustPlayed.color }.forEach { otherCard ->
                         if (otherCard != cardJustPlayed) {
-                            trickSoFar.addCard(playerJustMoved, otherCard)
+                            trickSoFar.addCard(otherCard)
                             if (trickSoFar.getScore().getBonusForPlayer(playerJustMoved) > bonusAfter) {
                                 addProbablyHasNot(playerJustMoved, otherCard)
                             }
                             trickSoFar.removeLastCard()
                         }
                     }
-                    trickSoFar.addCard(playerJustMoved, cardJustPlayed)
+                    trickSoFar.addCard(cardJustPlayed)
                 }
             }
         }
@@ -257,23 +256,23 @@ class ChooseCardAnalyzer(
 
     private fun roemWeggegevenDoorLastPlayer(trickSoFar: TrickKlaverjassen): Boolean {
         val cardJustPlayed = trickSoFar.getCardsPlayed().last()
-        val playerJustMoved = trickSoFar.getPositionByCardPlayed(cardJustPlayed)!!
+        val playerJustMoved = trickSoFar.getSideThatPlayedCard(cardJustPlayed)!!
 
         val bonusAfter = trickSoFar.getScore().getBonusForPlayer(playerJustMoved.clockwiseNext())
         trickSoFar.removeLastCard()
         val bonusBefore = trickSoFar.getScore().getBonusForPlayer(playerJustMoved.clockwiseNext())
-        trickSoFar.addCard(playerJustMoved, cardJustPlayed)
+        trickSoFar.addCard(cardJustPlayed)
         return bonusAfter > bonusBefore
     }
 
     private fun roemOntwekenDoorLastPlayer(trickSoFar: TrickKlaverjassen): Boolean {
         val cardJustPlayed = trickSoFar.getCardsPlayed().last()
-        val playerJustMoved = trickSoFar.getPositionByCardPlayed(cardJustPlayed)!!
+        val playerJustMoved = trickSoFar.getSideThatPlayedCard(cardJustPlayed)!!
 
         val bonusAfter = trickSoFar.getScore().getBonusForPlayer(playerJustMoved)
         trickSoFar.removeLastCard()
         val bonusBefore = trickSoFar.getScore().getBonusForPlayer(playerJustMoved)
-        trickSoFar.addCard(playerJustMoved, cardJustPlayed)
+        trickSoFar.addCard( cardJustPlayed)
         return bonusAfter == bonusBefore
     }
 
@@ -304,17 +303,17 @@ class ChooseCardAnalyzer(
             null
     }
 
-    private fun addProbablyHas(position: TablePosition, card: Card) {
-        playerProbablyHas[position]!! += card
-        playerProbablyHasNot[position]!! -= card
+    private fun addProbablyHas(side: TableSide, card: Card) {
+        playerProbablyHas[side]!! += card
+        playerProbablyHasNot[side]!! -= card
     }
-    private fun addProbablyHasNot(position: TablePosition, card: Card) {
-        playerProbablyHas[position]!! -= card
-        playerProbablyHasNot[position]!! += card
+    private fun addProbablyHasNot(side: TableSide, card: Card) {
+        playerProbablyHas[side]!! -= card
+        playerProbablyHasNot[side]!! += card
     }
-    private fun addProbablyHasNot(position: TablePosition, cardList: List<Card>) {
-        playerProbablyHas[position]!! -= cardList
-        playerProbablyHasNot[position]!! += cardList
+    private fun addProbablyHasNot(side: TableSide, cardList: List<Card>) {
+        playerProbablyHas[side]!! -= cardList
+        playerProbablyHasNot[side]!! += cardList
     }
 
 }

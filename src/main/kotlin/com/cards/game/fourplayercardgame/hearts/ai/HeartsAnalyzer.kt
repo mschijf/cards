@@ -259,7 +259,7 @@ class HeartsAnalyzer(
     fun hasAllCardsOfColor(color: CardColor): Boolean {
         return (cardsInHand.count { cp -> cp.color == color } + cardsPlayed.count { cp -> cp.color == color } == 8)
     }
-    fun canGetRidOfLeadPosition(leadColor: CardColor): Boolean {
+    fun canStopBeingSideToStart(leadColor: CardColor): Boolean {
         return hasLowestCardOfColorInHandAndHigherInPLayExists(leadColor)
         //todo: mag ook een een-na-laagste kaart zijn, mits er nog steeds een hoogste is
         // en kleuren verdeeld over verschillende spelers

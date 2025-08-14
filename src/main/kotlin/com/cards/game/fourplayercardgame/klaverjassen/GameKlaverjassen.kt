@@ -1,16 +1,13 @@
 package com.cards.game.fourplayercardgame.klaverjassen
 
-import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.basic.Game
-import com.cards.game.fourplayercardgame.basic.Round
-import com.cards.game.fourplayercardgame.basic.TablePosition
-import com.cards.game.fourplayercardgame.basic.Trick
+import com.cards.game.fourplayercardgame.basic.TableSide
 
 class GameKlaverjassen(): Game()  {
 
-    override fun createTrick(leadPosition: TablePosition) =
+    override fun createTrick(sideToLead: TableSide) =
         TrickKlaverjassen(
-            leadPosition,
+            sideToLead,
             getCurrentRound() as RoundKlaverjassen
         )
     override fun createRound() = RoundKlaverjassen()

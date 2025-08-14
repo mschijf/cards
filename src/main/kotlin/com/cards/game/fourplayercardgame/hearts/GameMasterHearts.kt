@@ -3,7 +3,7 @@ package com.cards.game.fourplayercardgame.hearts
 import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.basic.GameMaster
 import com.cards.game.fourplayercardgame.basic.Player
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
 
 class GameMasterHearts: GameMaster() {
@@ -13,10 +13,10 @@ class GameMasterHearts: GameMaster() {
 
     override fun initialPlayerList(): List<Player> {
         return listOf(
-            GeniusPlayerHearts(TablePosition.WEST, getGame()),
-            GeniusPlayerHearts(TablePosition.NORTH, getGame()),
-            GeniusPlayerHearts(TablePosition.EAST, getGame()),
-            GeniusPlayerHearts(TablePosition.SOUTH, getGame()),
+            GeniusPlayerHearts(TableSide.WEST, getGame()),
+            GeniusPlayerHearts(TableSide.NORTH, getGame()),
+            GeniusPlayerHearts(TableSide.EAST, getGame()),
+            GeniusPlayerHearts(TableSide.SOUTH, getGame()),
         )
     }
 

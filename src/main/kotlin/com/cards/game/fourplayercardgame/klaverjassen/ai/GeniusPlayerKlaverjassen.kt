@@ -3,13 +3,13 @@ package com.cards.game.fourplayercardgame.klaverjassen.ai
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.klaverjassen.*
 
 class GeniusPlayerKlaverjassen(
-    tablePosition: TablePosition,
+    tableSide: TableSide,
     game: GameKlaverjassen
-) : PlayerKlaverjassen(tablePosition, game) {
+) : PlayerKlaverjassen(tableSide, game) {
 
     private val chooseCardAnalyzer = ChooseCardAnalyzer(this)
 
@@ -19,7 +19,7 @@ class GeniusPlayerKlaverjassen(
 //        println()
 //        game.getPlayerList().forEach {
 //            val playerCanHaveCards = chooseCardAnalyzer.playerCanHaveCards(it)
-//            print(String.format("%-5s ", it.tablePosition.toString().lowercase()))
+//            print(String.format("%-5s ", it.tableSide.toString().lowercase()))
 //            print(String.format("(%2d): ", playerCanHaveCards.size))
 //            CardColor.values().forEach { color ->
 //                print(String.format("%-7s: %-25s  ", color, playerCanHaveCards.filter{it.color == color}.map { it.rank.rankString }))
@@ -41,7 +41,7 @@ class GeniusPlayerKlaverjassen(
         }
 
         if (!firstPlayer() && canFollow()) {
-            val (card, _) = tryPlay(getCurrentRound().getTrickOnTable() as TrickKlaverjassen, this.tablePosition, true)
+            val (card, _) = tryPlay(getCurrentRound().getTrickOnTable() as TrickKlaverjassen, this.tableSide, true)
             return card?:throw Exception("Null value calculated by tryPlay")
         }
 
@@ -73,7 +73,7 @@ class GeniusPlayerKlaverjassen(
     }
 
     override fun chooseTrumpColor(cardColorOptions: List<CardColor>): CardColor {
-        val trumpChoiceAnalyzer = TrumpChoiceAnalyzer(this)
+        val trumpChoiceAnalyzer = TrumpChoiceAnalyzer(this.getCardsInHand())
 
         return cardColorOptions.maxBy { cardColor ->
             trumpChoiceAnalyzer.trumpChoiceValue(cardColor)
@@ -82,17 +82,17 @@ class GeniusPlayerKlaverjassen(
 
     //------------------------------------------------------------------------------------------------------------------
 
-    private fun tryPlay(trickSoFar: TrickKlaverjassen, position: TablePosition, maxNode: Boolean): CardPlayedValue {
+    private fun tryPlay(trickSoFar: TrickKlaverjassen, side: TableSide, maxNode: Boolean): CardPlayedValue {
         if (trickSoFar.isComplete()) {
-            return CardPlayedValue(null, trickSoFar.getScore().getDeltaForPlayer(this.tablePosition))
+            return CardPlayedValue(null, trickSoFar.getScore().getDeltaForPlayer(this.tableSide))
         }
 
-        val legalCards = if (position == this.tablePosition) {
+        val legalCards = if (side == this.tableSide) {
             getCardsInHand().legalPlayable(trickSoFar, trump())
         } else {
             val possibleCards = (
-                    chooseCardAnalyzer.playerCanHaveCards(position) +
-                    chooseCardAnalyzer.playerSureHasCards(position) -
+                    chooseCardAnalyzer.playerCanHaveCards(side) +
+                    chooseCardAnalyzer.playerSureHasCards(side) -
                     trickSoFar.getCardsPlayed()
                     ).toList()
             val legalPossibilities = possibleCards.legalPlayable(trickSoFar, trump())
@@ -102,8 +102,8 @@ class GeniusPlayerKlaverjassen(
 
         var best = CardPlayedValue(null, if (maxNode) Int.MIN_VALUE else Int.MAX_VALUE)
         legalCards.forEach { card ->
-            trickSoFar.addCard(position, card)
-            val v = tryPlay(trickSoFar, position.clockwiseNext(), !maxNode)
+            trickSoFar.addCard(card)
+            val v = tryPlay(trickSoFar, side.clockwiseNext(), !maxNode)
             if (maxNode && v.isBetter(best)) {
                 best = CardPlayedValue(card, v.value)
             } else if (!maxNode && v.isWorse(best)) {
@@ -130,9 +130,9 @@ class GeniusPlayerKlaverjassen(
 
     private fun firstTrick() = getCurrentRound().getTrickList().size == 1
 
-    private fun isLeadPlayer() = getCurrentRound().getTrickOnTable().isLeadPosition(this.tablePosition)
-    private fun isContractOwner() = getCurrentRound().isContractOwner(this.tablePosition)
-    private fun isContractOwnersPartner() = getCurrentRound().isContractOwner(this.tablePosition.opposite())
+    private fun isLeadPlayer() = getCurrentRound().getTrickOnTable().isSideToLead(this.tableSide)
+    private fun isContractOwner() = getCurrentRound().isContractOwningSide(this.tableSide)
+    private fun isContractOwnersPartner() = getCurrentRound().isContractOwningSide(this.tableSide.opposite())
 
     private fun trump() = getCurrentRound().getTrumpColor()
 

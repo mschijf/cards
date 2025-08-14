@@ -1,13 +1,13 @@
 package com.cards.game.fourplayercardgame.hearts
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.basic.Trick
 
-class TrickHearts(leadPosition: TablePosition): Trick(leadPosition) {
+class TrickHearts(sideToLead: TableSide): Trick(sideToLead) {
 
-    override fun getWinner(): TablePosition? {
-        return getPositionByCardPlayed(getWinningCard())
+    override fun getWinningSide(): TableSide? {
+        return getSideThatPlayedCard(getWinningCard())
     }
 
     override fun getWinningCard(): Card? {
@@ -20,7 +20,7 @@ class TrickHearts(leadPosition: TablePosition): Trick(leadPosition) {
         return if (!isComplete()) {
             ScoreHearts.ZERO
         } else {
-            ScoreHearts.scoreForPlayer(getWinner()!!, getCardsPlayed().sumOf { card -> card.cardValue() })
+            ScoreHearts.scoreForPlayer(getWinningSide()!!, getCardsPlayed().sumOf { card -> card.cardValue() })
         }
     }
 

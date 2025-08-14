@@ -3,9 +3,9 @@ package com.cards.game.fourplayercardgame.klaverjassen
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.basic.Player
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.TableSide
 
-open class PlayerKlaverjassen(tablePosition: TablePosition, game: GameKlaverjassen) : Player(tablePosition, game) {
+open class PlayerKlaverjassen(tableSide: TableSide, game: GameKlaverjassen) : Player(tableSide, game) {
 
     fun getCurrentRound() = game.getCurrentRound() as RoundKlaverjassen
 
@@ -18,6 +18,6 @@ open class PlayerKlaverjassen(tablePosition: TablePosition, game: GameKlaverjass
     }
 
     open fun chooseTrumpColor(cardColorOptions: List<CardColor> = CardColor.values().toList()): CardColor {
-        return cardColorOptions[tablePosition.ordinal % cardColorOptions.size]
+        return cardColorOptions[tableSide.ordinal % cardColorOptions.size]
     }
 }

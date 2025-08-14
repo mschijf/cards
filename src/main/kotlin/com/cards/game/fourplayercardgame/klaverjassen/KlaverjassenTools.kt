@@ -115,10 +115,10 @@ fun List<Card>.legalPlayable(cardsPlayed: List<Card>, trumpColor: CardColor) : L
 
     val leadColor = cardsPlayed.first().color
     if (this.any {card -> card.color == leadColor}) {
-        if (trumpColor == leadColor) {
-            return this.legalTrumpCardsToPlay(cardsPlayed, trumpColor).ifEmpty { this }
+        return if (trumpColor == leadColor) {
+            this.legalTrumpCardsToPlay(cardsPlayed, trumpColor).ifEmpty { this }
         } else {
-            return this.filter { card -> card.color == leadColor }.ifEmpty { this }
+            this.filter { card -> card.color == leadColor }.ifEmpty { this }
         }
     }
 

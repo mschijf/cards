@@ -9,7 +9,7 @@ abstract class Round() {
     private fun getLastTrick() = trickList.lastOrNull()?:throw Exception("We do not have a last trick")
     fun hasNotStarted(): Boolean = trickList.size == 1 && trickList.first().hasNotStarted()
     fun getTrickOnTable() = if (getLastTrick().isActive()) getLastTrick() else throw Exception("We do not have a current trick on table")
-    fun getLastCompletedTrickWinner(): TablePosition? = getLastCompletedTrick()?.getWinner()
+    fun getLastCompletedTrickWinner(): TableSide? = getLastCompletedTrick()?.getWinningSide()
     fun getTrickList() = trickList.toList()
     fun isComplete() = getTrickList().size == NUMBER_OF_TRICKS_PER_ROUND && getTrickList().last().isComplete()
     fun isLastTrick(trick: Trick) = getTrickList().size == NUMBER_OF_TRICKS_PER_ROUND && getTrickList().last() == trick

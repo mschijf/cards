@@ -1,6 +1,6 @@
 package com.cards.game.fourplayercardgame.hearts
 
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.TableSide
 import com.github.jknack.handlebars.internal.lang3.math.NumberUtils
 
 data class ScoreHearts(val westValue: Int, val northValue: Int, val eastValue: Int, val southValue: Int) {
@@ -28,12 +28,12 @@ data class ScoreHearts(val westValue: Int, val northValue: Int, val eastValue: I
     companion object {
         val ZERO = ScoreHearts(0,0,0,0)
 
-        fun scoreForPlayer(tablePosition: TablePosition, value: Int): ScoreHearts {
+        fun scoreForPlayer(tableSide: TableSide, value: Int): ScoreHearts {
             return ScoreHearts(
-                if (tablePosition == TablePosition.WEST) value else 0,
-                if (tablePosition == TablePosition.NORTH) value else 0,
-                if (tablePosition == TablePosition.EAST) value else 0,
-                if (tablePosition == TablePosition.SOUTH) value else 0
+                if (tableSide == TableSide.WEST) value else 0,
+                if (tableSide == TableSide.NORTH) value else 0,
+                if (tableSide == TableSide.EAST) value else 0,
+                if (tableSide == TableSide.SOUTH) value else 0
             )
         }
     }

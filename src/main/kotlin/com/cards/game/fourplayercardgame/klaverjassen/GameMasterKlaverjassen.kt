@@ -3,7 +3,7 @@ package com.cards.game.fourplayercardgame.klaverjassen
 import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.basic.GameMaster
 import com.cards.game.fourplayercardgame.basic.Player
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.klaverjassen.ai.GeniusPlayerKlaverjassen
 
 class GameMasterKlaverjassen: GameMaster() {
@@ -14,10 +14,10 @@ class GameMasterKlaverjassen: GameMaster() {
     override fun initialPlayerList(): List<Player> {
 //        RANDOMIZER.setSeed(1611283605)
         return listOf(
-            PlayerKlaverjassen(TablePosition.WEST, getGame()),
-            GeniusPlayerKlaverjassen(TablePosition.NORTH, getGame()),
-            PlayerKlaverjassen(TablePosition.EAST, getGame()),
-            GeniusPlayerKlaverjassen(TablePosition.SOUTH, getGame()),
+            PlayerKlaverjassen(TableSide.WEST, getGame()),
+            GeniusPlayerKlaverjassen(TableSide.NORTH, getGame()),
+            PlayerKlaverjassen(TableSide.EAST, getGame()),
+            GeniusPlayerKlaverjassen(TableSide.SOUTH, getGame()),
         )
     }
 
@@ -38,9 +38,9 @@ class GameMasterKlaverjassen: GameMaster() {
     }
 
     fun determineNewTrump() {
-        val playerToMove = getCardPlayer(getGame().getPositionToMove()) as PlayerKlaverjassen
+        val playerToMove = getCardPlayer(getGame().getSideToMove()) as PlayerKlaverjassen
         val trumpColor = playerToMove.chooseTrumpColor()
-        (getGame().getCurrentRound() as RoundKlaverjassen).setTrumpColorAndContractOwner(trumpColor, playerToMove.tablePosition)
+        (getGame().getCurrentRound() as RoundKlaverjassen).setTrumpColorAndContractOwner(trumpColor, playerToMove.tableSide)
     }
 
 

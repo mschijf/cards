@@ -7,7 +7,7 @@ import com.cards.controller.hearts.model.ScoreModelHearts
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.hearts.GameMasterHearts
 import com.cards.game.fourplayercardgame.hearts.ai.GeniusPlayerHearts
 import com.cards.tools.RANDOMIZER
@@ -26,19 +26,19 @@ class ServiceHearts {
 
     fun getGameStatus(): GameStatusModelHearts {
         val trickOnTable = gameHearts.getCurrentRound().getTrickOnTable()
-        val onTablePosition = TableModel(
-            trickOnTable.getCardPlayedBy(TablePosition.SOUTH),
-            trickOnTable.getCardPlayedBy(TablePosition.WEST),
-            trickOnTable.getCardPlayedBy(TablePosition.NORTH),
-            trickOnTable.getCardPlayedBy(TablePosition.EAST)
+        val onTableSide = TableModel(
+            trickOnTable.getCardPlayedBy(TableSide.SOUTH),
+            trickOnTable.getCardPlayedBy(TableSide.WEST),
+            trickOnTable.getCardPlayedBy(TableSide.NORTH),
+            trickOnTable.getCardPlayedBy(TableSide.EAST)
         )
-        val positionToMove = gameHearts.getPositionToMove()
-        val leadPosition = trickOnTable.getLeadPosition()
+        val sideToMove = gameHearts.getSideToMove()
+        val sideToLead = trickOnTable.getSideToLead()
 
-        val playerSouth = makePlayerCardListModel(TablePosition.SOUTH)
-        val playerNorth = makePlayerCardListModel(TablePosition.NORTH)
-        val playerWest = makePlayerCardListModel(TablePosition.WEST)
-        val playerEast = makePlayerCardListModel(TablePosition.EAST)
+        val playerSouth = makePlayerCardListModel(TableSide.SOUTH)
+        val playerNorth = makePlayerCardListModel(TableSide.NORTH)
+        val playerWest = makePlayerCardListModel(TableSide.WEST)
+        val playerEast = makePlayerCardListModel(TableSide.EAST)
 
         val gameJsonString = "" //Gson().toJson(gm)
 
@@ -46,9 +46,9 @@ class ServiceHearts {
 
         return GameStatusModelHearts(
             GameStatusModel(
-                onTablePosition,
-                positionToMove,
-                leadPosition,
+                onTableSide,
+                sideToMove,
+                sideToLead,
                 gameHearts.getCurrentRound().hasNotStarted(),
                 playerSouth,
                 playerWest,
@@ -61,8 +61,8 @@ class ServiceHearts {
         )
     }
 
-    private fun makePlayerCardListModel(tablePosition: TablePosition): List<CardInHandModel> {
-        val player = gameMasterHearts.getCardPlayer(tablePosition)
+    private fun makePlayerCardListModel(tableSide: TableSide): List<CardInHandModel> {
+        val player = gameMasterHearts.getCardPlayer(tableSide)
         return player
             .getCardsInHand()
             .sortedBy { card -> 100 * card.color.ordinal + card.rank.ordinal }
@@ -82,14 +82,14 @@ class ServiceHearts {
     }
 
     fun computeMove(): CardPlayedModel? {
-        val playerToMove = gameMasterHearts.getCardPlayer(gameHearts.getPositionToMove())
+        val playerToMove = gameMasterHearts.getCardPlayer(gameHearts.getSideToMove())
         val suggestedCardToPlay = playerToMove.chooseCard()
         return executeMove(suggestedCardToPlay.color, suggestedCardToPlay.rank)
     }
 
     fun executeMove(color: CardColor, rank: CardRank): CardPlayedModel? {
-        val positionToMove = gameHearts.getPositionToMove()
-        val playerToMove = gameMasterHearts.getCardPlayer(positionToMove)
+        val sideToMove = gameHearts.getSideToMove()
+        val playerToMove = gameMasterHearts.getCardPlayer(sideToMove)
         val suggestedCardToPlay = Card(color, rank)
         if (!gameMasterHearts.isLegalCardToPlay(playerToMove, suggestedCardToPlay))
             return null
@@ -107,10 +107,10 @@ class ServiceHearts {
         else
             null
 
-        val nextPlayer = gameHearts.getPositionToMove()
+        val nextPlayer = gameHearts.getSideToMove()
 
         return CardPlayedModel(
-            positionToMove,
+            sideToMove,
             suggestedCardToPlay,
             nextPlayer,
             cardsStillInHand,

@@ -4,15 +4,15 @@ import com.cards.game.card.CARDDECK
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.hearts.GameHearts
 import com.cards.game.fourplayercardgame.hearts.PlayerHearts
 import com.cards.game.fourplayercardgame.hearts.cardValue
 import com.cards.game.fourplayercardgame.hearts.legalPlayable
 
 class GeniusPlayerHearts(
-    tablePosition: TablePosition,
-    game: GameHearts) : PlayerHearts(tablePosition, game) {
+    tableSide: TableSide,
+    game: GameHearts) : PlayerHearts(tableSide, game) {
 
     override fun chooseCard(): Card {
         return getMetaCardList()
@@ -40,10 +40,10 @@ class GeniusPlayerHearts(
         val trick = game.getCurrentRound().getTrickOnTable()
         val leadColor = trick.getLeadColor()
 
-        if (trick.getPositionToMove() != this.tablePosition)
+        if (trick.getSideToPlay() != this.tableSide)
             return zeroValued()
 
-        if (trick.isLeadPosition(this.tablePosition))
+        if (trick.isSideToLead(this.tableSide))
             return evaluateLeadPLayer()
 
         if (hasColorInHand(leadColor!!))
@@ -80,7 +80,7 @@ class GeniusPlayerHearts(
                 .evaluateSpecificCard(Card(CardColor.SPADES, CardRank.QUEEN), 200)
                 .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), 200)
         } else if (analyzer.hasOnlyHigherCardsThanLeader(winningCard)) {
-            if (trick.isLastPlayerToMove() ) { //or 100% sure that players after you will not beat you
+            if (trick.isLastSideToPlay(this.tableSide) ) { //or 100% sure that players after you will not beat you
                 //throw highest
                 analyzer.evaluateByRank(1)
             } else {
@@ -92,9 +92,9 @@ class GeniusPlayerHearts(
                 .evaluateSpecificCard(Card(CardColor.SPADES, CardRank.QUEEN), -200)
                 .evaluateSpecificCard(Card(CardColor.CLUBS, CardRank.JACK), -200)
         } else {
-            if (trick.isLastPlayerToMove() ) {
+            if (trick.isLastSideToPlay(this.tableSide) ) {
                 val trickValue = trick.getCardsPlayed().sumOf { cardPlayed -> cardPlayed.cardValue() }
-                if (trickValue == 0 && !analyzer.hasAllCardsOfColor(leadColor) && analyzer.canGetRidOfLeadPosition(leadColor)) {
+                if (trickValue == 0 && !analyzer.hasAllCardsOfColor(leadColor) && analyzer.canStopBeingSideToStart(leadColor)) {
                     // save to throw the highest card
                     analyzer
                         .evaluateByRankHigherThanOtherCard(winningCard, 0, 1)

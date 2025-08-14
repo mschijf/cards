@@ -1,15 +1,15 @@
 package com.cards.game.fourplayercardgame.klaverjassen
 
 import com.cards.game.card.Card
-import com.cards.game.fourplayercardgame.basic.TablePosition
+import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.basic.Trick
 
 class TrickKlaverjassen(
-    leadPosition: TablePosition,
-    private val round: RoundKlaverjassen): Trick(leadPosition) {
+    sideToLead: TableSide,
+    private val round: RoundKlaverjassen): Trick(sideToLead) {
 
-    override fun getWinner(): TablePosition? {
-        return getPositionByCardPlayed(getWinningCard())
+    override fun getWinningSide(): TableSide? {
+        return getSideThatPlayedCard(getWinningCard())
     }
 
     override fun getWinningCard(): Card? {
@@ -30,7 +30,7 @@ class TrickKlaverjassen(
             ScoreKlaverjassen.ZERO
         } else {
             ScoreKlaverjassen.scoreForPlayer(
-                getWinner()!!,
+                getWinningSide()!!,
                 lastTrickPoints + getCardsPlayed().sumOf { card -> card.cardValue(round.getTrumpColor()) },
                 getCardsPlayed().bonusValue(trumpColor = round.getTrumpColor())
             )
