@@ -13,6 +13,7 @@ abstract class GameMaster {
 
     abstract fun createGame(): Game
     abstract fun initialPlayerList(): List<Player>
+    abstract fun initialStartSide(): TableSide
     abstract fun isLegalCardToPlay(player: Player, card: Card): Boolean
 
     private var game = createGame()
@@ -22,7 +23,7 @@ abstract class GameMaster {
         game = createGame()
         playerList = initialPlayerList()
         dealCards()
-        getGame().start()
+        getGame().start(initialStartSide())
     }
 
     fun getPlayerList() = playerList

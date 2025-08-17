@@ -10,8 +10,8 @@ abstract class Game() {
     abstract fun createRound(): Round
     abstract fun isFinished(): Boolean
 
-    fun start() {
-        createNewRoundAndTrick(TableSide.WEST)
+    fun start(startSide: TableSide ) {
+        createNewRoundAndTrick(startSide)
     }
 
     fun getLastTrickWinner(): TableSide?  =

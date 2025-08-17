@@ -13,6 +13,9 @@ class GameMasterHearts: GameMaster() {
     override fun createGame() = GameHearts()
     override fun getGame() = super.getGame() as GameHearts
 
+    override fun initialStartSide(): TableSide {
+        return TableSide.WEST
+    }
     override fun initialPlayerList(): List<Player> {
         return listOf(
             GeniusPlayerHearts(TableSide.WEST, getGame()),

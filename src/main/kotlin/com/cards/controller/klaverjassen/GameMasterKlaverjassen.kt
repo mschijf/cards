@@ -9,18 +9,28 @@ import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.legalPlayable
 import com.cards.game.fourplayercardgame.klaverjassen.player.PlayerKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.player.ai.GeniusPlayerKlaverjassen
+import com.cards.tools.RANDOMIZER
 
 class GameMasterKlaverjassen: GameMaster() {
 
     override fun createGame() = GameKlaverjassen()
     override fun getGame() = super.getGame() as GameKlaverjassen
 
+    override fun initialStartSide(): TableSide {
+        RANDOMIZER.setSeed(497818608)
+        return TableSide.WEST
+    }
     override fun initialPlayerList(): List<Player> {
-//        RANDOMIZER.setSeed(1611283605)
+//        return listOf(
+//            PlayerKlaverjassen(TableSide.WEST, getGame()),
+//            GeniusPlayerKlaverjassen(TableSide.NORTH, getGame()),
+//            PlayerKlaverjassen(TableSide.EAST, getGame()),
+//            GeniusPlayerKlaverjassen(TableSide.SOUTH, getGame()),
+//        )
         return listOf(
-            PlayerKlaverjassen(TableSide.WEST, getGame()),
+            GeniusPlayerKlaverjassen(TableSide.WEST, getGame()),
             GeniusPlayerKlaverjassen(TableSide.NORTH, getGame()),
-            PlayerKlaverjassen(TableSide.EAST, getGame()),
+            GeniusPlayerKlaverjassen(TableSide.EAST, getGame()),
             GeniusPlayerKlaverjassen(TableSide.SOUTH, getGame()),
         )
     }
