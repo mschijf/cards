@@ -85,16 +85,14 @@ class ChooseCardAnalyzer(
             val sumSureHas1 = playerSureHas.values.fold(emptySet<Card>()) { acc, sureHasCards -> acc + sureHasCards }
             allSides.forEach { player -> playerCanHave[player]!!.removeAll(sumSureHas1) }
 
-            val playersPlayedInLastTrick = currentRound.getTrickOnTable().getSidesPlayed()
-
             //if number of canHave + SureHas == number of cardsInHand
-            otherSides.forEach { otherPlayer ->
-                val numberOfCardsInHandOtherPlayer = playerForWhichWeAnalyse.getCardsInHand().size - if (otherPlayer in playersPlayedInLastTrick) 1 else 0
-                if (playerSureHas[otherPlayer]!!.size == numberOfCardsInHandOtherPlayer) {
-                    playerCanHave[otherPlayer]!!.clear()
-                } else if ((playerSureHas[otherPlayer]!! + playerCanHave[otherPlayer]!!).size == numberOfCardsInHandOtherPlayer) {
-                    playerSureHas[otherPlayer]!! += playerCanHave[otherPlayer]!!
-                    playerCanHave[otherPlayer]!!.clear()
+            otherSides.forEach { otherSide ->
+                val numberOfCardsInHandOtherSide = cardsInHandForSide(otherSide)
+                if (playerSureHas[otherSide]!!.size == numberOfCardsInHandOtherSide) {
+                    playerCanHave[otherSide]!!.clear()
+                } else if ((playerSureHas[otherSide]!! + playerCanHave[otherSide]!!).size == numberOfCardsInHandOtherSide) {
+                    playerSureHas[otherSide]!! += playerCanHave[otherSide]!!
+                    playerCanHave[otherSide]!!.clear()
                 }
             }
             //a sureHas can not appear in any other canHaves:
@@ -314,6 +312,15 @@ class ChooseCardAnalyzer(
     private fun addProbablyHasNot(side: TableSide, cardList: List<Card>) {
         playerProbablyHas[side]!! -= cardList
         playerProbablyHasNot[side]!! += cardList
+    }
+
+    fun cardsInHandForSide(side: TableSide): Int {
+        if (side == mySide)
+            return playerForWhichWeAnalyse.getCardsInHand().size
+
+        val playersPlayedInLastTrick = currentRound.getTrickOnTable().getSidesPlayed()
+        val numberOfCardsInHandOtherPlayer = playerForWhichWeAnalyse.getCardsInHand().size - if (side in playersPlayedInLastTrick) 1 else 0
+        return numberOfCardsInHandOtherPlayer
     }
 
 }
