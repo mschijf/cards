@@ -11,12 +11,9 @@ import com.cards.player.hearts.ai.GeniusPlayerHearts
 
 class GameMasterHearts: GameMaster() {
 
-    override fun createGame() = GameHearts()
+    override fun createAndStartNewGame() = GameHearts.startNewGame(GAME_START_PLAYER)
     override fun getGame() = super.getGame() as GameHearts
 
-    override fun initialStartSide(): TableSide {
-        return GAME_START_PLAYER
-    }
     override fun initialPlayerList(): List<Player> {
         return listOf(
             GeniusPlayerHearts(TableSide.WEST, getGame()),

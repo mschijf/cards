@@ -33,9 +33,7 @@ class GameTest {
     }
 
     private fun testOneGame(index: Int): ScoreKlaverjassen {
-        val game = GameKlaverjassen() //todo: game.start vervangen door GameKlaverjassen.start(), met aarin ook de inititele zaken opnemen
-        game.start(TableSide.WEST) //todo: west als default in start
-
+        val game = GameKlaverjassen.startNewGame(TableSide.WEST)
         //todo: aparte class PlayerList (ipv gamemaster)
         val playerList = listOf(
             PlayerKlaverjassen(TableSide.WEST, game),

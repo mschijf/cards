@@ -4,7 +4,7 @@ import com.cards.game.card.CardColor
 import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.basic.TableSide
 
-class GameKlaverjassen(): Game()  {
+class GameKlaverjassen private constructor(): Game()  {
 
     override fun createTrick(sideToLead: TableSide) =
         TrickKlaverjassen(
@@ -21,9 +21,16 @@ class GameKlaverjassen(): Game()  {
         (getCurrentRound() as RoundKlaverjassen).setTrumpColorAndContractOwner(trumpColor, side)
     }
 
-    //score
     fun getAllScoresPerRound(): List<ScoreKlaverjassen> {
         return getRounds()
             .map { round ->  (round as RoundKlaverjassen).getScore()}
+    }
+
+    companion object {
+        fun startNewGame(startSide: TableSide = TableSide.WEST): GameKlaverjassen {
+            val game = GameKlaverjassen()
+            game.start(startSide)
+            return game
+        }
     }
 }

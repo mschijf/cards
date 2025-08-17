@@ -11,19 +11,17 @@ import com.cards.tools.RANDOMIZER
 abstract class GameMaster {
     private var playerList: List<Player> = emptyList()
 
-    abstract fun createGame(): Game
+    abstract fun createAndStartNewGame(): Game
     abstract fun initialPlayerList(): List<Player>
-    abstract fun initialStartSide(): TableSide
     abstract fun isLegalCardToPlay(player: Player, card: Card): Boolean
 
-    private var game = createGame()
+    private var game = createAndStartNewGame()
     open fun getGame(): Game = game
 
     fun startNewGame() {
-        game = createGame()
+        game = createAndStartNewGame()
         playerList = initialPlayerList()
         dealCards()
-        getGame().start(initialStartSide())
     }
 
     fun getPlayerList() = playerList

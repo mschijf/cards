@@ -6,7 +6,7 @@ import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.basic.Trick
 import kotlin.math.max
 
-class GameHearts(): Game() {
+class GameHearts private constructor(): Game() {
 
     fun isGoingUp() = getRounds().size < goingDownFromRoundNumber()
 
@@ -18,10 +18,8 @@ class GameHearts(): Game() {
         return RoundHearts()
     }
 
-    //game
     override fun isFinished() = !isGoingUp() && (getTotalScore().minValue() <= VALUE_TO_FINISH)
 
-    //score
     fun getCumulativeScorePerRound(): List<ScoreHearts> {
         return getRounds()
             .filter { it.isComplete() }
@@ -69,4 +67,13 @@ class GameHearts(): Game() {
             ScoreHearts.ZERO.minus(score)
         }
     }
+
+    companion object {
+        fun startNewGame(startSide: TableSide = TableSide.WEST): GameHearts {
+            val game = GameHearts()
+            game.start(startSide)
+            return game
+        }
+    }
+
 }
