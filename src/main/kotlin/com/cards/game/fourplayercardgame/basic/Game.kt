@@ -20,6 +20,12 @@ abstract class Game() {
         else
             getCurrentRound().getLastCompletedTrickWinner()
 
+    fun getLastCompletedTrick(): Trick?  =
+        if (getCurrentRound().hasNotStarted())
+            getPreviousRound()?.getLastCompletedTrick()
+        else
+            getCurrentRound().getLastCompletedTrick()
+
     fun getRounds() = roundList.toList()
     fun getCurrentRound() = roundList.lastOrNull()?:throw Exception("We do not have a current round")
     fun getPreviousRound() = if (roundList.size >= 2) roundList[roundList.size - 2] else null

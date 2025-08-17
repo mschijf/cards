@@ -8,8 +8,7 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.TableSide
-import com.cards.controller.hearts.GameMasterHearts
-import com.cards.game.fourplayercardgame.hearts.player.ai.GeniusPlayerHearts
+import com.cards.player.hearts.ai.GeniusPlayerHearts
 import com.cards.tools.RANDOMIZER
 import org.springframework.stereotype.Service
 

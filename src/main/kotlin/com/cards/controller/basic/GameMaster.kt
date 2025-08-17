@@ -5,7 +5,7 @@ import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.basic.GameStatus
 import com.cards.game.fourplayercardgame.basic.TableSide
-import com.cards.game.fourplayercardgame.basic.player.Player
+import com.cards.player.Player
 import com.cards.tools.RANDOMIZER
 
 abstract class GameMaster {

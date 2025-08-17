@@ -28,7 +28,7 @@ abstract class Trick(
 
 
     fun getCardPlayedBy(tableSide: TableSide): Card? {
-        val distance = tableSide.clockwiseDistanceFrom(sideToLead)
+        val distance = sideToLead.clockwiseDistanceFrom(tableSide)
         return cardsPlayed.elementAtOrNull(distance)
     }
 

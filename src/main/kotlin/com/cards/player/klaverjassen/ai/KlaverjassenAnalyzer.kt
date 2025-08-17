@@ -1,10 +1,10 @@
-package com.cards.game.fourplayercardgame.klaverjassen.player.ai
+package com.cards.player.klaverjassen.ai
 
 import com.cards.game.card.*
 import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.klaverjassen.*
 
-class ChooseCardAnalyzer(
+class KlaverjassenAnalyzer(
     private val playerForWhichWeAnalyse: GeniusPlayerKlaverjassen) {
 
     private lateinit var currentRound: RoundKlaverjassen

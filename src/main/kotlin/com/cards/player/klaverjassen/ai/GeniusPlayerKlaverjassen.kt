@@ -1,11 +1,11 @@
-package com.cards.game.fourplayercardgame.klaverjassen.player.ai
+package com.cards.player.klaverjassen.ai
 
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.klaverjassen.*
-import com.cards.game.fourplayercardgame.klaverjassen.player.PlayerKlaverjassen
+import com.cards.player.klaverjassen.PlayerKlaverjassen
 import com.cards.tools.cardCombinations
 
 class GeniusPlayerKlaverjassen(
@@ -13,12 +13,12 @@ class GeniusPlayerKlaverjassen(
     game: GameKlaverjassen
 ) : PlayerKlaverjassen(tableSide, game) {
 
-    private val chooseCardAnalyzer = ChooseCardAnalyzer(this)
+    private val analyzer = KlaverjassenAnalyzer(this)
 
     fun printAnalyzer() {
-        chooseCardAnalyzer.refreshAnalysis()
+        analyzer.refreshAnalysis()
         TableSide.values().forEach {
-            val playerCanHaveCards = chooseCardAnalyzer.playerCanHaveCards(it)
+            val playerCanHaveCards = analyzer.playerCanHaveCards(it)
             print(String.format("%-5s ", it.toString().lowercase()))
             print(String.format("(%2d): ", playerCanHaveCards.size))
             CardColor.values().forEach { color ->
@@ -46,7 +46,7 @@ class GeniusPlayerKlaverjassen(
         if (legalCards.size == 1)
             return legalCards.first()
 
-        chooseCardAnalyzer.refreshAnalysis()
+        analyzer.refreshAnalysis()
 
         if (firstTrick() && isContractOwner() && isLeadPlayer() && hasTrumpJack()) {
             return trumpJack()
@@ -128,15 +128,15 @@ class GeniusPlayerKlaverjassen(
     }
 
     private fun determineCardProbabilities(side: TableSide, trickSoFar: TrickKlaverjassen): List<CardProbability> {
-        val certainLeadColor = (chooseCardAnalyzer.playerSureHasCards(side) - trickSoFar.getCardsPlayed())
+        val certainLeadColor = (analyzer.playerSureHasCards(side) - trickSoFar.getCardsPlayed())
             .filter { it.color == trickSoFar.getLeadColor() }
 
-        val certainTrumpColor = (chooseCardAnalyzer.playerSureHasCards(side) - trickSoFar.getCardsPlayed())
+        val certainTrumpColor = (analyzer.playerSureHasCards(side) - trickSoFar.getCardsPlayed())
             .filter { it.color == trickSoFar.getLeadColor() }
 
         val probabilityValues = determineProbabilities(side, trickSoFar)
         if (certainLeadColor.isNotEmpty()) {
-            val uncertainLeadColor = (chooseCardAnalyzer.playerCanHaveCards(side)- trickSoFar.getCardsPlayed())
+            val uncertainLeadColor = (analyzer.playerCanHaveCards(side)- trickSoFar.getCardsPlayed())
                 .filter { it.color == trickSoFar.getLeadColor() }
 
             return certainLeadColor.map { CardProbability(it, 1.0) } +
@@ -144,23 +144,23 @@ class GeniusPlayerKlaverjassen(
 
         } else if (certainTrumpColor.isNotEmpty() ) {
 
-            val uncertainLeadColor = (chooseCardAnalyzer.playerCanHaveCards(side)- trickSoFar.getCardsPlayed())
+            val uncertainLeadColor = (analyzer.playerCanHaveCards(side)- trickSoFar.getCardsPlayed())
                 .filter { it.color == trickSoFar.getLeadColor() }
-            val uncertainTrumpColor = (chooseCardAnalyzer.playerCanHaveCards(side) - trickSoFar.getCardsPlayed() - uncertainLeadColor)
+            val uncertainTrumpColor = (analyzer.playerCanHaveCards(side) - trickSoFar.getCardsPlayed() - uncertainLeadColor)
                 .filter { it.color == trump() }
 
             return uncertainLeadColor.map { CardProbability(it, probabilityValues.leadColor) } +
                    certainTrumpColor.map{ CardProbability(it, probabilityValues.trumpColor) } +
                    uncertainTrumpColor.map{ CardProbability(it, probabilityValues.trumpColor) }
         } else {
-            val uncertainLeadColor = (chooseCardAnalyzer.playerCanHaveCards(side)- trickSoFar.getCardsPlayed())
+            val uncertainLeadColor = (analyzer.playerCanHaveCards(side)- trickSoFar.getCardsPlayed())
                 .filter { it.color == trickSoFar.getLeadColor() }
-            val uncertainTrumpColor = (chooseCardAnalyzer.playerCanHaveCards(side) - trickSoFar.getCardsPlayed())
+            val uncertainTrumpColor = (analyzer.playerCanHaveCards(side) - trickSoFar.getCardsPlayed())
                 .filter { it.color == trump() }
-            val uncertainOtherColor = (chooseCardAnalyzer.playerCanHaveCards(side) - trickSoFar.getCardsPlayed())
+            val uncertainOtherColor = (analyzer.playerCanHaveCards(side) - trickSoFar.getCardsPlayed())
                 .filter { it.color != trickSoFar.getLeadColor() && it.color != trump() }
 
-            val certainAll = chooseCardAnalyzer.playerSureHasCards(side) //has for sure no trump and no leadcolor
+            val certainAll = analyzer.playerSureHasCards(side) //has for sure no trump and no leadcolor
             return uncertainLeadColor.map { CardProbability(it, probabilityValues.leadColor) } +
                     uncertainTrumpColor.map{ CardProbability(it, probabilityValues.trumpColor) } +
                     certainAll.map{ CardProbability(it, probabilityValues.otherColor) } +
@@ -169,10 +169,10 @@ class GeniusPlayerKlaverjassen(
     }
 
     fun determineProbabilities(side: TableSide, trickSoFar: TrickKlaverjassen) : ProbabilityValues {
-        val m = chooseCardAnalyzer.cardsInHandForSide(side) - chooseCardAnalyzer.playerSureHasCards(side).size
-        val allSetSize = (chooseCardAnalyzer.playerCanHaveCards(side)- trickSoFar.getCardsPlayed()).size
-        val trumpSetSize = chooseCardAnalyzer.playerCanHaveCards(side).filter { it.color == trump() }.size
-        val otherSetSize = chooseCardAnalyzer.playerCanHaveCards(side).filter { it.color != trump() && it.color != trickSoFar.getLeadColor() }.size
+        val m = analyzer.cardsInHandForSide(side) - analyzer.playerSureHasCards(side).size
+        val allSetSize = (analyzer.playerCanHaveCards(side)- trickSoFar.getCardsPlayed()).size
+        val trumpSetSize = analyzer.playerCanHaveCards(side).filter { it.color == trump() }.size
+        val otherSetSize = analyzer.playerCanHaveCards(side).filter { it.color != trump() && it.color != trickSoFar.getLeadColor() }.size
         val combiAll = cardCombinations(allSetSize, m)
         val combiLeadColor = cardCombinations(allSetSize, m) - cardCombinations(trumpSetSize + otherSetSize, m)
         val combiTrump = cardCombinations(trumpSetSize + otherSetSize, m) - cardCombinations(otherSetSize, m)

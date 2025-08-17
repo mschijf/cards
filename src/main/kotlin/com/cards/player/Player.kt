@@ -1,4 +1,4 @@
-package com.cards.game.fourplayercardgame.basic.player
+package com.cards.player
 
 import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.basic.Game
@@ -15,6 +15,18 @@ abstract class Player(
 
     fun getCardsInHand() = cardsInHand.toList()
     fun getNumberOfCardsInHand() = getCardsInHand().size
+
+    fun signalCardPlayed(side: TableSide, card: Card) {
+        if (!game.isFinished()) {
+            if (!game.getCurrentRound().getTrickOnTable().hasNotStarted()) {
+                assert (game.getCurrentRound().getTrickOnTable().getCardsPlayed().last() == card)
+                assert (game.getCurrentRound().getTrickOnTable().getCardPlayedBy(side) == card)
+            } else {
+                assert(game.getLastCompletedTrick()!!.getCardsPlayed().last() == card)
+                assert(game.getLastCompletedTrick()!!.getCardPlayedBy(side) == card)
+            }
+        }
+    }
 
     fun setCardsInHand(cardsFromDealer: List<Card>) {
         cardsInHand = cardsFromDealer.toMutableList()

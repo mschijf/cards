@@ -1,4 +1,4 @@
-package com.cards.game.fourplayercardgame.hearts.player.ai
+package com.cards.player.hearts.ai
 
 import com.cards.game.card.CARDDECK
 import com.cards.game.card.Card

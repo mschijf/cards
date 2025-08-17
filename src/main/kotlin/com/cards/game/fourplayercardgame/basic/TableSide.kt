@@ -10,4 +10,5 @@ enum class TableSide {
     fun opposite(): TableSide = clockwiseNext(2)
     fun isOppositeOf(other: TableSide?) = this.opposite() == other
     fun clockwiseDistanceFrom(other: TableSide) = (values().size + other.ordinal - this.ordinal) % values().size
+    fun clockwiseDistanceTo(other: TableSide) = (values().size + this.ordinal - other.ordinal) % values().size
 }

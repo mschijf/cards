@@ -3,11 +3,11 @@ package com.cards.controller.hearts
 import com.cards.controller.basic.GameMaster
 import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.basic.TableSide
-import com.cards.game.fourplayercardgame.basic.player.Player
+import com.cards.player.Player
 import com.cards.game.fourplayercardgame.hearts.GAME_START_PLAYER
 import com.cards.game.fourplayercardgame.hearts.GameHearts
 import com.cards.game.fourplayercardgame.hearts.legalPlayable
-import com.cards.game.fourplayercardgame.hearts.player.ai.GeniusPlayerHearts
+import com.cards.player.hearts.ai.GeniusPlayerHearts
 
 class GameMasterHearts: GameMaster() {
 

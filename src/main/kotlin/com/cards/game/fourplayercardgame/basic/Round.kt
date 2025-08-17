@@ -14,7 +14,7 @@ abstract class Round() {
     fun isComplete() = getTrickList().size == NUMBER_OF_TRICKS_PER_ROUND && getTrickList().last().isComplete()
     fun isLastTrick(trick: Trick) = getTrickList().size == NUMBER_OF_TRICKS_PER_ROUND && getTrickList().last() == trick
 
-    private fun getLastCompletedTrick(): Trick? {
+    fun getLastCompletedTrick(): Trick? {
         if (trickList.isEmpty())
             return null
         if (!trickList.last().isActive())

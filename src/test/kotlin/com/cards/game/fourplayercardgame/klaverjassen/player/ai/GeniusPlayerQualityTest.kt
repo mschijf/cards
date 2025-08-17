@@ -1,9 +1,11 @@
-package com.cards.game.fourplayercardgame.klaverjassen
+package com.cards.game.fourplayercardgame.klaverjassen.player.ai
 
 import com.cards.controller.klaverjassen.GameMasterKlaverjassen
-import com.cards.game.fourplayercardgame.klaverjassen.player.PlayerKlaverjassen
+import com.cards.game.fourplayercardgame.klaverjassen.ScoreKlaverjassen
+import com.cards.player.klaverjassen.PlayerKlaverjassen
 import com.cards.tools.RANDOMIZER
 import org.junit.jupiter.api.Test
+import kotlin.text.format
 
 class GeniusPlayerQualityTest {
     @Test
