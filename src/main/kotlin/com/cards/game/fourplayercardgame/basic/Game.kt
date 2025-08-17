@@ -6,12 +6,18 @@ abstract class Game() {
 
     private val roundList = mutableListOf<Round>()
 
+    private val cardPlayedListeners = mutableListOf<CardPlayedListener>()
+
     abstract fun createTrick(sideToLead: TableSide): Trick
     abstract fun createRound(): Round
     abstract fun isFinished(): Boolean
 
     fun start(startSide: TableSide ) {
         createNewRoundAndTrick(startSide)
+    }
+
+    fun addCardPlayedListener(listener: CardPlayedListener) {
+        cardPlayedListeners.add(listener)
     }
 
     fun getLastTrickWinner(): TableSide?  =
@@ -42,27 +48,31 @@ abstract class Game() {
         getCurrentRound().addTrick(createTrick(sideToLead))
     }
 
+    fun hasNewRoundStarted() = getCurrentRound().hasNotStarted()
+
     fun playCard(card: Card): GameStatus {
         if (isFinished())
             throw Exception("Trying to play a card, but the game is already over")
 
         val currentRound = getCurrentRound()
         val trickOnTable = currentRound.getTrickOnTable()
-
+        val sideToPlay = trickOnTable.getSideToPlay()
         trickOnTable.addCard(card)
 
-        if (isFinished()) {
-            return GameStatus(gameFinished = true, roundFinished = true, trickFinished = true)
+        val gameStatus = if (isFinished()) {
+            GameStatus(gameFinished = true, roundFinished = true, trickFinished = true)
         } else if (currentRound.isComplete()) {
             val previousLeadStart = currentRound.getTrickList().first().getSideToLead()
             createNewRoundAndTrick(previousLeadStart.clockwiseNext())
-            return GameStatus(gameFinished = false, roundFinished = true, trickFinished = true)
+            GameStatus(gameFinished = false, roundFinished = true, trickFinished = true)
         } else if (trickOnTable.isComplete()) {
             createNewTrick(trickOnTable.getWinningSide()!!)
-            return GameStatus(gameFinished = false, roundFinished = false, trickFinished = true)
+            GameStatus(gameFinished = false, roundFinished = false, trickFinished = true)
         } else {
-            return GameStatus(gameFinished = false, roundFinished = false, trickFinished = false)
+            GameStatus(gameFinished = false, roundFinished = false, trickFinished = false)
         }
+        cardPlayedListeners.forEach { listener -> listener.signalCardPlayed(sideToPlay, card) }
+        return gameStatus
     }
 }
 

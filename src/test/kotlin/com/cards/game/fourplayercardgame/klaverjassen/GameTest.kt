@@ -1,6 +1,8 @@
 package com.cards.game.fourplayercardgame.klaverjassen
 
 import com.cards.game.card.CARDDECK
+import com.cards.game.card.Card
+import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.player.Player
 import com.cards.player.klaverjassen.PlayerKlaverjassen
@@ -34,7 +36,7 @@ class GameTest {
         val game = GameKlaverjassen() //todo: game.start vervangen door GameKlaverjassen.start(), met aarin ook de inititele zaken opnemen
         game.start(TableSide.WEST) //todo: west als default in start
 
-        //todo: aparte class PlayeList (ipv gamemaster)
+        //todo: aparte class PlayerList (ipv gamemaster)
         val playerList = listOf(
             PlayerKlaverjassen(TableSide.WEST, game),
             PlayerKlaverjassen(TableSide.NORTH, game),
@@ -46,19 +48,21 @@ class GameTest {
             val sideToMove = game.getSideToMove()
             val playerToMove = playerList.first{it.tableSide == sideToMove} //todo: deze naar de class playerlist
 
-            if (game.getCurrentRound().hasNotStarted()) { //todo: deze method ook in gameKlaverjassen
+            if (game.hasNewRoundStarted()) {
                 playerList.dealCards() //todo: deze ook naar playerlist
                 val trumpColor = playerToMove.chooseTrumpColor()
-                (game.getCurrentRound() as RoundKlaverjassen).setTrumpColorAndContractOwner(trumpColor, playerToMove.tableSide)
-                //todo: ^^^ deze method ook in gameKlaverjassen
+                game.setTrumpColorAndContractOwner(trumpColor, playerToMove.tableSide)
             }
 
             val suggestedCardToPlay = playerToMove.chooseCard()
-            playerToMove.removeCard(suggestedCardToPlay)
-            game.playCard(suggestedCardToPlay)
-            playerList.forEach { player -> player.signalCardPlayed(sideToMove, suggestedCardToPlay) }
+            playCard(playerToMove, game, suggestedCardToPlay)
         }
         return game.getAllScoresPerRound().reduce { acc, roundScore -> acc.plus(roundScore) }
+    }
+
+    private fun playCard(playerToMove: Player, game: Game, cardToPlay: Card) {
+        playerToMove.removeCard(cardToPlay)
+        game.playCard(cardToPlay)
     }
 
     private fun List<Player>.dealCards() {

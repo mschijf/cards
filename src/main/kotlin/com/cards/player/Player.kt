@@ -1,22 +1,27 @@
 package com.cards.player
 
 import com.cards.game.card.Card
+import com.cards.game.fourplayercardgame.basic.CardPlayedListener
 import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.basic.TableSide
 
 abstract class Player(
     val tableSide: TableSide,
     protected val game: Game
-) {
+): CardPlayedListener {
 
     private var cardsInHand: MutableList<Card> = mutableListOf()
+
+    init {
+        game.addCardPlayedListener(this)
+    }
 
     abstract fun chooseCard(): Card
 
     fun getCardsInHand() = cardsInHand.toList()
     fun getNumberOfCardsInHand() = getCardsInHand().size
 
-    fun signalCardPlayed(side: TableSide, card: Card) {
+    override fun signalCardPlayed(side: TableSide, card: Card) {
         if (!game.isFinished()) {
             if (!game.getCurrentRound().getTrickOnTable().hasNotStarted()) {
                 assert (game.getCurrentRound().getTrickOnTable().getCardsPlayed().last() == card)
