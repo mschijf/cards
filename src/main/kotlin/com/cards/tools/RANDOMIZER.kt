@@ -25,7 +25,7 @@ object RANDOMIZER {
         } else {
             Random.nextInt(0, Int.MAX_VALUE)
         }
-        return kotlin.random.Random(lastSeedUsed)
+        return Random(lastSeedUsed)
     }
 
     fun getLastSeedUsed() = lastSeedUsed

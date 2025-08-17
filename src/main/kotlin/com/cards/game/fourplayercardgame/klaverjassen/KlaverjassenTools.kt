@@ -3,11 +3,13 @@ package com.cards.game.fourplayercardgame.klaverjassen
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
+import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.basic.Trick
 
 const val NUMBER_OF_TRICKS_PER_ROUND = 8
 const val NUMBER_OF_ROUNDS_PER_GAME = 16
 const val PIT_BONUS = 100
+val GAME_START_PLAYER = TableSide.WEST
 
 fun Card.beats(other: Card?, trumpColor: CardColor): Boolean {
     if (other == null)

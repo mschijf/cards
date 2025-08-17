@@ -4,6 +4,7 @@ import com.cards.controller.basic.GameMaster
 import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.basic.player.Player
+import com.cards.game.fourplayercardgame.klaverjassen.GAME_START_PLAYER
 import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.legalPlayable
@@ -18,7 +19,7 @@ class GameMasterKlaverjassen: GameMaster() {
 
     override fun initialStartSide(): TableSide {
         RANDOMIZER.setSeed(497818608)
-        return TableSide.WEST
+        return GAME_START_PLAYER
     }
     override fun initialPlayerList(): List<Player> {
 //        return listOf(

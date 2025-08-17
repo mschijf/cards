@@ -4,6 +4,7 @@ import com.cards.controller.basic.GameMaster
 import com.cards.game.card.Card
 import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.basic.player.Player
+import com.cards.game.fourplayercardgame.hearts.GAME_START_PLAYER
 import com.cards.game.fourplayercardgame.hearts.GameHearts
 import com.cards.game.fourplayercardgame.hearts.legalPlayable
 import com.cards.game.fourplayercardgame.hearts.player.ai.GeniusPlayerHearts
@@ -14,7 +15,7 @@ class GameMasterHearts: GameMaster() {
     override fun getGame() = super.getGame() as GameHearts
 
     override fun initialStartSide(): TableSide {
-        return TableSide.WEST
+        return GAME_START_PLAYER
     }
     override fun initialPlayerList(): List<Player> {
         return listOf(
