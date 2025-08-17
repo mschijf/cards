@@ -162,14 +162,9 @@ class ServiceHearts {
     }
 
     fun playCard(card: Card): GameStatus {
-        if (gameHearts.isFinished())
-            throw Exception("Trying to play a card, but the game is already over")
-
         val playerToMove = playerGroup.getPlayer(gameHearts.getSideToMove())
-        if (!isLegalCardToPlay(playerToMove, card))
-            throw Exception("trying to play an illegal card: Card($card)")
-
         playerToMove.removeCard(card)
+
         val gameStatus = gameHearts.playCard(card)
         if (playerGroup.allEmptyHanded())
             playerGroup.dealCards()

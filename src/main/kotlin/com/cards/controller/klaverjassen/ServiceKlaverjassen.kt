@@ -8,7 +8,6 @@ import com.cards.controller.klaverjassen.model.TrumpChoiceModel
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
-import com.cards.game.fourplayercardgame.basic.Game
 import com.cards.game.fourplayercardgame.basic.GameStatus
 import com.cards.game.fourplayercardgame.basic.TableSide
 import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
@@ -27,9 +26,6 @@ class ServiceKlaverjassen {
     private var gameKlaverjassen = GameKlaverjassen.startNewGame()
 
     private fun createInitialPlayerList(): List<Player> {
-//        return listOf(
-//            PlayerKlaverjassen(TableSide.WEST, gameKlaverjassen), PlayerKlaverjassen(TableSide.NORTH, gameKlaverjassen), PlayerKlaverjassen(TableSide.EAST, gameKlaverjassen), PlayerKlaverjassen(TableSide.SOUTH, gameKlaverjassen),
-//        )
         return listOf(
             GeniusPlayerKlaverjassen(TableSide.WEST, gameKlaverjassen),
             GeniusPlayerKlaverjassen(TableSide.NORTH, gameKlaverjassen),
@@ -70,9 +66,9 @@ class ServiceKlaverjassen {
         val gameJsonString = "" //Gson().toJson(gm)
         val newRoundStarted = gameKlaverjassen.getCurrentRound().hasNotStarted()
 
-//        println("====================================================================================================")
-//        println("$sideToMove")
-//        (playerGroup.getPlayer(sideToMove) as GeniusPlayerKlaverjassen).printAnalyzer()
+        println("====================================================================================================")
+        println("$sideToMove")
+        (playerGroup.getPlayer(TableSide.NORTH) as GeniusPlayerKlaverjassen).printAnalyzer()
 
         return GameStatusModelKlaverjassen(
             generic = GameStatusModel(
@@ -124,8 +120,10 @@ class ServiceKlaverjassen {
     fun executeMove(color: CardColor, rank: CardRank): CardPlayedModel? {
         val playerToMove = playerGroup.getPlayer(gameKlaverjassen.getSideToMove())
         val suggestedCardToPlay = Card(color, rank)
-        if (!isLegalCardToPlay(playerToMove, suggestedCardToPlay))
+        if (!isLegalCardToPlay(playerToMove, suggestedCardToPlay)) {
+            println("LOG.WARNING: try to play illegal card")
             return null
+        }
 
         val cardsStillInHand = playerToMove.getNumberOfCardsInHand()
 
@@ -211,13 +209,7 @@ class ServiceKlaverjassen {
     }
 
     fun playCard(card: Card): GameStatus {
-        if (gameKlaverjassen.isFinished())
-            throw Exception("Trying to play a card, but the game is already over")
-
         val playerToMove = playerGroup.getPlayer(gameKlaverjassen.getSideToMove())
-        if (!isLegalCardToPlay(playerToMove, card))
-            throw Exception("trying to play an illegal card: Card($card)")
-
         playerToMove.removeCard(card)
         val gameStatus = gameKlaverjassen.playCard(card)
         if (playerGroup.allEmptyHanded())
