@@ -7,19 +7,37 @@ import com.cards.controller.hearts.model.ScoreModelHearts
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
+import com.cards.game.fourplayercardgame.basic.GameStatus
 import com.cards.game.fourplayercardgame.basic.TableSide
+import com.cards.game.fourplayercardgame.hearts.GameHearts
+import com.cards.game.fourplayercardgame.hearts.legalPlayable
+import com.cards.player.Player
+import com.cards.player.PlayerGroup
 import com.cards.player.hearts.ai.GeniusPlayerHearts
 import com.cards.tools.RANDOMIZER
 import org.springframework.stereotype.Service
 
 @Service
 class ServiceHearts {
-    private val gameMasterHearts = GameMasterHearts().also { it.createAndStartNewGame() }
-    private var gameHearts = gameMasterHearts.getGame()
+
+
+    private var gameHearts = GameHearts.startNewGame()
+
+    private fun createInitialPlayerList(): List<Player> {
+        return listOf(
+            GeniusPlayerHearts(TableSide.WEST, gameHearts),
+            GeniusPlayerHearts(TableSide.NORTH, gameHearts),
+            GeniusPlayerHearts(TableSide.EAST, gameHearts),
+            GeniusPlayerHearts(TableSide.SOUTH, gameHearts),
+        )
+    }
+
+    private var playerGroup = PlayerGroup(createInitialPlayerList()).also { it.dealCards() }
 
     fun newGame(): GameStatusModelHearts {
-        gameMasterHearts.startNewGame()
-        gameHearts = gameMasterHearts.getGame()
+        gameHearts = GameHearts.startNewGame()
+        playerGroup = PlayerGroup(createInitialPlayerList())
+        playerGroup.dealCards()
         return getGameStatus()
     }
 
@@ -61,14 +79,14 @@ class ServiceHearts {
     }
 
     private fun makePlayerCardListModel(tableSide: TableSide): List<CardInHandModel> {
-        val player = gameMasterHearts.getCardPlayer(tableSide)
+        val player = playerGroup.getPlayer(tableSide)
         return player
             .getCardsInHand()
             .sortedBy { card -> 100 * card.color.ordinal + card.rank.ordinal }
             .map { card ->
                 CardInHandModel(
                     card,
-                    gameMasterHearts.isLegalCardToPlay(player, card),
+                    isLegalCardToPlay(player, card),
                     getGeniusCardValue(player as GeniusPlayerHearts, card)
                 )
             }
@@ -81,21 +99,21 @@ class ServiceHearts {
     }
 
     fun computeMove(): CardPlayedModel? {
-        val playerToMove = gameMasterHearts.getCardPlayer(gameHearts.getSideToMove())
+        val playerToMove = playerGroup.getPlayer(gameHearts.getSideToMove())
         val suggestedCardToPlay = playerToMove.chooseCard()
         return executeMove(suggestedCardToPlay.color, suggestedCardToPlay.rank)
     }
 
     fun executeMove(color: CardColor, rank: CardRank): CardPlayedModel? {
         val sideToMove = gameHearts.getSideToMove()
-        val playerToMove = gameMasterHearts.getCardPlayer(sideToMove)
+        val playerToMove = playerGroup.getPlayer(sideToMove)
         val suggestedCardToPlay = Card(color, rank)
-        if (!gameMasterHearts.isLegalCardToPlay(playerToMove, suggestedCardToPlay))
+        if (!isLegalCardToPlay(playerToMove, suggestedCardToPlay))
             return null
 
         val cardsStillInHand = playerToMove.getNumberOfCardsInHand()
 
-        val gameStatus = gameMasterHearts.playCard(suggestedCardToPlay)
+        val gameStatus = playCard(suggestedCardToPlay)
 
         val trickCompleted = if (gameStatus.trickFinished)
             TrickCompletedModel(
@@ -130,4 +148,33 @@ class ServiceHearts {
                 }
         )
     }
+
+    //======================================================================================================
+    // added from GameMaster
+    //======================================================================================================
+
+    fun isLegalCardToPlay(player: Player, card: Card): Boolean {
+        val trickOnTable = gameHearts.getCurrentRound().getTrickOnTable()
+
+        val cardsInHand = player.getCardsInHand()
+        val legalCards = cardsInHand.legalPlayable(trickOnTable)
+        return legalCards.contains(card)
+    }
+
+    fun playCard(card: Card): GameStatus {
+        if (gameHearts.isFinished())
+            throw Exception("Trying to play a card, but the game is already over")
+
+        val playerToMove = playerGroup.getPlayer(gameHearts.getSideToMove())
+        if (!isLegalCardToPlay(playerToMove, card))
+            throw Exception("trying to play an illegal card: Card($card)")
+
+        playerToMove.removeCard(card)
+        val gameStatus = gameHearts.playCard(card)
+        if (playerGroup.allEmptyHanded())
+            playerGroup.dealCards()
+        return gameStatus
+    }
+
+
 }

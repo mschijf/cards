@@ -56,12 +56,12 @@ class GeniusPlayerKlaverjassen(
             val cpvl = getCardPlayedValueList()
             val bc = cpvl.maxByOrNull { it.value }?.card?:throw Exception("empty card-played-value list")
 
-            print("==> $tableSide: ")
-            cpvl.forEach { cardValue ->
-                print("${cardValue.card}: ${cardValue.value}, ")
-            }
-            println()
-            println()
+//            print("==> $tableSide: ")
+//            cpvl.forEach { cardValue ->
+//                print("${cardValue.card}: ${cardValue.value}, ")
+//            }
+//            println()
+//            println()
             return bc
         }
 

@@ -1,8 +1,14 @@
 package com.cards.game.fourplayercardgame.klaverjassen.player.ai
 
-import com.cards.controller.klaverjassen.GameMasterKlaverjassen
+import com.cards.game.card.Card
+import com.cards.game.fourplayercardgame.basic.Game
+import com.cards.game.fourplayercardgame.basic.TableSide
+import com.cards.game.fourplayercardgame.klaverjassen.GameKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.ScoreKlaverjassen
+import com.cards.player.Player
+import com.cards.player.PlayerGroup
 import com.cards.player.klaverjassen.PlayerKlaverjassen
+import com.cards.player.klaverjassen.ai.GeniusPlayerKlaverjassen
 import com.cards.tools.RANDOMIZER
 import org.junit.jupiter.api.Test
 import kotlin.text.format
@@ -32,18 +38,36 @@ class GeniusPlayerQualityTest {
     }
 
     private fun testOneGame(index: Int): ScoreKlaverjassen {
-        val gameMaster = GameMasterKlaverjassen()
-        gameMaster.startNewGame()
+        val game = GameKlaverjassen.startNewGame(TableSide.WEST)
+        val playerGroup = PlayerGroup(
+            listOf(
+                PlayerKlaverjassen(TableSide.WEST, game),
+                GeniusPlayerKlaverjassen(TableSide.NORTH, game),
+                PlayerKlaverjassen(TableSide.EAST, game),
+                GeniusPlayerKlaverjassen(TableSide.SOUTH, game),
+            )
+        )
 
-        while (!gameMaster.isGameFinished()) {
-            if (gameMaster.isNewTrumpNeeded()) {
-                gameMaster.determineNewTrump()
+        while (!game.isFinished()) {
+            val sideToMove = game.getSideToMove()
+            val playerToMove = playerGroup.getPlayer(sideToMove) as PlayerKlaverjassen
+
+            if (game.hasNewRoundStarted()) {
+                playerGroup.dealCards()
+                val trumpColor = playerToMove.chooseTrumpColor()
+                game.setTrumpColorAndContractOwner(trumpColor, playerToMove.tableSide)
             }
-            val playerToMove = gameMaster.getPlayerToMove() as PlayerKlaverjassen
+
             val suggestedCardToPlay = playerToMove.chooseCard()
-            gameMaster.playCard(suggestedCardToPlay)
+            playCard(playerToMove, game, suggestedCardToPlay)
         }
-        return gameMaster.getGame().getAllScoresPerRound().reduce { acc, roundScore -> acc.plus(roundScore) }
+        return game.getAllScoresPerRound().reduce { acc, roundScore -> acc.plus(roundScore) }
     }
+
+    private fun playCard(playerToMove: Player, game: Game, cardToPlay: Card) {
+        playerToMove.removeCard(cardToPlay)
+        game.playCard(cardToPlay)
+    }
+
 
 }
