@@ -33,8 +33,8 @@ class GeniusPlayerQualityTest {
         println("EXPECTED:")
         println("----------------------------------------------------------------")
         println("%7d runs           WIJ        ZIJ".format(1000))
-        println("number of wins: %10d %10d".format(973, 27))
-        println("Points          %10d %10d".format(2164702, 1031998))
+        println("number of wins: %10d %10d".format(978, 2))
+        println("Points          %10d %10d".format(2124123, 1059727))
     }
 
     private fun testOneGame(index: Int): ScoreKlaverjassen {

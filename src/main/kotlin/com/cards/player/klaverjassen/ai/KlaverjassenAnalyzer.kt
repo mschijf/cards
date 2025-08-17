@@ -2,42 +2,31 @@ package com.cards.player.klaverjassen.ai
 
 import com.cards.game.card.*
 import com.cards.game.fourplayercardgame.basic.TableSide
+import com.cards.game.fourplayercardgame.basic.Trick
 import com.cards.game.fourplayercardgame.klaverjassen.*
+import java.util.Currency
 
 class KlaverjassenAnalyzer(
     private val playerForWhichWeAnalyse: GeniusPlayerKlaverjassen) {
 
-    private lateinit var currentRound: RoundKlaverjassen
-    private lateinit var trumpColor: CardColor
-
-    private lateinit var playerCanHave: Map<TableSide, MutableSet<Card>>
-    private lateinit var playerSureHas: Map<TableSide, MutableSet<Card>>
-    private lateinit var playerProbablyHas: Map<TableSide, MutableSet<Card>>
-    private lateinit var playerProbablyHasNot: Map<TableSide, MutableSet<Card>>
-
+    private var currentRound = playerForWhichWeAnalyse.getCurrentRound()
+    private var trumpColor = currentRound.getTrumpColor()
 
     private val allSides = TableSide.values().toSet()
     private val mySide = playerForWhichWeAnalyse.tableSide
     private val otherSides = allSides - mySide
 
+    private val playerCanHave: Map<TableSide, MutableSet<Card>> = allSides.associateWith { mutableSetOf() }
+    private val playerSureHas: Map<TableSide, MutableSet<Card>> = allSides.associateWith { mutableSetOf() }
+    private val playerProbablyHas: Map<TableSide, MutableSet<Card>> = allSides.associateWith { mutableSetOf() }
+    private val playerProbablyHasNot: Map<TableSide, MutableSet<Card>> = allSides.associateWith { mutableSetOf() }
+
+
     private val cardsPlayedDuringAnalysis = mutableListOf<Card>()
 
     fun refreshAnalysis() {
-        initVariables()
         determinePlayerCanHaveCards()
         updateAfterAnalysis()
-    }
-
-    private fun initVariables() {
-        currentRound = playerForWhichWeAnalyse.getCurrentRound()
-        trumpColor = currentRound.getTrumpColor()
-
-        playerCanHave = allSides.associateWith { mutableSetOf() }
-        playerSureHas = allSides.associateWith { mutableSetOf() }
-        playerProbablyHas = allSides.associateWith { mutableSetOf() }
-        playerProbablyHasNot = allSides.associateWith { mutableSetOf() }
-
-        cardsPlayedDuringAnalysis.clear()
     }
 
     fun playerCanHaveCards(side: TableSide): Set<Card> = playerCanHave[side]!!
@@ -111,7 +100,64 @@ class KlaverjassenAnalyzer(
 
     //-----------------------------------------------------------------------------------------------------------------
 
+    private fun processCard(trick: Trick, cardPlayed: Card, highestTrumpUpTillNow: Card?) {
+
+        val allCards = CARDDECK.baseDeckCardsSevenAndHigher
+
+        val sideThatPlayed = trick.getSideThatPlayedCard(cardPlayed)!!
+
+        otherSides.forEach {
+                otherSide -> playerCanHave[otherSide]!! -= cardPlayed
+        }
+
+        if (trick.getCardsPlayed().first() != cardPlayed) {
+
+            if (cardPlayed.color != trick.getLeadColor()) {
+                playerCanHave[sideThatPlayed]!! -= allCards.ofColor(trick.getLeadColor()!!)
+                if (cardPlayed.color != trumpColor) {
+                    playerCanHave[sideThatPlayed]!! -= allCards.ofColor(trumpColor)
+                } else {
+                    if (!cardPlayed.beats(highestTrumpUpTillNow, trumpColor)) {
+                        playerCanHave[sideThatPlayed]!! -= allCards.filter {
+                            it.beats(highestTrumpUpTillNow, trumpColor)
+                        }
+                    }
+                }
+            } else if (cardPlayed.color == trumpColor && highestTrumpUpTillNow!!.beats(cardPlayed, trumpColor)) {
+                playerCanHave[sideThatPlayed]!! -= allCards.filter {
+                    it.beats(highestTrumpUpTillNow, trumpColor)
+                }
+            } else {
+                //player just follows, we can not conclude anything yet
+            }
+        }
+//        determineAssumptions(trick as TrickKlaverjassen)
+        cardsPlayedDuringAnalysis.add(cardPlayed)
+    }
+
+    private fun processTrick(trick: Trick) {
+        val allCards = CARDDECK.baseDeckCardsSevenAndHigher
+
+        val firstCard = trick.getCardsPlayed().first()
+        processCard(trick, firstCard, null)
+        var highestTrumpUpTillNow = if (firstCard.color == trumpColor) firstCard else null
+
+        trick.getCardsPlayed().drop(1).forEach { cardPlayed ->
+            processCard(trick, cardPlayed, highestTrumpUpTillNow)
+            if (cardPlayed.color == trumpColor && cardPlayed.beats(highestTrumpUpTillNow, trumpColor))
+                highestTrumpUpTillNow = cardPlayed
+        }
+    }
+
     private fun determinePlayerCanHaveCards() {
+        currentRound = playerForWhichWeAnalyse.getCurrentRound()
+        trumpColor = currentRound.getTrumpColor()
+        cardsPlayedDuringAnalysis.clear()
+
+        playerCanHave.values.forEach { it.clear() }
+        playerSureHas.values.forEach { it.clear() }
+        playerProbablyHas.values.forEach { it.clear() }
+        playerProbablyHasNot.values.forEach { it.clear() }
 
         val allCards = CARDDECK.baseDeckCardsSevenAndHigher
 
@@ -121,51 +167,7 @@ class KlaverjassenAnalyzer(
 
         val allTricks = playerForWhichWeAnalyse.getCurrentRound().getTrickList()
         allTricks.filterNot { trick -> trick.hasNotStarted() }.forEach { trick ->
-            val firstCard = trick.getCardsPlayed().first()
-            val firstSideThatPlayed = trick.getSideToLead()
-            otherSides.forEach {
-                otherSide -> playerCanHave[otherSide]!! -= firstCard
-            }
-
-            val newTrick = TrickKlaverjassen(firstSideThatPlayed, currentRound)
-            newTrick.addCard(firstCard)
-            determineAssumptions(newTrick)
-            cardsPlayedDuringAnalysis.add(firstCard)
-
-            var highestTrumpUpTillNow = if (firstCard.color == trumpColor) firstCard else null
-            trick.getCardsPlayed().drop(1).forEach { cardPlayed ->
-                val sideThatPlayed = trick.getSideThatPlayedCard(cardPlayed)!!
-                otherSides.forEach { otherSide ->
-                    playerCanHave[otherSide]!! -= cardPlayed
-                }
-
-                if (cardPlayed.color != firstCard.color) {
-                    playerCanHave[sideThatPlayed]!! -= allCards.ofColor(firstCard.color)
-                    if (cardPlayed.color != trumpColor) {
-                        playerCanHave[sideThatPlayed]!! -= allCards.ofColor(trumpColor)
-                    } else {
-                        if (!cardPlayed.beats(highestTrumpUpTillNow, trumpColor)) {
-                            playerCanHave[sideThatPlayed]!! -= allCards.filter {
-                                it.beats(highestTrumpUpTillNow, trumpColor)
-                            }
-                        }
-                    }
-                } else if (cardPlayed.color == trumpColor && highestTrumpUpTillNow!!.beats(cardPlayed, trumpColor)) {
-                    playerCanHave[sideThatPlayed]!! -= allCards.filter {
-                        it.beats(highestTrumpUpTillNow, trumpColor)
-                    }
-                } else {
-                    //player just follows, we can not conclude anything yet
-                }
-
-                newTrick.addCard(cardPlayed)
-                determineAssumptions(newTrick)
-                cardsPlayedDuringAnalysis.add(cardPlayed)
-
-                if (cardPlayed.color == trumpColor && cardPlayed.beats(highestTrumpUpTillNow, trumpColor))
-                    highestTrumpUpTillNow = cardPlayed
-
-            }
+            processTrick(trick)
         }
     }
 
