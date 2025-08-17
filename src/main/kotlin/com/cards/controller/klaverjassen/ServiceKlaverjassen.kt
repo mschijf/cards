@@ -9,10 +9,9 @@ import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
 import com.cards.game.fourplayercardgame.basic.TableSide
-import com.cards.controller.klaverjassen.GameMasterKlaverjassen
-import com.cards.game.fourplayercardgame.klaverjassen.player.PlayerKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.RoundKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.ScoreType
+import com.cards.game.fourplayercardgame.klaverjassen.player.PlayerKlaverjassen
 import com.cards.game.fourplayercardgame.klaverjassen.player.ai.GeniusPlayerKlaverjassen
 import com.cards.tools.RANDOMIZER
 import org.springframework.stereotype.Service
@@ -47,9 +46,9 @@ class ServiceKlaverjassen {
         val gameJsonString = "" //Gson().toJson(gm)
         val newRoundStarted = gameKlaverjassen.getCurrentRound().hasNotStarted()
 
-        if (sideToMove == TableSide.SOUTH) {
-            (gameMasterKlaverjassen.getCardPlayer(TableSide.SOUTH) as GeniusPlayerKlaverjassen).printAnalyzer()
-        }
+        println("====================================================================================================")
+        println("$sideToMove")
+        (gameMasterKlaverjassen.getCardPlayer(sideToMove) as GeniusPlayerKlaverjassen).printAnalyzer()
 
         return GameStatusModelKlaverjassen(
             generic = GameStatusModel(
@@ -73,20 +72,23 @@ class ServiceKlaverjassen {
 
     private fun makePlayerCardListModel(tableSide: TableSide): List<CardInHandModel> {
         val player = gameMasterKlaverjassen.getCardPlayer(tableSide)
-        return player
+        val xx = player
             .getCardsInHand()
             .sortedBy { card -> 100 * card.color.ordinal + card.rank.ordinal }
             .map { card ->
                 CardInHandModel(
                     card,
                     gameMasterKlaverjassen.isLegalCardToPlay(player, card),
-                    getGeniusCardValue(player as PlayerKlaverjassen, card)
+                    getGeniusCardValue(player as GeniusPlayerKlaverjassen, card)
                 )
             }
+        return xx
     }
 
-    private fun getGeniusCardValue(geniusPlayerKlaverjassen: PlayerKlaverjassen, card: Card): String {
-        return "?"
+    private fun getGeniusCardValue(geniusPlayerKlaverjassen: GeniusPlayerKlaverjassen, card: Card): String {
+//        val valueList = geniusPlayerKlaverjassen.getCardPlayedValueList()
+//        return valueList.firstOrNull{card == it.card}?.value?.toString()?:"x"
+        return "x"
     }
 
     fun computeMove(): CardPlayedModel? {
