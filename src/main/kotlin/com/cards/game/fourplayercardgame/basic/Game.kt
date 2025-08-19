@@ -6,18 +6,12 @@ abstract class Game() {
 
     private val roundList = mutableListOf<Round>()
 
-    private val cardPlayedListeners = mutableListOf<CardPlayedListener>()
-
     abstract fun createTrick(sideToLead: TableSide): Trick
     abstract fun createRound(): Round
     abstract fun isFinished(): Boolean
 
     fun start(startSide: TableSide ) {
         createNewRoundAndTrick(startSide)
-    }
-
-    fun addCardPlayedListener(listener: CardPlayedListener) {
-        cardPlayedListeners.add(listener)
     }
 
     fun getLastTrickWinner(): TableSide?  =
@@ -71,7 +65,6 @@ abstract class Game() {
         } else {
             GameStatus(gameFinished = false, roundFinished = false, trickFinished = false)
         }
-        cardPlayedListeners.forEach { listener -> listener.signalCardPlayed(sideToPlay, card) }
         return gameStatus
     }
 }

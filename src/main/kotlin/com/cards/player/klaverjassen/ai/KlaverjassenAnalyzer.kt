@@ -131,7 +131,7 @@ class KlaverjassenAnalyzer(
                 //player just follows, we can not conclude anything yet
             }
         }
-//        determineAssumptions(trick as TrickKlaverjassen)
+        determineAssumptions(trick as TrickKlaverjassen)
         cardsPlayedDuringAnalysis.add(cardPlayed)
     }
 
