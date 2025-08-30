@@ -11,6 +11,7 @@ import com.cards.controller.model.TrickCompletedModel
 import com.cards.game.card.Card
 import com.cards.game.card.CardColor
 import com.cards.game.card.CardRank
+import com.cards.game.hearts.GAME_START_PLAYER
 import com.cards.game.hearts.Game
 import com.cards.game.hearts.GameStatus
 import com.cards.game.hearts.TableSide
@@ -39,6 +40,7 @@ class ServiceHearts {
     private var playerGroup = PlayerGroup(createInitialPlayerList()).also { it.dealCards() }
 
     fun newGame(): GameStatusModelHearts {
+        RANDOMIZER.setSeed(1960426776)
         gameHearts = Game.startNewGame()
         playerGroup = PlayerGroup(createInitialPlayerList())
         playerGroup.dealCards()
@@ -128,7 +130,8 @@ class ServiceHearts {
         else
             null
 
-        val nextPlayer = gameHearts.getSideToMove()
+
+        val nextPlayer = if (gameStatus.gameFinished) GAME_START_PLAYER else gameHearts.getSideToMove()
 
         return CardPlayedModel(
             sideToMove,
@@ -157,7 +160,7 @@ class ServiceHearts {
     // added from GameMaster
     //======================================================================================================
 
-    fun isLegalCardToPlay(player: Player, card: Card): Boolean {
+    private fun isLegalCardToPlay(player: Player, card: Card): Boolean {
         val trickOnTable = gameHearts.getCurrentRound().getTrickOnTable()
 
         val cardsInHand = player.getCardsInHand()
@@ -165,7 +168,7 @@ class ServiceHearts {
         return legalCards.contains(card)
     }
 
-    fun playCard(card: Card): GameStatus {
+    private fun playCard(card: Card): GameStatus {
         val playerToMove = playerGroup.getPlayer(gameHearts.getSideToMove())
         playerToMove.removeCard(card)
 
