@@ -11,7 +11,7 @@ class HtmlController() {
     @GetMapping("/")
     fun home(model: ModelMap): ModelAndView {
         //model.addAttribute("attribute", "redirectWithRedirectPrefix")
-        return ModelAndView("redirect:/klaverjassen.html", model)
+        return ModelAndView("redirect:/hearts.html", model)
     }
 }
 

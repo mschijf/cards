@@ -40,13 +40,13 @@
 .container {
     background:  rgb(20, 128, 20);
     display: grid;
-    grid-template-columns: 50px 175px 500px 175px 10px 400px;
+    grid-template-columns: 50px 175px 500px 175px 400px;
     grid-template-rows: auto;
     grid-template-areas:
-                    ".       signal  north   north  .      info"
-                    ".       west    table   east   .      info"
-                    "south   south   south   south  .      info"
-                    ".       button  button  footer footer footer";
+                    ".       signal  north   north  info"
+                    ".       west    table   east   info"
+                    "south   south   south   south  south"
+                    ".       button  button  footer footer";
 }
 
 /* ----------------------------------------------------------------------- */
@@ -76,13 +76,13 @@
 }
 
 .table-player-west {
-    padding-top: 131px;
+    padding-top: 115px;
     padding-right: 10px;
-    padding-left: 10px;
+    padding-left: 50px;
 }
 
 .table-player-east {
-    padding-top: 131px;
+    padding-top: 115px;
 }
 
 .flexcontainer-player {
@@ -94,20 +94,20 @@
     padding-right: 10px;
 }
 
-.player-table-label {
-    color: white;
-    text-align: center;
+textarea.info-lines {
+    font-family: courier new, monospace;
+    font-size: 12px;
+    text-align: left;
+    line-height: 1;
 }
+
+
 
 /* ----------------------------------------------------------------------- */
 
 .card-size-normal {
     width:100px;
     height:150px;
-}
-.card-size-medium {
-    width:80px;
-    height:120px;
 }
 .card-size-small {
     width:50px;
@@ -225,47 +225,27 @@ table {
 }
 
 th {
-    font-family: courier, monospace;
-    font-size: 14px;
     text-align: center;
-    color: black;
     padding: 10px;
+    font-family: courier, monospace;
     border-bottom: 1px dotted #ccc;
 }
 
 td {
     font-family: Chalkduster, fantasy;
-    font-size: 14px;
     text-align: center;
-    color: blue;
     padding: 10px;
     border-bottom: 1px dotted #ccc;
 }
-td.total {
-    font-weight: bold;
-    color: black;
-}
-
 
 th:first-child, td:first-child {
-    text-align: right;
-    color: black;
+    text-align: left;
     font-family: courier, monospace;
-    padding-right: 20px;
     border-right: 1px dotted #ffaa9f;
-}
-th:last-child, td:last-child {
-    padding-right: 30px;
-}
-th.mid-col, td.mid-col {
-    border-left: 1px dotted #ffaa9f;
-    border-right: 1px dotted #ffaa9f;
-    padding:5px
 }
 
 .info-line {
     font-family: Chalkduster, fantasy;
-    font-size: 14px;
     color: red;
     text-align: center;
     padding: 10px;
@@ -273,31 +253,28 @@ th.mid-col, td.mid-col {
 
 /*--------------------------------------------------------*/
 
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 180px; /* Location of the box */
-    left: 0;
+#modal {
+    position: fixed;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Modal Content */
-.modal-content {
-    font-family: Chalkduster, fantasy;
-    font-size: 24px;
-    text-align: center;
-    color:white;
-    background-color: green;
-    margin-left: 285px;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 350px;
-    height: 200px;
+.modal__window {
+    position: relative;
+    background-color: white;
+    padding: 4em 2em;
+}
+
+.modal__close {
+}
+
+#modal:not(:target) {
+    visibility: hidden;
+    opacity: 0;
 }

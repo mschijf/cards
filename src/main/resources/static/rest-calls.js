@@ -1,4 +1,4 @@
-let requestBase = "api/v1/" + gameType
+let requestBase = "api/v1/hearts"
 
 function requestForNewGame() {
     let request = new XMLHttpRequest();
@@ -80,32 +80,6 @@ function requestLog() {
         if(this.readyState === 4 && this.status === 200) {
             let logLines = this.responseText;
             handleLog(logLines)
-        }
-    };
-    request.send();
-}
-
-function requestComputeTrumpCardColor(player) {
-    let request = new XMLHttpRequest();
-
-    request.open("POST", requestBase + "/computeTrumpCardChoice/" + player);
-    request.onreadystatechange = function() {
-        if(this.readyState === 4 && this.status === 200) {
-            let trumpColor = JSON.parse(this.responseText);
-            handleTrumpColorSet(trumpColor)
-        }
-    };
-    request.send();
-}
-
-function requestExecuteTrumpCardColorChoice(cardColor, player) {
-    let request = new XMLHttpRequest();
-
-    request.open("POST", requestBase + "/executeTrumpCardChoice/" + cardColor +"/" + player);
-    request.onreadystatechange = function() {
-        if(this.readyState === 4 && this.status === 200) {
-            let trumpColor = JSON.parse(this.responseText);
-            handleTrumpColorSet(trumpColor)
         }
     };
     request.send();

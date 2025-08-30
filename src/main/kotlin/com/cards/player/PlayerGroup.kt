@@ -1,7 +1,7 @@
 package com.cards.player
 
 import com.cards.game.card.CARDDECK
-import com.cards.game.fourplayercardgame.basic.TableSide
+import com.cards.game.hearts.TableSide
 import com.cards.tools.RANDOMIZER
 import kotlin.collections.chunked
 

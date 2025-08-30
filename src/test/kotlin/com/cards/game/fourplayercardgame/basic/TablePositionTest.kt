@@ -1,5 +1,6 @@
 package com.cards.game.fourplayercardgame.basic
 
+import com.cards.game.hearts.TableSide
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
